@@ -594,7 +594,7 @@
                 document.getElementById('profile-name').innerText = `Ayah/Bunda ${currentStudentName}`;
                 document.getElementById('profile-student').innerText = `${currentStudentName} (NIS: ${currentStudentNIS})`;
 
-                let bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][new Date().getMonth()];
+                let bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][new Date().getMonth()];
                 document.getElementById('label-tunggakan').innerText = `Tagihan Bulan ${bulan}`;
 
                 let mult = (new Date().getMonth() >= 6) ? new Date().getMonth() - 5 : new Date().getMonth() + 7;
@@ -644,7 +644,7 @@
                     document.getElementById('bill-warning-box').classList.remove('hidden');
                     document.getElementById('container-select-all').classList.remove('hidden');
                     let mult = (new Date().getMonth() >= 6) ? new Date().getMonth() - 5 : new Date().getMonth() + 7;
-                    let monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+                    let monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
                     let currentMonthName = monthNames[new Date().getMonth()];
                     let mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore'];
 
