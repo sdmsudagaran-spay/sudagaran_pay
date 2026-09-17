@@ -218,6 +218,12 @@
                         <p class="text-xs text-gray-600 mt-1" id="bill-warning-desc">Berikut adalah rincian tagihan Anda. Centang tagihan yang ingin dibayar.</p>
                     </div>
                 </div>
+                
+                <label id="container-select-all" class="flex items-center gap-3 mb-4 px-1 hidden cursor-pointer">
+                    <input type="checkbox" id="chk-select-all" onchange="toggleSelectAll(this)" class="w-5 h-5 text-primary rounded focus:ring-primary">
+                    <span class="text-sm font-bold text-gray-800">Pilih Semua Tagihan</span>
+                </label>
+
                 <div class="space-y-3" id="bills-container"></div>
             </div>
 
@@ -364,9 +370,6 @@
                  </div>
             </div>
             <div class="p-6 space-y-4">
-                <button onclick="changePassword()" class="w-full bg-white text-primary hover:bg-gray-50 font-bold py-4 rounded-xl border border-gray-200 transition shadow-sm flex items-center justify-center gap-2">
-                    <i class="fas fa-key"></i> Ubah Password
-                </button>
                 <button onclick="logout()" class="w-full bg-red-50 text-danger hover:bg-red-100 font-bold py-4 rounded-xl border border-red-100 transition shadow-sm flex items-center justify-center gap-2">
                     <i class="fas fa-sign-out-alt"></i> Keluar Aplikasi
                 </button>
@@ -438,7 +441,7 @@
         ];
 
         let appDB = { userRole: 'guest', menuItems: [], bills: [], history: [] };
-        let currentStudentToken = "", currentStudentNIS = "", currentStudentName = "", currentStudentClass = "";
+        let currentStudentToken = "", currentStudentNIS = "", currentStudentName = "", currentStudentClass = "", currentStudentNamaKelas = "";
         let selectedBillIds = [], isFileUploaded = false, paymentDataPayload = {};
 
         function formatCurrency(num) { return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
@@ -488,6 +491,7 @@
                 const student = students[0];
                 currentStudentToken = student.token; currentStudentNIS = student.nis;
                 currentStudentName = student.nama; currentStudentClass = student.kelas;
+                currentStudentNamaKelas = student.namaKelas || "-";
                 appDB.bills = []; appDB.history = [];
 
                 const mapCols = [
@@ -585,7 +589,8 @@
             if(screenId === 'screen-home' && appDB.userRole === 'student') {
                 document.getElementById('home-user-name').innerText = `Ayah/Bunda ${currentStudentName}`;
                 document.getElementById('home-student-class').innerText = currentStudentClass;
-                document.getElementById('home-student-info').innerText = `${currentStudentName} (NIS: ${currentStudentNIS})`;
+                document.getElementById('home-student-info').innerHTML = `${currentStudentName} <br><span class="text-[11px] text-gray-500 font-normal">Kelas: ${currentStudentNamaKelas} | NIS: ${currentStudentNIS}</span>`;
+                document.getElementById('home-student-info').classList.remove('line-clamp-1');
                 document.getElementById('profile-name').innerText = `Ayah/Bunda ${currentStudentName}`;
                 document.getElementById('profile-student').innerText = `${currentStudentName} (NIS: ${currentStudentNIS})`;
 
@@ -628,13 +633,16 @@
                 selectedBillIds = []; document.getElementById('bills-selected-total').innerText = 'Rp 0';
                 document.getElementById('btn-pay-selected').disabled = true;
                 let cont = document.getElementById('bills-container'); cont.innerHTML = '';
+                let cbAll = document.getElementById('chk-select-all'); if(cbAll) cbAll.checked = false;
                 let ub = appDB.bills.filter(b=>b.status!=='paid');
                 
                 if(ub.length === 0){
                     document.getElementById('bill-warning-box').classList.add('hidden');
+                    document.getElementById('container-select-all').classList.add('hidden');
                     cont.innerHTML = `<div class="text-center py-10"><i class="fas fa-check-circle text-5xl text-success mb-3"></i><p class="font-bold text-gray-800">Alhamdulillah</p><p class="text-sm text-gray-500">Tidak ada tagihan bulan ini.</p></div>`;
                 } else {
                     document.getElementById('bill-warning-box').classList.remove('hidden');
+                    document.getElementById('container-select-all').classList.remove('hidden');
                     let mult = (new Date().getMonth() >= 6) ? new Date().getMonth() - 5 : new Date().getMonth() + 7;
                     let monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
                     let currentMonthName = monthNames[new Date().getMonth()];
@@ -697,11 +705,24 @@
             showScreen('screen-admin-dashboard');
         }
 
+        function toggleSelectAll(cb) {
+            document.querySelectorAll('.bill-chk').forEach(el => el.checked = cb.checked);
+            calcSelectedBills();
+        }
+
         function calcSelectedBills() {
             selectedBillIds = []; let total = 0;
-            document.querySelectorAll('.bill-chk:checked').forEach(cb => { selectedBillIds.push(cb); total += parseInt(cb.dataset.amt); });
+            let allCheckboxes = document.querySelectorAll('.bill-chk');
+            let checkedBoxes = document.querySelectorAll('.bill-chk:checked');
+
+            checkedBoxes.forEach(cb => { selectedBillIds.push(cb); total += parseInt(cb.dataset.amt); });
             document.getElementById('bills-selected-total').innerText = formatCurrency(total);
             document.getElementById('btn-pay-selected').disabled = selectedBillIds.length === 0;
+
+            let cbAll = document.getElementById('chk-select-all');
+            if (cbAll && allCheckboxes.length > 0) {
+                cbAll.checked = (checkedBoxes.length === allCheckboxes.length);
+            }
         }
 
         function processSelectedBills() {
@@ -789,7 +810,7 @@
                 // 3. Konversi hasil unggahan menjadi Link/URL Publik
                 publicUrl = `${SUPABASE_URL}/storage/v1/object/public/bukti_tf/${cleanFileName}`;
                 
-                // 4. Siapkan Data Transaksi (Tautan Bukti TF ikut dikirim)
+                // 4. Siapkan Data Transaksi (Memetakan Semua Kolom Secara Penuh)
                 let dbPayload = {
                     id: txId,
                     token: currentStudentToken,
@@ -797,13 +818,23 @@
                     nis: currentStudentNIS,
                     nama: currentStudentName,
                     kelas: currentStudentClass,
-                    "buktiTF": publicUrl,  // Tautan Publik Gambar Tersimpan di sini!
+                    "buktiTF": publicUrl,
+                    bps: paymentDataPayload.bps || 0,
+                    "sppJuli": paymentDataPayload.sppJuli || 0,
+                    spp: paymentDataPayload.spp || 0,
+                    "ketSpp": paymentDataPayload.ketSpp || null,
+                    "daftarUlang1": paymentDataPayload.daftarUlang1 || 0,
+                    "daftarUlang2": paymentDataPayload.daftarUlang2 || 0,
+                    "daftarUlang3": paymentDataPayload.daftarUlang3 || 0,
+                    "tahfidzPlus": paymentDataPayload.tahfidzPlus || 0,
+                    "ketTahfidzPlus": paymentDataPayload.ketTahfidzPlus || null,
+                    tahfidz: paymentDataPayload.tahfidz || 0,
                     icp: paymentDataPayload.icp || 0,
                     "icpSore": paymentDataPayload.icpSore || 0,
                     tanggungan: paymentDataPayload.tanggungan || 0
                 };
 
-                // 4. Simpan ke Tabel Transactions Supabase
+                // 5. Simpan ke Tabel Transactions Supabase
                 const txInsertRes = await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
                     method: 'POST',
                     headers: { ...HEADERS, 'Prefer': 'return=minimal' },
@@ -914,7 +945,6 @@
 
         function closeMessageBox() { document.getElementById('messageBox').classList.add('opacity-0'); setTimeout(()=>document.getElementById('messageBox').classList.add('hidden'),300); }
         function logout() { appDB.userRole='guest'; showScreen('screen-login'); document.getElementById('loginForm').reset(); }
-        function changePassword() { showMessageBox('Info', 'Fitur ubah password segera hadir.', 'fa-info-circle', 'bg-blue-50 text-blue-600'); }
 
         function downloadPDF(txId) {
             let h = appDB.history.find(x=>x.id===txId); if(!h) return;
