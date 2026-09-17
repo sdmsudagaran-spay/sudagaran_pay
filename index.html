@@ -654,8 +654,15 @@
                         if(mList.includes(b.code)) {
                             if (appDB.history.length === 0) {
                                 fAmt = b.amount * mult; 
-                                note = `<p class="text-[10px] text-danger bg-red-50 px-2 py-1 rounded inline-block mt-1 mb-1">Belum bayar s.d ${currentMonthName} (${mult} Bln)</p>`;
-                                ketBulan = `s.d ${currentMonthName}`;
+                                
+                                // Menderetkan semua bulan yang belum dibayar dari Juli hingga bulan saat ini
+                                let unpaidList = [];
+                                for(let i = 0; i < mult; i++) { 
+                                    unpaidList.push(monthNames[(6 + i) % 12]); 
+                                }
+                                ketBulan = unpaidList.join(', ');
+                                
+                                note = `<p class="text-[10px] text-danger bg-red-50 px-2 py-1 rounded inline-block mt-1 mb-1">Belum bayar: ${ketBulan}</p>`;
                             } else {
                                 ketBulan = currentMonthName;
                             }
