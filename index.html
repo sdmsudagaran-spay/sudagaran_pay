@@ -743,9 +743,18 @@
 
         function handleFileUpload(e) {
             if(e.target.files[0]){
+                const file = e.target.files[0];
+                
+                // Cegah upload jika file bukan gambar (Validasi PNG/JPG/JPEG)
+                if (!file.type.match('image.*')) {
+                    showMessageBox('Peringatan', 'Hanya diperbolehkan mengunggah file gambar (PNG, JPG, JPEG).', 'fa-exclamation-triangle', 'bg-orange-50 text-accent');
+                    e.target.value = ''; // Reset input file
+                    return;
+                }
+
                 isFileUploaded = true; let r = new FileReader();
                 r.onload = function(ev) { document.getElementById('upload-preview').src = ev.target.result; document.getElementById('upload-preview').classList.remove('hidden'); document.getElementById('upload-placeholder').classList.add('hidden'); };
-                r.readAsDataURL(e.target.files[0]);
+                r.readAsDataURL(file);
             }
         }
 
@@ -760,11 +769,13 @@
                 // 1. Dapatkan File Asli dari Input Foto
                 const fileInput = document.getElementById('receipt-upload');
                 const file = fileInput.files[0];
-                const fileExt = file.name.split('.').pop();
-                const fileName = txId + '-' + Date.now() + '.' + fileExt;
                 
-                // 2. Upload Struk ke Supabase Storage
-                const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/bukti_tf/${fileName}`, {
+                // Bersihkan nama file agar tidak bentrok atau error URL
+                const fileExt = file.name.split('.').pop();
+                const cleanFileName = txId + '-' + Date.now() + '.' + fileExt;
+                
+                // 2. Upload Struk ke Supabase Storage (Wadah: bukti_tf)
+                const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/bukti_tf/${cleanFileName}`, {
                     method: 'POST',
                     headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': file.type },
                     body: file
@@ -772,12 +783,13 @@
                 
                 if(!uploadRes.ok) {
                     const err = await uploadRes.json();
-                    throw new Error("Penyimpanan Foto Gagal: " + (err.message || "Cek pengaturan Storage Bucket."));
+                    throw new Error("Penyimpanan Foto Gagal: " + (err.message || "Pastikan Bucket 'bukti_tf' sudah diatur public."));
                 }
                 
-                publicUrl = `${SUPABASE_URL}/storage/v1/object/public/bukti_tf/${fileName}`;
+                // 3. Konversi hasil unggahan menjadi Link/URL Publik
+                publicUrl = `${SUPABASE_URL}/storage/v1/object/public/bukti_tf/${cleanFileName}`;
                 
-                // 3. Siapkan Data Transaksi
+                // 4. Siapkan Data Transaksi (Tautan Bukti TF ikut dikirim)
                 let dbPayload = {
                     id: txId,
                     token: currentStudentToken,
@@ -785,19 +797,7 @@
                     nis: currentStudentNIS,
                     nama: currentStudentName,
                     kelas: currentStudentClass,
-                    "buktiTF": publicUrl,
-                    status: 'pending',
-                    konfirmasi: false,
-                    bps: paymentDataPayload.bps || 0,
-                    "sppJuli": paymentDataPayload.sppJuli || 0,
-                    spp: paymentDataPayload.spp || 0,
-                    "ketSpp": paymentDataPayload.ketSpp || null,
-                    "daftarUlang1": paymentDataPayload.daftarUlang1 || 0,
-                    "daftarUlang2": paymentDataPayload.daftarUlang2 || 0,
-                    "daftarUlang3": paymentDataPayload.daftarUlang3 || 0,
-                    "tahfidzPlus": paymentDataPayload.tahfidzPlus || 0,
-                    "ketTahfidzPlus": paymentDataPayload.ketTahfidzPlus || null,
-                    tahfidz: paymentDataPayload.tahfidz || 0,
+                    "buktiTF": publicUrl,  // Tautan Publik Gambar Tersimpan di sini!
                     icp: paymentDataPayload.icp || 0,
                     "icpSore": paymentDataPayload.icpSore || 0,
                     tanggungan: paymentDataPayload.tanggungan || 0
