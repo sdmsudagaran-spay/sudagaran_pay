@@ -126,7 +126,7 @@
                 <div id="home-menu-grid" class="grid grid-cols-4 gap-y-6 gap-x-2"></div>
             </div>
         </div>
-
+        <!-- ==================== ADMIN MENU DASHBOARD ==================== -->
         <div id="screen-admin-dashboard" class="screen">
             <div class="bg-gradient-primary pt-8 pb-10 px-6 text-white rounded-b-3xl relative mb-6">
                 <div class="flex justify-between items-center mb-6">
@@ -203,6 +203,30 @@
             </div>
         </div>
 
+        <!-- ==================== MODAL PREVIEW STRUK (BARU) ==================== -->
+        <div id="modal-receipt-preview" class="fixed inset-0 bg-black/50 z-50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="modal-receipt-content">
+                <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
+                    <h3 class="text-lg font-bold text-gray-800">Preview Struk</h3>
+                    <button onclick="closeReceiptPreview()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                
+                <!-- Area Kertas Struk -->
+                <div class="p-6 overflow-y-auto flex-1 bg-gray-200 flex justify-center no-scrollbar">
+                    <div id="receipt-paper" class="bg-white shadow-md text-black" style="width: 80mm; min-height: 80mm; padding: 4mm; font-family: 'Courier New', Courier, monospace; font-size: 11pt;">
+                        <!-- Isi struk di-generate dari JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="p-5 border-t border-gray-100 bg-white">
+                    <button id="btn-print-receipt" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-md transition flex justify-center items-center gap-2">
+                        <i class="fas fa-print"></i> Cetak / Unduh PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BILLS (TAGIHAN) ==================== -->
         <div id="screen-bills" class="screen relative min-h-screen">
             <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
                 <button onclick="showScreen('screen-home')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-lg"></i></button>
@@ -516,8 +540,13 @@
                     const transactions = await txRes.json();
                     transactions.forEach(tx => {
                         let tot = 0; let det = [];
-                        let txStatus = (tx.status === 'success' || tx.status === 'lunas') ? 'success' : 'pending';
                         
+                        // Menentukan Status Riwayat (Berhasil, Tertolak, Menunggu)
+                        let txStatus = tx.status;
+                        if (tx.konfirmasi === true || tx.status === 'success' || tx.status === 'lunas') txStatus = 'success';
+                        else if (tx.status === 'rejected' || tx.status === 'ditolak') txStatus = 'rejected';
+                        else txStatus = 'pending';
+
                         mapCols.forEach(c => {
                             if(tx[c.db]) { 
                                 let amt = parseInt(tx[c.db]); 
@@ -532,7 +561,7 @@
                                     let b = appDB.bills.find(x => x.code === c.code); 
                                     if(b) {
                                         if(txStatus === 'success') b.status = 'paid';
-                                        else if (b.status === 'unpaid') b.status = 'pending';
+                                        else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
                                     } 
                                 } 
                             }
@@ -680,8 +709,16 @@
                 if(appDB.history.length === 0) hc.innerHTML = `<div class="text-center py-10 text-gray-400"><i class="fas fa-box-open text-4xl mb-2"></i><p>Belum ada riwayat.</p></div>`;
                 appDB.history.forEach(h => {
                     let d = h.details.map(x=>`- ${x.title}: ${formatCurrency(x.amount)}`).join('<br>');
-                    let p = h.status === 'success' ? `<button onclick="downloadPDF('${h.id}')" class="text-[10px] bg-green-50 text-success px-2 py-1 rounded border border-green-100 mt-2"><i class="fas fa-download"></i> Unduh Struk</button>` : '';
-                    hc.innerHTML += `<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3"><div class="flex justify-between border-b pb-2 mb-2"><h4 class="text-sm font-bold text-gray-800">${h.title}</h4><span class="text-xs font-semibold ${h.status==='success'?'text-success':'text-accent'}">${h.status==='success'?'Berhasil':'Menunggu Konfirmasi'}</span></div><div class="flex justify-between items-end"><div class="text-xs text-gray-500">${h.date}<br><div class="mt-1 text-[10px] text-gray-600 leading-tight">${d}</div>${p}</div><p class="text-sm font-bold text-primary">${formatCurrency(h.amount)}</p></div></div>`;
+                    
+                    // Indikator Status & Tombol Cetak
+                    let statusHtml = '';
+                    if(h.status === 'success') statusHtml = '<span class="text-xs font-semibold text-success"><i class="fas fa-check-circle"></i> Berhasil</span>';
+                    else if(h.status === 'rejected') statusHtml = '<span class="text-xs font-semibold text-danger"><i class="fas fa-times-circle"></i> Konfirmasi Tertolak</span>';
+                    else statusHtml = '<span class="text-xs font-semibold text-accent"><i class="fas fa-clock"></i> Menunggu Konfirmasi</span>';
+
+                    let p = h.status === 'success' ? `<button onclick="previewReceipt('${h.id}')" class="text-[10px] bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg border border-blue-100 mt-2 font-bold hover:bg-blue-100 transition"><i class="fas fa-print"></i> Lihat Struk</button>` : '';
+                    
+                    hc.innerHTML += `<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3"><div class="flex justify-between border-b pb-2 mb-2"><h4 class="text-sm font-bold text-gray-800">${h.title}</h4>${statusHtml}</div><div class="flex justify-between items-end"><div class="text-xs text-gray-500">${h.date}<br><div class="mt-1 text-[10px] text-gray-600 leading-tight">${d}</div>${p}</div><p class="text-sm font-bold text-primary">${formatCurrency(h.amount)}</p></div></div>`;
                 });
             }
 
@@ -953,43 +990,92 @@
         function closeMessageBox() { document.getElementById('messageBox').classList.add('opacity-0'); setTimeout(()=>document.getElementById('messageBox').classList.add('hidden'),300); }
         function logout() { appDB.userRole='guest'; showScreen('screen-login'); document.getElementById('loginForm').reset(); }
 
-        function downloadPDF(txId) {
-            let h = appDB.history.find(x=>x.id===txId); if(!h) return;
-            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        // ================= FITUR PREVIEW & CETAK STRUK =================
+        function previewReceipt(txId) {
+            let h = appDB.history.find(x=>x.id === txId); if(!h) return;
             
-            doc.setFillColor(30, 58, 95); 
-            doc.rect(20, 15, 12, 12, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(9); doc.setFont("helvetica", "bold"); doc.text("SD", 22.5, 23);
+            // Generate HTML Desain Kertas Struk 80mm
+            let receiptHTML = `
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <img src="https://iili.io/nHwYAuV.png" style="width: 45px; margin-bottom: 5px; filter: grayscale(100%);">
+                    <div style="font-size: 12pt; font-weight: bold; font-family: 'Courier New', Courier, monospace;">SD MUH SUDAGARAN</div>
+                    <div style="font-size: 9pt; font-family: 'Courier New', Courier, monospace;">Wonosobo, Jawa Tengah</div>
+                    <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
+                </div>
+                <div style="font-size: 10pt; margin-bottom: 10px; font-family: 'Courier New', Courier, monospace;">
+                    <div>No  : ${h.id}</div>
+                    <div>Tgl : ${h.date}</div>
+                    <div>Nama: ${currentStudentName}</div>
+                    <div>Kls : ${currentStudentClass}</div>
+                    <div>Ksr : ${h.kasir || '-'}</div>
+                </div>
+                <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
+                <div style="font-size: 10pt; margin-bottom: 10px; font-family: 'Courier New', Courier, monospace;">
+                    ${h.details.map(d => `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span>${d.title}</span><span>${formatCurrency(d.amount)}</span></div>`).join('')}
+                </div>
+                <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
+                <div style="font-size: 11pt; font-weight: bold; display: flex; justify-content: space-between; font-family: 'Courier New', Courier, monospace;">
+                    <span>TOTAL</span>
+                    <span>${formatCurrency(h.amount)}</span>
+                </div>
+                <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
+                <div style="text-align: center; font-size: 9pt; margin-top: 15px; font-family: 'Courier New', Courier, monospace;">
+                    Terima kasih.<br>Simpan struk ini sebagai<br>bukti pembayaran yang sah.
+                </div>
+            `;
+            
+            // Masukkan ke dalam modal
+            document.getElementById('receipt-paper').innerHTML = receiptHTML;
+            document.getElementById('btn-print-receipt').onclick = () => printReceipt(receiptHTML);
+            
+            // Tampilkan Modal
+            const modal = document.getElementById('modal-receipt-preview');
+            const content = document.getElementById('modal-receipt-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
+        }
 
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(16); doc.text("SD Muhammadiyah Sudagaran", 36, 21);
-            doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text("Wonosobo, Jawa Tengah", 36, 26);
-            
-            doc.setLineWidth(0.5); doc.line(20, 32, 190, 32);
+        function closeReceiptPreview() {
+            const modal = document.getElementById('modal-receipt-preview');
+            const content = document.getElementById('modal-receipt-content');
+            modal.classList.add('opacity-0'); content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
 
-            doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text("STRUK PEMBAYARAN", 20, 42);
-            doc.setFontSize(10); doc.setFont("helvetica", "normal");
-            doc.text(`No Transaksi  : ${h.id}`, 20, 50); 
-            doc.text(`Tanggal       : ${h.date}`, 20, 56); 
-            doc.text(`Siswa         : ${currentStudentName}`, 20, 62);
-            doc.text(`Kelas         : ${currentStudentClass}`, 20, 68);
-            doc.text(`Kasir         : ${h.kasir || '-'}`, 20, 74);
-
-            doc.setLineWidth(0.2); doc.line(20, 80, 190, 80);
-            
-            let y = 90; 
-            h.details.forEach(d => { 
-                doc.text(`${d.title}`, 20, y); doc.text(`${formatCurrency(d.amount)}`, 150, y); y += 8; 
-            });
-            
-            doc.line(20, y, 190, y); y += 8;
-            doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text("TOTAL LUNAS", 20, y); doc.text(`${formatCurrency(h.amount)}`, 150, y);
-            
-            doc.setFontSize(9); doc.setFont("helvetica", "italic"); doc.setTextColor(100, 100, 100);
-            doc.text("Terima kasih atas pembayaran Anda.", 20, y + 15);
-            
-            doc.save(`Struk_${h.id}.pdf`);
+        function printReceipt(receiptHTML) {
+            const printWindow = window.open('', '_blank', 'width=400,height=600');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Struk Pembayaran - ${currentStudentName}</title>
+                    <style>
+                        @page {
+                            size: 80mm auto; /* Lebar 80mm, tinggi otomatis */
+                            margin: 0; /* Margin printer diatur nol */
+                        }
+                        body {
+                            width: 72mm; /* Area cetak aman */
+                            margin: 0 auto;
+                            padding: 4mm;
+                            font-family: 'Courier New', Courier, monospace;
+                            font-size: 12pt;
+                            color: #000;
+                            background: #fff;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${receiptHTML}
+                    <script>
+                        // Otomatis cetak dan tutup jendela setelah gambar termuat
+                        window.onload = function() { 
+                            setTimeout(() => { window.print(); window.close(); }, 500); 
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
         }
 
         window.onload = () => showScreen('screen-login');
