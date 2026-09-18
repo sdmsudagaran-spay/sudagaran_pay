@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -78,6 +79,9 @@
 
         <div id="screen-home" class="screen">
             <div class="bg-white rounded-b-3xl shadow-sm px-6 pt-8 pb-6 relative z-10">
+                <button onclick="refreshData()" class="absolute top-6 right-6 w-8 h-8 bg-blue-50 text-primary rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm border border-blue-100 z-20">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
                 <div class="flex justify-center items-center mb-6">
                     <img src="https://iili.io/nHwYAuV.png" alt="Logo" class="h-10 w-auto object-contain">
                 </div>
@@ -374,11 +378,19 @@
         </div>
 
         <div id="screen-history" class="screen">
-            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30">
+            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
                 <h2 class="text-lg font-bold text-primary">Riwayat Transaksi</h2>
+                <button onclick="refreshData()" class="w-8 h-8 bg-blue-50 text-primary rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm border border-blue-100">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
             <div class="p-6">
                 <div class="space-y-4" id="history-container"></div>
+                <div class="p-5 border-t border-gray-100 bg-white">
+                    <button id="btn-print-receipt" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-md transition flex justify-center items-center gap-2">
+                        <i class="fas fa-download"></i> Unduh Struk (PNG)
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -713,10 +725,10 @@
                     // Indikator Status & Tombol Cetak
                     let statusHtml = '';
                     if(h.status === 'success') statusHtml = '<span class="text-xs font-semibold text-success"><i class="fas fa-check-circle"></i> Berhasil</span>';
-                    else if(h.status === 'rejected') statusHtml = '<span class="text-xs font-semibold text-danger"><i class="fas fa-times-circle"></i> Konfirmasi Tertolak</span>';
+                    else if(h.status === 'rejected') statusHtml = '<div class="text-right"><span class="text-xs font-semibold text-danger"><i class="fas fa-times-circle"></i> Konfirmasi Tertolak</span><br><span class="text-[10px] text-gray-500 font-normal">Bukti tidak valid</span></div>';
                     else statusHtml = '<span class="text-xs font-semibold text-accent"><i class="fas fa-clock"></i> Menunggu Konfirmasi</span>';
 
-                    let p = h.status === 'success' ? `<button onclick="previewReceipt('${h.id}')" class="text-[10px] bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg border border-blue-100 mt-2 font-bold hover:bg-blue-100 transition"><i class="fas fa-print"></i> Lihat Struk</button>` : '';
+                    let p = h.status === 'success' ? `<button onclick="previewReceipt('${h.id}')" class="text-[10px] bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg border border-blue-100 mt-2 font-bold hover:bg-blue-100 transition"><i class="fas fa-download"></i> Unduh Struk</button>` : '';
                     
                     hc.innerHTML += `<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3"><div class="flex justify-between border-b pb-2 mb-2"><h4 class="text-sm font-bold text-gray-800">${h.title}</h4>${statusHtml}</div><div class="flex justify-between items-end"><div class="text-xs text-gray-500">${h.date}<br><div class="mt-1 text-[10px] text-gray-600 leading-tight">${d}</div>${p}</div><p class="text-sm font-bold text-primary">${formatCurrency(h.amount)}</p></div></div>`;
                 });
@@ -990,6 +1002,88 @@
         function closeMessageBox() { document.getElementById('messageBox').classList.add('opacity-0'); setTimeout(()=>document.getElementById('messageBox').classList.add('hidden'),300); }
         function logout() { appDB.userRole='guest'; showScreen('screen-login'); document.getElementById('loginForm').reset(); }
 
+        async function refreshData() {
+            if(appDB.userRole !== 'student' || !currentStudentNIS) return;
+            
+            // Simpan status layar aktif saat ini
+            let activeScreenId = 'screen-home';
+            document.querySelectorAll('.screen').forEach(el => {
+                if(el.classList.contains('active')) activeScreenId = el.id;
+            });
+
+            showMessageBox('Menyegarkan...', 'Memperbarui data tagihan & riwayat...', 'fa-sync fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            
+            try {
+                // Tarik ulang data siswa dari Supabase
+                const studentRes = await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${currentStudentNIS}&select=*`, { headers: HEADERS });
+                const students = await studentRes.json();
+                
+                if(students && students.length > 0) {
+                    const student = students[0];
+                    appDB.bills = []; appDB.history = [];
+                    
+                    const mapCols = [
+                        {code: 'bps', title: 'BPS', db: 'bps'}, {code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli'},
+                        {code: 'spp', title: 'SPP', db: 'spp'}, {code: 'daftarUlang1', title: 'Daftar Ulang I', db: 'daftarUlang1'},
+                        {code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2'}, {code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3'},
+                        {code: 'tahfidzPlus', title: 'Kelas Tahfidz Plus', db: 'tahfidzPlus'}, {code: 'tahfidz', title: 'Kelas Tahfidz', db: 'tahfidz'},
+                        {code: 'icp', title: 'Kelas ICP', db: 'icp'}, {code: 'icpSore', title: 'ICP Sore', db: 'icpSore'},
+                        {code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan'}
+                    ];
+
+                    mapCols.forEach(c => {
+                        if(student[c.db]) {
+                            let amt = parseInt(student[c.db]);
+                            if(!isNaN(amt) && amt > 0) appDB.bills.push({ id: 'B-'+c.code, code: c.code, title: c.title, amount: amt, status: 'unpaid' });
+                        }
+                    });
+
+                    // Tarik ulang riwayat transaksi dari Supabase
+                    const txRes = await fetch(`${SUPABASE_URL}/rest/v1/transactions?nis=eq.${currentStudentNIS}&order=date.desc`, { headers: HEADERS });
+                    if(txRes.ok) {
+                        const transactions = await txRes.json();
+                        transactions.forEach(tx => {
+                            let tot = 0; let det = [];
+                            let txStatus = tx.status;
+                            if (tx.konfirmasi === true || tx.status === 'success' || tx.status === 'lunas') txStatus = 'success';
+                            else if (tx.status === 'rejected' || tx.status === 'ditolak') txStatus = 'rejected';
+                            else txStatus = 'pending';
+
+                            mapCols.forEach(c => {
+                                if(tx[c.db]) { 
+                                    let amt = parseInt(tx[c.db]); 
+                                    if(amt > 0) { 
+                                        tot += amt; 
+                                        let bTitle = c.title;
+                                        if(c.code === 'spp' && tx.ketSpp) bTitle += ` (${tx.ketSpp})`;
+                                        if(c.code === 'tahfidzPlus' && tx.ketTahfidzPlus) bTitle += ` (${tx.ketTahfidzPlus})`;
+                                        det.push({ title: bTitle, amount: amt }); 
+                                        
+                                        let b = appDB.bills.find(x => x.code === c.code); 
+                                        if(b) {
+                                            if(txStatus === 'success') b.status = 'paid';
+                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
+                                        } 
+                                    } 
+                                }
+                            });
+
+                            if(tot > 0) appDB.history.push({ 
+                                id: tx.id, date: tx.date, title: det.length > 1 ? 'Multi Tagihan' : det[0].title, 
+                                amount: tot, status: txStatus, details: det, kasir: tx.kasir || '-' 
+                            });
+                        });
+                    }
+                    
+                    // Segarkan antarmuka layar yang sedang terbuka
+                    showScreen(activeScreenId);
+                    closeMessageBox();
+                }
+            } catch(e) {
+                showMessageBox('Gagal', 'Terjadi kesalahan jaringan saat menyegarkan data.', 'fa-wifi', 'bg-red-50 text-danger');
+            }
+        }
+
         // ================= FITUR PREVIEW & CETAK STRUK =================
         function previewReceipt(txId) {
             let h = appDB.history.find(x=>x.id === txId); if(!h) return;
@@ -1043,39 +1137,33 @@
         }
 
         function printReceipt(receiptHTML) {
-            const printWindow = window.open('', '_blank', 'width=400,height=600');
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Struk Pembayaran - ${currentStudentName}</title>
-                    <style>
-                        @page {
-                            size: 80mm auto; /* Lebar 80mm, tinggi otomatis */
-                            margin: 0; /* Margin printer diatur nol */
-                        }
-                        body {
-                            width: 72mm; /* Area cetak aman */
-                            margin: 0 auto;
-                            padding: 4mm;
-                            font-family: 'Courier New', Courier, monospace;
-                            font-size: 12pt;
-                            color: #000;
-                            background: #fff;
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${receiptHTML}
-                    <script>
-                        // Otomatis cetak dan tutup jendela setelah gambar termuat
-                        window.onload = function() { 
-                            setTimeout(() => { window.print(); window.close(); }, 500); 
-                        }
-                    <\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
+            const paper = document.getElementById('receipt-paper');
+            const originalBg = paper.style.backgroundColor;
+            paper.style.backgroundColor = 'white'; // Memastikan latar belakang kanvas putih bersih
+            
+            showMessageBox('Memproses...', 'Menyiapkan struk untuk diunduh (harap tunggu sebentar)...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            
+            // Konversi elemen struk menjadi gambar menggunakan html2canvas
+            html2canvas(paper, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
+                paper.style.backgroundColor = originalBg; // Kembalikan ke warna asli
+                
+                // Konversi hasil potretan menjadi URL data base64 (format PNG)
+                const imgData = canvas.toDataURL('image/png');
+                
+                // Buat elemen link maya untuk memicu pengunduhan di HP / Komputer
+                const link = document.createElement('a');
+                link.download = `Struk_Pembayaran_${currentStudentName.replace(/\s+/g, '_')}_${Date.now()}.png`;
+                link.href = imgData;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                closeMessageBox();
+            }).catch(err => {
+                paper.style.backgroundColor = originalBg;
+                showMessageBox('Gagal', 'Tidak dapat memproses gambar struk. Coba lagi nanti.', 'fa-times', 'bg-red-50 text-danger');
+            });
         }
 
         window.onload = () => showScreen('screen-login');
