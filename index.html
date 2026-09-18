@@ -679,34 +679,54 @@
                 } else {
                     document.getElementById('bill-warning-box').classList.remove('hidden');
                     document.getElementById('container-select-all').classList.remove('hidden');
-                    let mult = (new Date().getMonth() >= 6) ? new Date().getMonth() - 5 : new Date().getMonth() + 7;
+                    
                     let monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-                    let currentMonthName = monthNames[new Date().getMonth()];
+                    // Urutan indeks bulan dari tahun ajaran baru (Juli = index 6) sampai Juni (index 5)
+                    let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5];
+                    let currentMonthIdx = new Date().getMonth();
+                    let defaultEndIdx = syOrder.indexOf(currentMonthIdx);
+                    if (defaultEndIdx === -1) defaultEndIdx = 0;
+
                     let mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore'];
 
                     ub.forEach(b => {
-                        let fAmt = b.amount; let note = ""; let ketBulan = "";
+                        let fAmt = b.amount; let note = ""; let ketBulan = ""; let interactiveUI = "";
                         
                         if(mList.includes(b.code)) {
-                            if (appDB.history.length === 0) {
-                                fAmt = b.amount * mult; 
-                                
-                                // Menderetkan semua bulan yang belum dibayar dari Juli hingga bulan saat ini
-                                let unpaidList = [];
-                                for(let i = 0; i < mult; i++) { 
-                                    unpaidList.push(monthNames[(6 + i) % 12]); 
-                                }
-                                ketBulan = unpaidList.join(', ');
-                                
-                                note = `<p class="text-[10px] text-danger bg-red-50 px-2 py-1 rounded inline-block mt-1 mb-1">Belum bayar: ${ketBulan}</p>`;
-                            } else {
-                                ketBulan = currentMonthName;
-                            }
+                            // Default rentang dari Juli (index 0 di sekolah) sampai bulan saat ini
+                            let startIdx = (appDB.history.length === 0) ? 0 : defaultEndIdx;
+                            let endIdx = defaultEndIdx;
+                            if (endIdx < startIdx) endIdx = startIdx;
+                            
+                            fAmt = b.amount * (endIdx - startIdx + 1); 
+                            
+                            let unpList = [];
+                            for(let i = startIdx; i <= endIdx; i++) unpList.push(monthNames[syOrder[i]]);
+                            ketBulan = unpList.join(', ');
+                            
+                            // Susun opsi dropdown bulan (Jul, Agu, Sep, dst)
+                            let optHTML = '';
+                            syOrder.forEach((mIdx, i) => {
+                                optHTML += `<option value="${i}">${monthNames[mIdx]}</option>`;
+                            });
+
+                            interactiveUI = `
+                                <div class="mt-2 flex items-center gap-2 text-xs text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-200">
+                                    <span class="font-semibold">Bulan:</span>
+                                    <select id="start-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount})" class="bg-white border border-gray-300 rounded px-1 py-1 outline-none focus:border-primary cursor-pointer w-[60px]">
+                                        ${optHTML.replace(`value="${startIdx}"`, `value="${startIdx}" selected`)}
+                                    </select>
+                                    <span class="font-semibold text-gray-400">s.d</span>
+                                    <select id="end-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount})" class="bg-white border border-gray-300 rounded px-1 py-1 outline-none focus:border-primary cursor-pointer w-[60px]">
+                                        ${optHTML.replace(`value="${endIdx}"`, `value="${endIdx}" selected`)}
+                                    </select>
+                                </div>
+                            `;
                         }
 
                         let isP = b.status === 'pending';
-                        let chk = isP ? `<i class="fas fa-clock text-accent text-xl"></i>` : `<input type="checkbox" class="bill-chk w-6 h-6 text-primary rounded focus:ring-primary" value="${b.id}" data-amt="${fAmt}" data-title="${b.title}" data-code="${b.code}" data-ket="${ketBulan}" onchange="calcSelectedBills()">`;
-                        cont.innerHTML += `<div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-4 flex gap-4 items-center ${isP?'opacity-70':''}">${chk}<div class="flex-1"><h3 class="font-bold text-gray-800 text-sm">${b.title}</h3>${note}<p class="text-base font-bold text-primary mt-1">${formatCurrency(fAmt)}</p></div></div>`;
+                        let chk = isP ? `<i class="fas fa-clock text-accent text-xl mt-1"></i>` : `<input type="checkbox" id="chk-${b.id}" class="bill-chk w-6 h-6 text-primary rounded focus:ring-primary mt-1" value="${b.id}" data-amt="${fAmt}" data-title="${b.title}" data-code="${b.code}" data-ket="${ketBulan}" onchange="calcSelectedBills()">`;
+                        cont.innerHTML += `<div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-4 flex gap-4 items-start ${isP?'opacity-70':''}">${chk}<div class="flex-1"><h3 class="font-bold text-gray-800 text-sm">${b.title}</h3>${interactiveUI}${!interactiveUI && note ? note : ''}<p class="text-base font-bold text-primary mt-2 transition-all" id="amt-text-${b.id}">${formatCurrency(fAmt)}</p></div></div>`;
                     });
                 }
             }
@@ -776,6 +796,43 @@
             }
         }
 
+        // ================= FITUR HITUNG MANUAL BULAN TAGIHAN =================
+        function updateBillAmt(billId, baseAmount) {
+            let startSel = document.getElementById(`start-month-${billId}`);
+            let endSel = document.getElementById(`end-month-${billId}`);
+            
+            let startIdx = parseInt(startSel.value);
+            let endIdx = parseInt(endSel.value);
+            
+            // Cegah error: Jika bulan akhir lebih mundur dari bulan awal, samakan posisinya
+            if (endIdx < startIdx) {
+                endIdx = startIdx;
+                endSel.value = endIdx;
+            }
+            
+            let count = endIdx - startIdx + 1;
+            let fAmt = baseAmount * count;
+            
+            // Generate List Keterangan Bulan
+            let monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+            let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5];
+            let unpList = [];
+            for(let i = startIdx; i <= endIdx; i++) unpList.push(monthNames[syOrder[i]]);
+            let ketBulan = unpList.join(', ');
+            
+            // Perbarui Teks Total Harga di Layar
+            document.getElementById(`amt-text-${billId}`).innerText = formatCurrency(fAmt);
+            
+            // Perbarui Data yang akan dikirim (Data Checkbox)
+            let chk = document.getElementById(`chk-${billId}`);
+            if (chk) {
+                chk.dataset.amt = fAmt;
+                chk.dataset.ket = ketBulan;
+                // Jika sedang dicentang, kalkulasi ulang total di menu bawah
+                if (chk.checked) calcSelectedBills();
+            }
+        }
+
         function processSelectedBills() {
             let tot = 0; let titles = [];
             paymentDataPayload = { token: currentStudentToken, date: new Date().toLocaleString('id-ID'), nis: currentStudentNIS, nama: currentStudentName, kelas: currentStudentClass };
@@ -788,13 +845,12 @@
                 tot += amt; 
                 paymentDataPayload[code] = amt;
                 
-                if (code === 'spp') {
-                    paymentDataPayload.ketSpp = ket;
-                    if(ket) bTitle += ` (${ket})`;
-                }
-                if (code === 'tahfidzPlus') {
-                    paymentDataPayload.ketTahfidzPlus = ket;
-                    if(ket) bTitle += ` (${ket})`;
+                if (code === 'spp') paymentDataPayload.ketSpp = ket;
+                if (code === 'tahfidzPlus') paymentDataPayload.ketTahfidzPlus = ket;
+
+                // Memastikan semua tagihan bulanan menampilkan rentang bulan di judul struk
+                if(ket && ['spp','tahfidzPlus','tahfidz','icp','icpSore'].includes(code)) {
+                    bTitle += ` (${ket})`;
                 }
 
                 titles.push(bTitle);
