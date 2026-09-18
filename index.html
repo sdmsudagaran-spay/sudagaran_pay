@@ -217,14 +217,14 @@
                 
                 <!-- Area Kertas Struk -->
                 <div class="p-6 overflow-y-auto flex-1 bg-gray-200 flex justify-center no-scrollbar">
-                    <div id="receipt-paper" class="bg-white shadow-md text-black" style="width: 80mm; min-height: 80mm; padding: 4mm; font-family: 'Courier New', Courier, monospace; font-size: 11pt;">
+                    <div id="receipt-paper" class="bg-white shadow-md text-black" style="width: 80mm; min-height: 80mm; padding: 4mm; font-family: 'Courier New', Courier, monospace; font-size: 11pt; padding-bottom: 8mm;">
                         <!-- Isi struk di-generate dari JavaScript -->
                     </div>
                 </div>
                 
                 <div class="p-5 border-t border-gray-100 bg-white">
                     <button id="btn-print-receipt" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-md transition flex justify-center items-center gap-2">
-                        <i class="fas fa-print"></i> Cetak / Unduh PDF
+                        <i class="fas fa-download"></i> Unduh Struk (PNG)
                     </button>
                 </div>
             </div>
@@ -386,11 +386,6 @@
             </div>
             <div class="p-6">
                 <div class="space-y-4" id="history-container"></div>
-                <div class="p-5 border-t border-gray-100 bg-white">
-                    <button id="btn-print-receipt" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-md transition flex justify-center items-center gap-2">
-                        <i class="fas fa-download"></i> Unduh Struk (PNG)
-                    </button>
-                </div>
             </div>
         </div>
         
@@ -1091,9 +1086,9 @@
             // Generate HTML Desain Kertas Struk 80mm
             let receiptHTML = `
                 <div style="text-align: center; margin-bottom: 10px;">
-                    <img src="https://iili.io/nHwYAuV.png" style="width: 45px; margin-bottom: 5px; filter: grayscale(100%);">
-                    <div style="font-size: 12pt; font-weight: bold; font-family: 'Courier New', Courier, monospace;">SD MUH SUDAGARAN</div>
-                    <div style="font-size: 9pt; font-family: 'Courier New', Courier, monospace;">Wonosobo, Jawa Tengah</div>
+                    <img src="https://iili.io/nHwYAuV.png" style="width: 45px; display: block; margin: 0 auto 5px auto; filter: grayscale(100%);">
+                    <div style="font-size: 13pt; font-weight: bold; font-family: 'Courier New', Courier, monospace;">Sudagaran Pay</div>
+                    <div style="font-size: 9pt; font-family: 'Courier New', Courier, monospace; max-width: 100%; word-wrap: break-word;">SD Muhammadiyah Sudagaran Wonosobo</div>
                     <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
                 </div>
                 <div style="font-size: 10pt; margin-bottom: 10px; font-family: 'Courier New', Courier, monospace;">
@@ -1113,7 +1108,7 @@
                     <span>${formatCurrency(h.amount)}</span>
                 </div>
                 <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
-                <div style="text-align: center; font-size: 9pt; margin-top: 15px; font-family: 'Courier New', Courier, monospace;">
+                <div style="text-align: center; font-size: 9pt; margin-top: 15px; padding-bottom: 10px; font-family: 'Courier New', Courier, monospace;">
                     Terima kasih.<br>Simpan struk ini sebagai<br>bukti pembayaran yang sah.
                 </div>
             `;
