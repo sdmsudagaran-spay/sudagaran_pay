@@ -558,8 +558,12 @@
 
                 const student = students[0];
                 currentStudentToken = student.token; currentStudentNIS = student.nis;
-                currentStudentName = student.nama; currentStudentClass = student.kelas;
-                currentStudentNamaKelas = student.namaKelas || "-";
+                currentStudentName = student.nama; 
+                
+                // MENGGABUNGKAN KELAS & NAMA KELAS (Contoh: "I AN NAHL")
+                let namaKelasAsli = student.namaKelas || "";
+                currentStudentClass = namaKelasAsli ? `${student.kelas} ${namaKelasAsli}` : student.kelas;
+                
                 appDB.bills = []; appDB.history = [];
 
                 const mapCols = [
@@ -673,7 +677,7 @@
             if(screenId === 'screen-home' && appDB.userRole === 'student') {
                 document.getElementById('home-user-name').innerText = `Ayah/Bunda ${currentStudentName}`;
                 document.getElementById('home-student-class').innerText = currentStudentClass;
-                document.getElementById('home-student-info').innerHTML = `${currentStudentName} <br><span class="text-[11px] text-gray-500 font-normal">Kelas: ${currentStudentNamaKelas} | NIS: ${currentStudentNIS}</span>`;
+                document.getElementById('home-student-info').innerHTML = `${currentStudentName} <br><span class="text-[11px] text-gray-500 font-normal">Kelas: ${currentStudentClass} | NIS: ${currentStudentNIS}</span>`;
                 document.getElementById('home-student-info').classList.remove('line-clamp-1');
                 document.getElementById('profile-name').innerText = `Ayah/Bunda ${currentStudentName}`;
                 document.getElementById('profile-student').innerText = `${currentStudentName} (NIS: ${currentStudentNIS})`;
@@ -897,8 +901,12 @@
                 tot += amt; 
                 paymentDataPayload[code] = amt;
                 
+                // Menangkap keterangan bulan untuk semua jenis tagihan bulanan
                 if (code === 'spp') paymentDataPayload.ketSpp = ket;
                 if (code === 'tahfidzPlus') paymentDataPayload.ketTahfidzPlus = ket;
+                if (code === 'tahfidz') paymentDataPayload.ketTahfidz = ket;
+                if (code === 'icp') paymentDataPayload.ketIcp = ket;
+                if (code === 'icpSore') paymentDataPayload.ketIcpSore = ket;
 
                 // Memastikan semua tagihan bulanan menampilkan rentang bulan di judul struk
                 if(ket && ['spp','tahfidzPlus','tahfidz','icp','icpSore'].includes(code)) {
@@ -1067,6 +1075,7 @@
                     icp: paymentDataPayload.icp || 0,
                     "ketIcp": paymentDataPayload.ketIcp || null,
                     "icpSore": paymentDataPayload.icpSore || 0,
+                    "ketIcpSore": paymentDataPayload.ketIcpSore || null,
                     tanggungan: paymentDataPayload.tanggungan || 0,
                     "rupaRupa": paymentDataPayload.rupaRupa || 0,
                     "ketRupa": paymentDataPayload.ketRupa || null
