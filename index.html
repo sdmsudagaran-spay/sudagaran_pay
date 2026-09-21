@@ -527,6 +527,11 @@
             if(p.type === 'password'){ p.type='text'; i.className='fas fa-eye-slash'; } else { p.type='password'; i.className='fas fa-eye'; }
         }
 
+        function toggleNewPassword() {
+            let p = document.getElementById('new-password'); let i = document.getElementById('eyeIconNew');
+            if(p.type === 'password'){ p.type='text'; i.className='fas fa-eye-slash'; } else { p.type='password'; i.className='fas fa-eye'; }
+        }
+
         async function fetchMenuData() {
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/menus?select=*&order=sortOrder.asc`, { headers: HEADERS });
