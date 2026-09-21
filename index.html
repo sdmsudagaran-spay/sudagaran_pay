@@ -191,6 +191,7 @@
                             <select id="edit-menu-target" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm">
                                 <option value="">(Tidak Ada)</option>
                                 <option value="screen-bills">Buka Tagihan</option>
+                                <option value="screen-rupa">Buka Rupa-Rupa</option>
                                 <option value="screen-history">Buka Riwayat</option>
                             </select>
                         </div>
@@ -267,9 +268,39 @@
             </div>
         </div>
 
+        <!-- ==================== SCREEN RUPA - RUPA (BARU) ==================== -->
+        <div id="screen-rupa" class="screen relative min-h-screen">
+            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showScreen('screen-home')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-lg"></i></button>
+                <h2 class="text-lg font-bold text-primary">Pembayaran Lainnya</h2>
+            </div>
+            
+            <div class="p-6">
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6 flex gap-3 items-start">
+                    <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
+                    <div>
+                        <h4 class="text-sm font-bold text-blue-900">Pembayaran Bebas</h4>
+                        <p class="text-xs text-blue-700 mt-1">Gunakan form ini untuk transaksi Seragam, Buku, Katering, Infaq, atau lainnya.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-5 mb-6">
+                    <div class="mb-4">
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Keterangan / Tujuan Bayar</label>
+                        <input type="text" id="rupa-title" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary text-sm outline-none" placeholder="Contoh: Seragam, Buku, Donasi...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Nominal Pembayaran (Rp)</label>
+                        <input type="number" id="rupa-amount" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary text-lg font-bold outline-none" placeholder="0">
+                    </div>
+                </div>
+                <button onclick="processRupaPayment()" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-md transition">Lanjut Bayar</button>
+            </div>
+        </div>
+
         <div id="screen-checkout" class="screen">
             <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showScreen('screen-bills')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-lg"></i></button>
+                <button onclick="showScreen(previousScreen)" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-lg"></i></button>
                 <h2 class="text-lg font-bold text-primary">Pembayaran</h2>
             </div>
             <div class="p-6">
@@ -293,9 +324,9 @@
                 <div class="space-y-3 mb-8">
                     <label class="flex items-center justify-between bg-white rounded-xl p-4 border border-gray-200 cursor-pointer hover:border-primary transition group">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600"><i class="fas fa-university text-xl"></i></div>
+                            <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600" id="checkout-bank-icon-bg"><i class="fas fa-university text-xl" id="checkout-bank-icon"></i></div>
                             <div>
-                                <h4 class="font-semibold text-sm group-hover:text-primary transition">Transfer Bank BRI</h4>
+                                <h4 class="font-semibold text-sm group-hover:text-primary transition" id="checkout-bank-name">Transfer Bank</h4>
                                 <p class="text-[10px] text-gray-400">Verifikasi manual oleh Admin</p>
                             </div>
                         </div>
@@ -319,12 +350,12 @@
                     <p class="text-sm text-gray-500 mb-2">Total yang harus ditransfer:</p>
                     <h2 class="text-2xl font-bold text-primary mb-6" id="instruction-amount">Rp 0</h2>
                     
-                    <div class="bg-blue-50 rounded-xl p-5 border border-blue-100 text-left relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full opacity-50"></div>
-                        <h3 class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2"><i class="fas fa-building text-blue-600"></i> BANK BRI</h3>
+                    <div id="bank-box" class="bg-blue-50 rounded-xl p-5 border border-blue-100 text-left relative overflow-hidden">
+                        <div id="bank-bg-accent" class="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full opacity-50"></div>
+                        <h3 id="bank-name-display" class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2"><i class="fas fa-building text-blue-600" id="bank-icon-display"></i> BANK BRI</h3>
                         <div class="flex justify-between items-center mb-2">
-                            <p class="text-xl font-bold font-mono text-gray-800 tracking-wider">0112 01 001620 30 3</p>
-                            <button onclick="copyToClipboard('011201001620303')" class="text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-blue-200 transition">
+                            <p class="text-xl font-bold font-mono text-gray-800 tracking-wider" id="bank-account-display">0112 01 001620 30 3</p>
+                            <button id="btn-copy-bank" onclick="copyBankAccount()" class="text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-blue-200 transition">
                                 <i class="fas fa-copy"></i> Salin
                             </button>
                         </div>
@@ -464,9 +495,9 @@
             { id: '2', title: 'Tahfidz', icon: 'fa-book', color: 'text-primary|bg-white', target: 'screen-bills', url: '', isActive: true },
             { id: '3', title: 'ICP', icon: 'fa-laptop', color: 'text-primary|bg-white', target: 'screen-bills', url: '', isActive: true },
             { id: '4', title: 'Daftar Ulang', icon: 'fa-sync', color: 'text-primary|bg-white', target: 'screen-bills', url: '', isActive: true },
-            { id: '5', title: 'Seragam', icon: 'fa-shirt', color: 'text-primary|bg-white', target: '', url: '', isActive: true },
-            { id: '6', title: 'Buku', icon: 'fa-book-open', color: 'text-primary|bg-white', target: '', url: '', isActive: true },
-            { id: '7', title: 'Katering', icon: 'fa-utensils', color: 'text-primary|bg-white', target: '', url: '', isActive: true },
+            { id: '5', title: 'Seragam', icon: 'fa-shirt', color: 'text-primary|bg-white', target: 'screen-rupa', url: '', isActive: true },
+            { id: '6', title: 'Buku', icon: 'fa-book-open', color: 'text-primary|bg-white', target: 'screen-rupa', url: '', isActive: true },
+            { id: '7', title: 'Katering', icon: 'fa-utensils', color: 'text-primary|bg-white', target: 'screen-rupa', url: '', isActive: true },
             { id: '19', title: 'Tagihan', icon: 'fa-file-invoice-dollar', color: 'text-blue-600|bg-blue-50', target: 'screen-bills', url: '', isActive: true },
             { id: '20', title: 'Riwayat', icon: 'fa-history', color: 'text-green-600|bg-green-50', target: 'screen-history', url: '', isActive: true }
         ];
@@ -474,6 +505,12 @@
         let appDB = { userRole: 'guest', menuItems: [], bills: [], history: [] };
         let currentStudentToken = "", currentStudentNIS = "", currentStudentName = "", currentStudentClass = "", currentStudentNamaKelas = "";
         let selectedBillIds = [], isFileUploaded = false, paymentDataPayload = {};
+        
+        let currentBank = 'BRI';
+        let currentBankAccount = '011201001620303';
+        let previousScreen = 'screen-bills';
+
+        function copyBankAccount() { copyToClipboard(currentBankAccount); }
 
         function formatCurrency(num) { return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
         
@@ -562,6 +599,8 @@
                                     let bTitle = c.title;
                                     if(c.code === 'spp' && tx.ketSpp) bTitle += ` (${tx.ketSpp})`;
                                     if(c.code === 'tahfidzPlus' && tx.ketTahfidzPlus) bTitle += ` (${tx.ketTahfidzPlus})`;
+                                    if(c.code === 'tahfidz' && tx.ketTahfidz) bTitle += ` (${tx.ketTahfidz})`;
+                                    if(c.code === 'icp' && tx.ketIcp) bTitle += ` (${tx.ketIcp})`;
                                     
                                     det.push({ title: bTitle, amount: amt }); 
                                     
@@ -573,6 +612,15 @@
                                 } 
                             }
                         });
+
+                        // Menangkap Riwayat Transaksi Bebas / Rupa-Rupa
+                        if (tx.rupaRupa) {
+                            let amt = parseInt(tx.rupaRupa);
+                            if (amt > 0) {
+                                tot += amt;
+                                det.push({ title: tx.ketRupa || 'Pembayaran Lainnya', amount: amt });
+                            }
+                        }
 
                         if(tot > 0) appDB.history.push({ 
                             id: tx.id, date: tx.date, title: det.length > 1 ? 'Multi Tagihan' : det[0].title, 
@@ -835,6 +883,10 @@
 
         function processSelectedBills() {
             let tot = 0; let titles = [];
+            currentBank = 'BRI';
+            currentBankAccount = '011201001620303';
+            previousScreen = 'screen-bills';
+            
             paymentDataPayload = { token: currentStudentToken, date: new Date().toLocaleString('id-ID'), nis: currentStudentNIS, nama: currentStudentName, kelas: currentStudentClass };
             selectedBillIds.forEach(cb => {
                 let code = cb.dataset.code;
@@ -859,7 +911,82 @@
             document.getElementById('checkout-title').innerText = titles.join(', ');
             document.getElementById('checkout-total').innerText = formatCurrency(tot);
             document.getElementById('instruction-amount').innerText = formatCurrency(tot);
+            
+            updateBankInstructionUI();
             showScreen('screen-checkout');
+        }
+
+        function processRupaPayment() {
+            let title = document.getElementById('rupa-title').value.trim();
+            let amt = parseInt(document.getElementById('rupa-amount').value);
+            
+            if(!title || isNaN(amt) || amt <= 0) {
+                showMessageBox('Peringatan', 'Masukkan keterangan dan nominal pembayaran terlebih dahulu.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent');
+                return;
+            }
+
+            currentBank = 'BSI';
+            currentBankAccount = '321333333';
+            previousScreen = 'screen-rupa';
+            
+            paymentDataPayload = { 
+                token: currentStudentToken, 
+                date: new Date().toLocaleString('id-ID'), 
+                nis: currentStudentNIS, 
+                nama: currentStudentName, 
+                kelas: currentStudentClass,
+                rupaRupa: amt,
+                ketRupa: title
+            };
+
+            document.getElementById('checkout-student-info').innerHTML = `${currentStudentName}<br><span class="text-xs text-gray-400 font-normal">${currentStudentClass}</span>`;
+            document.getElementById('checkout-title').innerText = title;
+            document.getElementById('checkout-total').innerText = formatCurrency(amt);
+            document.getElementById('instruction-amount').innerText = formatCurrency(amt);
+            
+            // Kosongkan form setelah input
+            document.getElementById('rupa-title').value = '';
+            document.getElementById('rupa-amount').value = '';
+
+            updateBankInstructionUI();
+            showScreen('screen-checkout');
+        }
+
+        function updateBankInstructionUI() {
+            let chkBankName = document.getElementById('checkout-bank-name');
+            let chkIconBg = document.getElementById('checkout-bank-icon-bg');
+            let chkIcon = document.getElementById('checkout-bank-icon');
+            
+            let box = document.getElementById('bank-box');
+            let bgAcc = document.getElementById('bank-bg-accent');
+            let nameDisp = document.getElementById('bank-name-display');
+            let iconDisp = document.getElementById('bank-icon-display');
+            let accDisp = document.getElementById('bank-account-display');
+            let btnCopy = document.getElementById('btn-copy-bank');
+
+            if (currentBank === 'BRI') {
+                chkBankName.innerText = 'Transfer Bank BRI';
+                chkIconBg.className = 'w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600';
+                
+                box.className = 'bg-blue-50 rounded-xl p-5 border border-blue-100 text-left relative overflow-hidden';
+                bgAcc.className = 'absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full opacity-50';
+                nameDisp.className = 'text-lg font-bold text-blue-800 mb-3 flex items-center gap-2';
+                iconDisp.className = 'fas fa-building text-blue-600';
+                nameDisp.innerHTML = '<i class="fas fa-building text-blue-600"></i> BANK BRI';
+                accDisp.innerText = '0112 01 001620 30 3';
+                btnCopy.className = 'text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-blue-200 transition';
+            } else if (currentBank === 'BSI') {
+                chkBankName.innerText = 'Transfer Bank BSI';
+                chkIconBg.className = 'w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center text-teal-600';
+                
+                box.className = 'bg-teal-50 rounded-xl p-5 border border-teal-100 text-left relative overflow-hidden';
+                bgAcc.className = 'absolute top-0 right-0 w-16 h-16 bg-teal-100 rounded-bl-full opacity-50';
+                nameDisp.className = 'text-lg font-bold text-teal-800 mb-3 flex items-center gap-2';
+                iconDisp.className = 'fas fa-building text-teal-600';
+                nameDisp.innerHTML = '<i class="fas fa-building text-teal-600"></i> BANK BSI';
+                accDisp.innerText = '321 333 333';
+                btnCopy.className = 'text-xs bg-teal-100 text-teal-700 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-teal-200 transition';
+            }
         }
 
         function processPayment() {
@@ -936,9 +1063,13 @@
                     "tahfidzPlus": paymentDataPayload.tahfidzPlus || 0,
                     "ketTahfidzPlus": paymentDataPayload.ketTahfidzPlus || null,
                     tahfidz: paymentDataPayload.tahfidz || 0,
+                    "ketTahfidz": paymentDataPayload.ketTahfidz || null,
                     icp: paymentDataPayload.icp || 0,
+                    "ketIcp": paymentDataPayload.ketIcp || null,
                     "icpSore": paymentDataPayload.icpSore || 0,
-                    tanggungan: paymentDataPayload.tanggungan || 0
+                    tanggungan: paymentDataPayload.tanggungan || 0,
+                    "rupaRupa": paymentDataPayload.rupaRupa || 0,
+                    "ketRupa": paymentDataPayload.ketRupa || null
                 };
 
                 // 5. Simpan ke Tabel Transactions Supabase
@@ -1111,16 +1242,25 @@
                                         det.push({ title: bTitle, amount: amt }); 
                                         
                                         let b = appDB.bills.find(x => x.code === c.code); 
-                                        if(b) {
-                                            if(txStatus === 'success') b.status = 'paid';
-                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
-                                        } 
+                                    if(b) {
+                                        if(txStatus === 'success') b.status = 'paid';
+                                        else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
                                     } 
-                                }
-                            });
+                                } 
+                            }
+                        });
 
-                            if(tot > 0) appDB.history.push({ 
-                                id: tx.id, date: tx.date, title: det.length > 1 ? 'Multi Tagihan' : det[0].title, 
+                        // Sinkronisasi Refresh untuk Riwayat Transaksi Bebas / Rupa-Rupa
+                        if (tx.rupaRupa) {
+                            let amt = parseInt(tx.rupaRupa);
+                            if (amt > 0) {
+                                tot += amt;
+                                det.push({ title: tx.ketRupa || 'Pembayaran Lainnya', amount: amt });
+                            }
+                        }
+
+                        if(tot > 0) appDB.history.push({ 
+                            id: tx.id, date: tx.date, title: det.length > 1 ? 'Multi Tagihan' : det[0].title, 
                                 amount: tot, status: txStatus, details: det, kasir: tx.kasir || '-' 
                             });
                         });
