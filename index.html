@@ -105,13 +105,13 @@
         }
         
         .receipt-paper {
-            width: 72mm; /* Area cetak aman */
+            width: 72mm; 
             margin: 0 auto;
-            padding: 6mm 4mm 10mm 4mm; /* Jarak aman tepi dan padding bawah ekstra */
+            padding: 6mm 4mm 10mm 4mm; 
             font-family: 'Courier New', Courier, monospace;
             font-size: 11pt;
             background-color: white;
-            box-sizing: border-box; /* Mencegah elemen keluar saat difoto */
+            box-sizing: border-box; 
             line-height: 1.4;
             color: #000;
         }
@@ -163,7 +163,6 @@
 
         <div id="screen-home" class="screen">
             <div class="bg-white rounded-b-3xl shadow-sm px-6 pt-8 pb-6 relative z-10">
-                <!-- Tombol Refresh Beranda -->
                 <button onclick="refreshData()" class="absolute top-6 right-6 w-8 h-8 bg-blue-50 text-primary rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm border border-blue-100 z-20">
                     <i class="fas fa-sync-alt"></i>
                 </button>
@@ -283,18 +282,26 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Aksi Internal</label>
-                            <select id="edit-menu-target" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm">
+                            <select id="edit-menu-target" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm" onchange="toggleDirectSource()">
                                 <option value="">(Tidak Ada / Link Luar)</option>
-                                <option value="screen-bills">Buka Tagihan Utama (BRI)</option>
+                                <option value="screen-bills">Buka Tagihan Saya (BRI)</option>
                                 <option value="screen-other-bills">Buka Tagihan Lainnya (BSI)</option>
                                 <option value="screen-rupa">Buka Rupa-Rupa Bebas (BSI)</option>
-                                <option value="direct-ajs">Jalur Cepat: Tagihan AJS (BSI)</option>
-                                <option value="direct-tpq">Jalur Cepat: Tagihan TPQ (BSI)</option>
-                                <option value="direct-icp">Jalur Cepat: Tagihan ICP (BSI)</option>
-                                <option value="direct-olimpiade">Jalur Cepat: Tagihan Olimpiade (BSI)</option>
+                                <option value="direct">➔ Jalur Cepat (Tarik Data DB)</option>
                                 <option value="screen-history">Buka Riwayat Transaksi</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div id="direct-source-container" class="hidden bg-blue-50 border border-blue-100 p-3 rounded-xl mt-2">
+                        <label class="block text-xs font-bold text-blue-800 mb-1">Pilih Sumber di Tabel Students</label>
+                        <select id="edit-menu-target-direct" class="w-full px-3 py-2.5 rounded-lg border border-blue-200 text-sm outline-none focus:border-blue-500">
+                            <option value="ajs">Kolom Tagihan: AJS</option>
+                            <option value="tpq">Kolom Tagihan: TPQ</option>
+                            <option value="icp">Kolom Tagihan: ICP</option>
+                            <option value="olimpiade">Kolom Tagihan: Olimpiade</option>
+                        </select>
+                        <p class="text-[10px] text-blue-600 mt-1">Menggunakan rekening BSI otomatis.</p>
                     </div>
                     
                     <div>
@@ -347,8 +354,8 @@
                 <div class="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-6 flex gap-3 items-start" id="bill-warning-box-main">
                     <i class="fas fa-info-circle text-accent mt-0.5"></i>
                     <div>
-                        <h4 class="text-sm font-bold text-gray-800">Informasi Tagihan</h4>
-                        <p class="text-xs text-gray-600 mt-1">Berikut adalah rincian tagihan utama. Centang tagihan yang ingin dibayar.</p>
+                        <h4 class="text-sm font-bold text-gray-800">Informasi Tagihan Utama</h4>
+                        <p class="text-xs text-gray-600 mt-1">Gunakan fitur <b>Pilih Bulan</b> untuk SPP/Tahfidz, atau ketik nominal <b>Angsuran</b> untuk BPS/Daftar Ulang.</p>
                     </div>
                 </div>
                 
@@ -383,7 +390,7 @@
                 <div class="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-6 flex gap-3 items-start" id="bill-warning-box-other">
                     <i class="fas fa-box-open text-purple-500 mt-0.5"></i>
                     <div>
-                        <h4 class="text-sm font-bold text-purple-900">Tagihan Ekstra</h4>
+                        <h4 class="text-sm font-bold text-purple-900">Tagihan Tambahan</h4>
                         <p class="text-xs text-purple-700 mt-1">Pembayaran TPQ, ICP, AJS, Olimpiade, dll melalui rekening BSI.</p>
                     </div>
                 </div>
@@ -583,7 +590,6 @@
         <div id="screen-history" class="screen">
             <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
                 <h2 class="text-lg font-bold text-primary">Riwayat Transaksi</h2>
-                <!-- Tombol Refresh Riwayat -->
                 <button onclick="refreshData()" class="w-8 h-8 bg-blue-50 text-primary rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm border border-blue-100">
                     <i class="fas fa-sync-alt"></i>
                 </button>
@@ -693,63 +699,6 @@
             'fa-wifi', 'fa-bus-alt', 'fa-box-open'
         ];
 
-        const DEFAULT_MENUS = [
-            { 
-                id: '1', 
-                title: 'Tagihan SPP', 
-                icon: 'fa-graduation-cap', 
-                color: 'text-primary|bg-white', 
-                target: 'screen-bills', 
-                url: '', 
-                isActive: true 
-            },
-            { 
-                id: '5', 
-                title: 'Seragam', 
-                icon: 'fa-shirt', 
-                color: 'text-primary|bg-white', 
-                target: 'screen-rupa', 
-                url: '', 
-                isActive: true 
-            },
-            { 
-                id: '6', 
-                title: 'Buku', 
-                icon: 'fa-book-open', 
-                color: 'text-primary|bg-white', 
-                target: 'screen-rupa', 
-                url: '', 
-                isActive: true 
-            },
-            { 
-                id: '19', 
-                title: 'Tagihan Utama', 
-                icon: 'fa-file-invoice-dollar', 
-                color: 'text-blue-600|bg-blue-50', 
-                target: 'screen-bills', 
-                url: '', 
-                isActive: true 
-            },
-            { 
-                id: '99', 
-                title: 'Tagihan Lainnya', 
-                icon: 'fa-box-open', 
-                color: 'text-purple-600|bg-purple-50', 
-                target: 'screen-other-bills', 
-                url: '', 
-                isActive: true 
-            },
-            { 
-                id: '20', 
-                title: 'Riwayat', 
-                icon: 'fa-history', 
-                color: 'text-green-600|bg-green-50', 
-                target: 'screen-history', 
-                url: '', 
-                isActive: true 
-            }
-        ];
-
         let appDB = { 
             userRole: 'guest', 
             menuItems: [], 
@@ -788,18 +737,50 @@
         let currentBankOwner = 'a.n. SD Muhammadiyah Sudagaran Wonosobo';
         let previousScreen = 'screen-bills';
 
+        const mapColsMain = [
+            { code: 'bps', title: 'Tagihan BPS', db: 'bps' }, 
+            { code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli' },
+            { code: 'spp', title: 'Tagihan SPP', db: 'spp' }, 
+            { code: 'daftarUlang1', title: 'Daftar Ulang I', db: 'daftarUlang1' },
+            { code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2' }, 
+            { code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3' },
+            { code: 'tahfidzPlus', title: 'Tagihan Tahfidz Plus', db: 'tahfidzPlus' }, 
+            { code: 'tahfidz', title: 'Tagihan Tahfidz', db: 'tahfidz' },
+            { code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan' }
+        ];
+
+        const mapColsOther = [
+            { code: 'icp', title: 'Tagihan ICP', db: 'icp' }, 
+            { code: 'icpSore', title: 'Tagihan ICP Sore', db: 'icpSore' },
+            { code: 'ajs', title: 'Tagihan AJS', db: 'ajs' }, 
+            { code: 'tpq', title: 'Tagihan TPQ', db: 'tpq' },
+            { code: 'olimpiade', title: 'Tagihan Olimpiade', db: 'olimpiade' }, 
+            { code: 'rihlah', title: 'Tagihan Rihlah', db: 'rihlah' },
+            { code: 'infaqPembangunan', title: 'Infaq Pembangunan', db: 'infaqPembangunan' }, 
+            { code: 'donasiSosial', title: 'Donasi Sosial', db: 'donasiSosial' }
+        ];
         
-        // Fungsi Salin Nominal (Mengambil angka saja)
+        const mListMain = ['spp', 'tahfidzPlus', 'tahfidz'];
+        const mListOther = ['icp', 'icpSore', 'ajs', 'tpq', 'olimpiade'];
+        
         function copyAmount() {
             let amtText = document.getElementById('instruction-amount').innerText;
-            // Menghapus tulisan Rp dan titik (.)
             let cleanAmt = amtText.replace(/[^0-9]/g, ''); 
             copyToClipboard(cleanAmt, 'Nominal berhasil disalin!');
         }
 
-        // Fungsi Salin Rekening
         function copyBankAccount() { 
             copyToClipboard(currentBankAccount.replace(/\s+/g, ''), 'Nomor rekening berhasil disalin!'); 
+        }
+        
+        function copyToClipboard(text, successMessage = 'Teks berhasil disalin!') {
+            let tempInput = document.createElement("input"); 
+            tempInput.value = text; 
+            document.body.appendChild(tempInput); 
+            tempInput.select(); 
+            document.execCommand("copy"); 
+            document.body.removeChild(tempInput);
+            showMessageBox('Berhasil', successMessage, 'fa-check', 'bg-green-50 text-success');
         }
         
         function formatCurrency(num) { 
@@ -848,7 +829,6 @@
                             isActive: m.isActive
                         }));
                         
-                        // Memastikan Menu "Tagihan Lainnya" tersedia secara default
                         if (!appDB.menuItems.find(x => x.target === 'screen-other-bills')) {
                             appDB.menuItems.push({ 
                                 id: '99', 
@@ -863,37 +843,17 @@
                         return;
                     }
                 }
-                appDB.menuItems = JSON.parse(JSON.stringify(DEFAULT_MENUS));
             } catch (err) {
-                appDB.menuItems = JSON.parse(JSON.stringify(DEFAULT_MENUS));
+                console.log("Error loading menus", err);
             }
+            // Fallback default
+            appDB.menuItems = [
+                { id: '1', title: 'Tagihan SPP', icon: 'fa-graduation-cap', color: 'text-primary|bg-white', target: 'screen-bills', url: '', isActive: true },
+                { id: '19', title: 'Tagihan Utama', icon: 'fa-file-invoice-dollar', color: 'text-blue-600|bg-blue-50', target: 'screen-bills', url: '', isActive: true },
+                { id: '99', title: 'Tagihan Lainnya', icon: 'fa-box-open', color: 'text-purple-600|bg-purple-50', target: 'screen-other-bills', url: '', isActive: true },
+                { id: '20', title: 'Riwayat', icon: 'fa-history', color: 'text-green-600|bg-green-50', target: 'screen-history', url: '', isActive: true }
+            ];
         }
-
-        const mapColsMain = [
-            { code: 'bps', title: 'BPS', db: 'bps' }, 
-            { code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli' },
-            { code: 'spp', title: 'Tagihan SPP', db: 'spp' }, 
-            { code: 'daftarUlang1', title: 'Daftar Ulang I', db: 'daftarUlang1' },
-            { code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2' }, 
-            { code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3' },
-            { code: 'tahfidzPlus', title: 'Tagihan Tahfidz Plus', db: 'tahfidzPlus' }, 
-            { code: 'tahfidz', title: 'Tagihan Tahfidz', db: 'tahfidz' },
-            { code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan' }
-        ];
-
-        const mapColsOther = [
-            { code: 'icp', title: 'Tagihan ICP', db: 'icp' }, 
-            { code: 'icpSore', title: 'Tagihan ICP Sore', db: 'icpSore' },
-            { code: 'ajs', title: 'Tagihan AJS', db: 'ajs' }, 
-            { code: 'tpq', title: 'Tagihan TPQ', db: 'tpq' },
-            { code: 'olimpiade', title: 'Tagihan Olimpiade', db: 'olimpiade' }, 
-            { code: 'rihlah', title: 'Tagihan Rihlah', db: 'rihlah' },
-            { code: 'infaqPembangunan', title: 'Infaq Pembangunan', db: 'infaqPembangunan' }, 
-            { code: 'donasiSosial', title: 'Donasi Sosial', db: 'donasiSosial' }
-        ];
-        
-        const mListMain = ['spp', 'tahfidzPlus', 'tahfidz'];
-        const mListOther = ['icp', 'icpSore', 'ajs', 'tpq', 'olimpiade'];
 
         async function handleLogin() {
             const idInput = document.getElementById('loginId').value.trim();
@@ -920,13 +880,12 @@
                 }
 
                 const student = students[0];
-                appDB.currentStudentData = student; // Simpan data utuh siswa
+                appDB.currentStudentData = student; 
                 
                 currentStudentToken = student.token; 
                 currentStudentNIS = student.nis;
                 currentStudentName = student.nama; 
                 
-                // Gabungkan kelas dan nama kelas dengan rapi
                 let namaKelasAsli = student.namaKelas || "";
                 currentStudentClass = namaKelasAsli ? `${student.kelas} ${namaKelasAsli}` : student.kelas;
                 
@@ -934,39 +893,24 @@
                 appDB.otherBills = []; 
                 appDB.history = [];
 
-                // Load tagihan utama
                 mapColsMain.forEach(c => {
                     if (student[c.db]) {
                         let amt = parseInt(student[c.db]);
                         if (!isNaN(amt) && amt > 0) {
-                            appDB.bills.push({ 
-                                id: 'B-' + c.code, 
-                                code: c.code, 
-                                title: c.title, 
-                                amount: amt, 
-                                status: 'unpaid' 
-                            });
+                            appDB.bills.push({ id: 'B-' + c.code, code: c.code, title: c.title, amount: amt, status: 'unpaid' });
                         }
                     }
                 });
                 
-                // Load tagihan lainnya
                 mapColsOther.forEach(c => {
                     if (student[c.db]) {
                         let amt = parseInt(student[c.db]);
                         if (!isNaN(amt) && amt > 0) {
-                            appDB.otherBills.push({ 
-                                id: 'B-' + c.code, 
-                                code: c.code, 
-                                title: c.title, 
-                                amount: amt, 
-                                status: 'unpaid' 
-                            });
+                            appDB.otherBills.push({ id: 'B-' + c.code, code: c.code, title: c.title, amount: amt, status: 'unpaid' });
                         }
                     }
                 });
 
-                // Load riwayat
                 const txRes = await fetch(`${SUPABASE_URL}/rest/v1/transactions?nis=eq.${currentStudentNIS}&order=date.desc`, { headers: HEADERS });
                 if (txRes.ok) {
                     const transactions = await txRes.json();
@@ -975,7 +919,6 @@
                         let det = [];
                         let txStatus = tx.status;
                         
-                        // Menangani status bukti tertolak
                         if (tx.konfirmasi === true || tx.status === 'success' || tx.status === 'lunas') {
                             txStatus = 'success';
                         } else if (tx.status === 'rejected' || tx.status === 'ditolak') {
@@ -984,7 +927,6 @@
                             txStatus = 'pending';
                         }
 
-                        // Parse detail tagihan utama
                         mapColsMain.forEach(c => {
                             if (tx[c.db]) { 
                                 let amt = parseInt(tx[c.db]); 
@@ -998,14 +940,15 @@
                                     det.push({ title: bTitle, amount: amt }); 
                                     let b = appDB.bills.find(x => x.code === c.code); 
                                     if (b) {
-                                        if (txStatus === 'success') b.status = 'paid';
+                                        if (txStatus === 'success') {
+                                            if (mListMain.includes(c.code)) b.status = 'paid';
+                                        }
                                         else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
                                     } 
                                 } 
                             }
                         });
                         
-                        // Parse detail tagihan lainnya
                         mapColsOther.forEach(c => {
                             if (tx[c.db]) { 
                                 let amt = parseInt(tx[c.db]); 
@@ -1021,14 +964,15 @@
                                     det.push({ title: bTitle, amount: amt }); 
                                     let b = appDB.otherBills.find(x => x.code === c.code); 
                                     if (b) {
-                                        if (txStatus === 'success') b.status = 'paid';
+                                        if (txStatus === 'success') {
+                                            if (mListOther.includes(c.code)) b.status = 'paid';
+                                        }
                                         else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
                                     } 
                                 } 
                             }
                         });
 
-                        // Parse rupa-rupa
                         if (tx.rupaRupa) {
                             let amt = parseInt(tx.rupaRupa);
                             if (amt > 0) { 
@@ -1057,28 +1001,6 @@
                 
             } catch(e) { 
                 showMessageBox('Gagal', 'Terjadi kesalahan koneksi ke server.', 'fa-wifi', 'bg-red-50 text-danger'); 
-            }
-        }
-
-        async function syncMenuToServer() {
-            try {
-                const payload = appDB.menuItems.map((m, idx) => ({
-                    id: m.id.toString(), 
-                    title: m.title, 
-                    icon: m.icon, 
-                    color: m.color, 
-                    target: m.target, 
-                    url: m.url, 
-                    isActive: m.isActive, 
-                    sortOrder: idx
-                }));
-                await fetch(`${SUPABASE_URL}/rest/v1/menus?on_conflict=id`, {
-                    method: 'POST', 
-                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' }, 
-                    body: JSON.stringify(payload)
-                });
-            } catch(e) { 
-                console.log('Gagal sync menu', e); 
             }
         }
 
@@ -1167,8 +1089,8 @@
                     
                     if (m.url) { 
                         act = `onclick="window.open('${m.url}', '_blank')"`; 
-                    } else if (m.target && m.target.startsWith('direct-')) {
-                        let tagihanCode = m.target.split('-')[1]; // contoh: ajs, tpq
+                    } else if (m.target && m.target.startsWith('direct|')) {
+                        let tagihanCode = m.target.split('|')[1]; 
                         act = `onclick="processDirectBill('${tagihanCode}')"`;
                     } else if (m.target) { 
                         act = `onclick="showScreen('${m.target}')"`; 
@@ -1212,7 +1134,7 @@
                         <div class="text-center py-10">
                             <i class="fas fa-check-circle text-5xl text-success mb-3"></i>
                             <p class="font-bold text-gray-800">Alhamdulillah</p>
-                            <p class="text-sm text-gray-500">Tidak ada tagihan bulan ini.</p>
+                            <p class="text-sm text-gray-500">Tidak ada tagihan tertunggak.</p>
                         </div>
                     `;
                 } else {
@@ -1220,7 +1142,7 @@
                     document.getElementById(`container-select-all-${postfix}`).classList.remove('hidden');
                     
                     let monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-                    let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; // 0=Juli
+                    let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; 
                     let currentMonthIdx = new Date().getMonth(); 
                     let defaultEndIdx = syOrder.indexOf(currentMonthIdx);
                     if (defaultEndIdx === -1) defaultEndIdx = 0;
@@ -1229,7 +1151,12 @@
                         let fAmt = b.amount; 
                         let ketBulan = ""; 
                         let interactiveUI = "";
+                        let amountDisplay = "";
                         
+                        let isP = b.status === 'pending';
+                        let accentCol = isMain ? 'text-primary focus:ring-primary' : 'text-purple-600 focus:ring-purple-600';
+                        let amountCol = isMain ? 'text-primary' : 'text-purple-700';
+
                         if (monthList.includes(b.code)) {
                             let startIdx = (appDB.history.length === 0) ? 0 : defaultEndIdx;
                             let endIdx = defaultEndIdx;
@@ -1249,24 +1176,40 @@
                             interactiveUI = `
                                 <div class="mt-2 flex items-center gap-2 text-xs text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-200">
                                     <span class="font-semibold">Bulan:</span>
-                                    <select id="start-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount}, '${postfix}')" class="bg-white border border-gray-300 rounded px-1 py-1 outline-none focus:border-primary cursor-pointer w-[60px]">
+                                    <select id="start-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount}, '${postfix}')" class="bg-white border border-gray-300 rounded px-1 py-1 outline-none focus:border-primary cursor-pointer w-[60px]" ${isP ? 'disabled' : ''}>
                                         ${optHTML.replace(`value="${startIdx}"`, `value="${startIdx}" selected`)}
                                     </select>
                                     <span class="font-semibold text-gray-400">s.d</span>
-                                    <select id="end-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount}, '${postfix}')" class="bg-white border border-gray-300 rounded px-1 py-1 outline-none focus:border-primary cursor-pointer w-[60px]">
+                                    <select id="end-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount}, '${postfix}')" class="bg-white border border-gray-300 rounded px-1 py-1 outline-none focus:border-primary cursor-pointer w-[60px]" ${isP ? 'disabled' : ''}>
                                         ${optHTML.replace(`value="${endIdx}"`, `value="${endIdx}" selected`)}
                                     </select>
                                 </div>
                             `;
+                            amountDisplay = `<p class="text-base font-bold ${amountCol} mt-2 transition-all" id="amt-text-${b.id}">${formatCurrency(fAmt)}</p>`;
+                        } else {
+                            // Layar Angsuran Khusus
+                            interactiveUI = `
+                                <div class="mt-2">
+                                    <label class="text-[10px] font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded">Bisa Diangsur (Ketik nominal di bawah)</label>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="text-sm font-bold text-gray-700">Rp</span>
+                                        <input type="number" id="input-angsuran-${b.id}" 
+                                            class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm font-bold ${amountCol} focus:border-primary outline-none transition" 
+                                            value="${fAmt}" 
+                                            max="${fAmt}" 
+                                            min="1"
+                                            oninput="updateAngsuranAmt('${b.id}', this.value, '${postfix}', ${fAmt})"
+                                            onblur="if(!this.value || this.value <= 0) { this.value = ${fAmt}; updateAngsuranAmt('${b.id}', ${fAmt}, '${postfix}', ${fAmt}); }"
+                                            ${isP ? 'disabled' : ''}>
+                                    </div>
+                                </div>
+                            `;
+                            amountDisplay = `<p class="text-[10px] text-gray-400 mt-1">Sisa Tagihan Maksimal: ${formatCurrency(fAmt)}</p>`;
                         }
 
-                        let isP = b.status === 'pending';
-                        let accentCol = isMain ? 'text-primary focus:ring-primary' : 'text-purple-600 focus:ring-purple-600';
-                        let amountCol = isMain ? 'text-primary' : 'text-purple-700';
-                        
                         let chk = isP 
                             ? `<i class="fas fa-clock text-accent text-xl mt-1"></i>` 
-                            : `<input type="checkbox" id="chk-${b.id}" class="bill-chk-${postfix} w-6 h-6 ${accentCol} rounded mt-1" value="${b.id}" data-amt="${fAmt}" data-title="${b.title}" data-code="${b.code}" data-ket="${ketBulan}" onchange="calcSelectedBills('${postfix}')">`;
+                            : `<input type="checkbox" id="chk-${b.id}" class="bill-chk-${postfix} w-6 h-6 ${accentCol} rounded mt-1 flex-shrink-0" value="${b.id}" data-amt="${fAmt}" data-max="${fAmt}" data-title="${b.title}" data-code="${b.code}" data-ket="${ketBulan}" onchange="calcSelectedBills('${postfix}')">`;
                             
                         cont.innerHTML += `
                             <div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-4 flex gap-4 items-start ${isP ? 'opacity-70' : ''}">
@@ -1274,7 +1217,7 @@
                                 <div class="flex-1">
                                     <h3 class="font-bold text-gray-800 text-sm">${b.title}</h3>
                                     ${interactiveUI}
-                                    <p class="text-base font-bold ${amountCol} mt-2 transition-all" id="amt-text-${b.id}">${formatCurrency(fAmt)}</p>
+                                    ${amountDisplay}
                                 </div>
                             </div>
                         `;
@@ -1297,7 +1240,6 @@
                     if (h.status === 'success') {
                         statusHtml = '<span class="text-xs font-semibold text-success"><i class="fas fa-check-circle"></i> Berhasil</span>';
                     } else if (h.status === 'rejected') {
-                        // Keterangan khusus konfirmasi ditolak
                         statusHtml = `<div class="text-right"><span class="text-xs font-semibold text-danger"><i class="fas fa-times-circle"></i> Konfirmasi Tertolak</span><br><span class="text-[10px] text-gray-500 font-normal">Bukti tidak valid</span></div>`;
                     } else {
                         statusHtml = '<span class="text-xs font-semibold text-accent"><i class="fas fa-clock"></i> Menunggu Konfirmasi</span>';
@@ -1356,19 +1298,32 @@
             document.getElementById('app-container').scrollTop = 0;
         }
 
-        async function moveMenu(index, dir) {
-            let temp = appDB.menuItems[index];
-            appDB.menuItems[index] = appDB.menuItems[index + dir];
-            appDB.menuItems[index + dir] = temp;
-            showMessageBox('Menyimpan...', 'Mengupdate urutan di server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
-            await syncMenuToServer(); 
-            closeMessageBox(); 
-            showScreen('screen-admin-dashboard');
+        function toggleSelectAll(cb, postfix) {
+            document.querySelectorAll(`.bill-chk-${postfix}`).forEach(el => {
+                if(!el.disabled) el.checked = cb.checked;
+            });
+            calcSelectedBills(postfix);
         }
 
-        function toggleSelectAll(cb, postfix) {
-            document.querySelectorAll(`.bill-chk-${postfix}`).forEach(el => el.checked = cb.checked);
-            calcSelectedBills(postfix);
+        function updateAngsuranAmt(billId, val, postfix, maxVal) {
+            let inputEl = document.getElementById(`input-angsuran-${billId}`);
+            let newAmt = parseInt(val);
+            
+            if (isNaN(newAmt)) {
+                newAmt = 0; 
+            } else if (newAmt > maxVal) {
+                newAmt = maxVal;
+                inputEl.value = maxVal;
+            } else if (newAmt < 0) {
+                newAmt = 0;
+                inputEl.value = '';
+            }
+            
+            let chk = document.getElementById(`chk-${billId}`);
+            if (chk) {
+                chk.dataset.amt = newAmt;
+                if (chk.checked) calcSelectedBills(postfix);
+            }
         }
 
         function calcSelectedBills(postfix) {
@@ -1378,12 +1333,15 @@
             let checkedBoxes = document.querySelectorAll(`.bill-chk-${postfix}:checked`);
 
             checkedBoxes.forEach(cb => { 
-                selectedBillIds.push(cb); 
-                total += parseInt(cb.dataset.amt); 
+                let amt = parseInt(cb.dataset.amt) || 0;
+                if (amt > 0) {
+                    selectedBillIds.push(cb); 
+                    total += amt; 
+                }
             });
             
             document.getElementById(`bills-selected-total-${postfix}`).innerText = formatCurrency(total);
-            document.getElementById(`btn-pay-selected-${postfix}`).disabled = selectedBillIds.length === 0;
+            document.getElementById(`btn-pay-selected-${postfix}`).disabled = (selectedBillIds.length === 0 || total === 0);
 
             let cbAll = document.getElementById(`chk-select-all-${postfix}`);
             if (cbAll && allCheckboxes.length > 0) {
@@ -1495,6 +1453,7 @@
             selectedBillIds.forEach(cb => {
                 let code = cb.dataset.code; 
                 let amt = parseInt(cb.dataset.amt); 
+                let maxAmt = parseInt(cb.dataset.max);
                 let ket = cb.dataset.ket; 
                 let bTitle = cb.dataset.title;
                 
@@ -1512,7 +1471,10 @@
 
                 if (ket && ['spp', 'tahfidzPlus', 'tahfidz', 'icp', 'icpSore', 'ajs', 'tpq', 'olimpiade'].includes(code)) {
                     bTitle += ` (${ket})`;
+                } else if (amt < maxAmt) {
+                    bTitle = `Angsuran ${bTitle}`;
                 }
+                
                 titles.push(bTitle);
             });
             
@@ -1744,15 +1706,14 @@
             }
         }
 
-        function copyToClipboard(text, successMessage = 'Teks berhasil disalin!') {
-            let tempInput = document.createElement("input"); 
-            tempInput.value = text; 
-            document.body.appendChild(tempInput); 
-            tempInput.select(); 
-            document.execCommand("copy"); 
-            document.body.removeChild(tempInput);
-            
-            showMessageBox('Berhasil', successMessage, 'fa-check', 'bg-green-50 text-success');
+        function toggleDirectSource() {
+            let val = document.getElementById('edit-menu-target').value;
+            let container = document.getElementById('direct-source-container');
+            if (val === 'direct') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
         }
 
         function openMenuModal() {
@@ -1765,6 +1726,7 @@
             document.getElementById('edit-menu-url').value = ''; 
             document.getElementById('edit-menu-active').checked = true;
             document.getElementById('btn-delete-menu').classList.add('hidden'); 
+            toggleDirectSource();
             renderIcons('fa-circle');
         }
         
@@ -1792,11 +1754,41 @@
                 document.getElementById('edit-menu-id').value = m.id; 
                 document.getElementById('edit-menu-name').value = m.title; 
                 document.getElementById('edit-menu-color').value = m.color || 'text-primary|bg-white'; 
-                document.getElementById('edit-menu-target').value = m.target || ''; 
+                
+                if (m.target && m.target.startsWith('direct|')) {
+                    document.getElementById('edit-menu-target').value = 'direct';
+                    document.getElementById('edit-menu-target-direct').value = m.target.split('|')[1];
+                } else {
+                    document.getElementById('edit-menu-target').value = m.target || ''; 
+                }
+
                 document.getElementById('edit-menu-url').value = m.url || ''; 
                 document.getElementById('edit-menu-active').checked = m.isActive; 
+                toggleDirectSource();
                 renderIcons(m.icon); 
                 document.getElementById('btn-delete-menu').classList.remove('hidden'); 
+            }
+        }
+
+        async function syncMenuToServer() {
+            try {
+                const payload = appDB.menuItems.map((m, idx) => ({
+                    id: m.id.toString(), 
+                    title: m.title, 
+                    icon: m.icon, 
+                    color: m.color, 
+                    target: m.target, 
+                    url: m.url, 
+                    isActive: m.isActive, 
+                    sortOrder: idx
+                }));
+                await fetch(`${SUPABASE_URL}/rest/v1/menus?on_conflict=id`, {
+                    method: 'POST', 
+                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' }, 
+                    body: JSON.stringify(payload)
+                });
+            } catch(e) { 
+                console.log('Gagal sync menu', e); 
             }
         }
 
@@ -1809,6 +1801,11 @@
             let url = document.getElementById('edit-menu-url').value; 
             let isActive = document.getElementById('edit-menu-active').checked;
             
+            if (target === 'direct') {
+                let dTarget = document.getElementById('edit-menu-target-direct').value;
+                target = `direct|${dTarget}`;
+            }
+
             if (!title) return;
             showMessageBox('Menyimpan...', 'Sinkronisasi menu ke Supabase...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             
@@ -1838,6 +1835,16 @@
             closeMessageBox(); 
             closeMenuModal(); 
             showScreen('screen-admin-dashboard'); 
+        }
+
+        async function moveMenu(index, dir) {
+            let temp = appDB.menuItems[index];
+            appDB.menuItems[index] = appDB.menuItems[index + dir];
+            appDB.menuItems[index + dir] = temp;
+            showMessageBox('Menyimpan...', 'Mengupdate urutan di server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            await syncMenuToServer(); 
+            closeMessageBox(); 
+            showScreen('screen-admin-dashboard');
         }
 
         function showMessageBox(ti, te, ic, icb, btn, btnc) {
@@ -1874,7 +1881,6 @@
 
         async function changePassword() {
             const newPass = document.getElementById('new-password').value;
-            // Wajib huruf dan angka, minimal 6 karakter
             const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
             
             if (!regex.test(newPass)) { 
@@ -1919,7 +1925,6 @@
                     const student = students[0];
                     appDB.currentStudentData = student; 
                     
-                    // Menggabungkan nama kelas
                     let namaKelasAsli = student.namaKelas || ""; 
                     currentStudentClass = namaKelasAsli ? `${student.kelas} ${namaKelasAsli}` : student.kelas;
 
@@ -1972,9 +1977,11 @@
                                         if (c.code === 'tahfidz' && tx.ketTahfidz) bTitle += ` (${tx.ketTahfidz})`;
                                         det.push({ title: bTitle, amount: amt }); 
                                         let b = appDB.bills.find(x => x.code === c.code); 
-                                        if (b) { 
-                                            if (txStatus === 'success') b.status = 'paid'; 
-                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending'; 
+                                        if (b) {
+                                            if (txStatus === 'success') {
+                                                if (mListMain.includes(c.code)) b.status = 'paid';
+                                            }
+                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
                                         } 
                                     } 
                                 }
@@ -1993,9 +2000,11 @@
                                         if (c.code === 'olimpiade' && tx.ketOlimpiade) bTitle += ` (${tx.ketOlimpiade})`;
                                         det.push({ title: bTitle, amount: amt }); 
                                         let b = appDB.otherBills.find(x => x.code === c.code); 
-                                        if (b) { 
-                                            if (txStatus === 'success') b.status = 'paid'; 
-                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending'; 
+                                        if (b) {
+                                            if (txStatus === 'success') {
+                                                if (mListOther.includes(c.code)) b.status = 'paid';
+                                            }
+                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
                                         } 
                                     } 
                                 }
@@ -2026,7 +2035,7 @@
                     closeMessageBox();
                 }
             } catch(e) { 
-                showMessageBox('Gagal', 'Terjadi kesalahan.', 'fa-wifi', 'bg-red-50 text-danger'); 
+                showMessageBox('Gagal', 'Terjadi kesalahan saat menyegarkan.', 'fa-wifi', 'bg-red-50 text-danger'); 
             }
         }
 
