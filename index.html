@@ -8,10 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind CSS untuk Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Library untuk memproses Struk ke Gambar (PNG) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <script>
@@ -26,8 +23,12 @@
                         danger: '#EF4444', 
                         cardbg: '#FFFFFF' 
                     },
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    boxShadow: { 'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)' }
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'] 
+                    },
+                    boxShadow: { 
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)' 
+                    }
                 }
             }
         }
@@ -56,7 +57,9 @@
             scrollbar-width: none; 
         }
         
-        #app-container::-webkit-scrollbar { display: none; }
+        #app-container::-webkit-scrollbar { 
+            display: none; 
+        }
         
         .screen { 
             display: none; 
@@ -64,7 +67,9 @@
             padding-bottom: 80px; 
         }
         
-        .screen.active { display: block; }
+        .screen.active { 
+            display: block; 
+        }
         
         @keyframes fadeIn { 
             from { opacity: 0; transform: translateY(10px); } 
@@ -80,10 +85,7 @@
             background-size: 20px 20px; 
             opacity: 0.05; 
             position: absolute; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            bottom: 0; 
+            top: 0; left: 0; right: 0; bottom: 0; 
             pointer-events: none; 
         }
         
@@ -109,8 +111,9 @@
             font-family: 'Courier New', Courier, monospace;
             font-size: 11pt;
             background-color: white;
-            box-sizing: border-box; /* Mencegah elemen keluar dari kontainer saat difoto */
+            box-sizing: border-box; /* Mencegah elemen keluar saat difoto */
             line-height: 1.4;
+            color: #000;
         }
     </style>
 </head>
@@ -160,7 +163,7 @@
 
         <div id="screen-home" class="screen">
             <div class="bg-white rounded-b-3xl shadow-sm px-6 pt-8 pb-6 relative z-10">
-                <!-- Tombol Refresh -->
+                <!-- Tombol Refresh Beranda -->
                 <button onclick="refreshData()" class="absolute top-6 right-6 w-8 h-8 bg-blue-50 text-primary rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm border border-blue-100 z-20">
                     <i class="fas fa-sync-alt"></i>
                 </button>
@@ -181,7 +184,7 @@
                 
                 <div class="mt-4 flex items-center gap-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-100">
                     <i class="fas fa-child text-primary"></i>
-                    <span id="home-student-info" class="font-medium wrap-text line-clamp-1">Siswa</span>
+                    <span id="home-student-info" class="font-medium wrap-text">Siswa</span>
                 </div>
             </div>
 
@@ -285,6 +288,10 @@
                                 <option value="screen-bills">Buka Tagihan Utama (BRI)</option>
                                 <option value="screen-other-bills">Buka Tagihan Lainnya (BSI)</option>
                                 <option value="screen-rupa">Buka Rupa-Rupa Bebas (BSI)</option>
+                                <option value="direct-ajs">Jalur Cepat: Tagihan AJS (BSI)</option>
+                                <option value="direct-tpq">Jalur Cepat: Tagihan TPQ (BSI)</option>
+                                <option value="direct-icp">Jalur Cepat: Tagihan ICP (BSI)</option>
+                                <option value="direct-olimpiade">Jalur Cepat: Tagihan Olimpiade (BSI)</option>
                                 <option value="screen-history">Buka Riwayat Transaksi</option>
                             </select>
                         </div>
@@ -322,7 +329,7 @@
                 
                 <div class="p-5 border-t border-gray-100 bg-white">
                     <button id="btn-print-receipt" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-md transition flex justify-center items-center gap-2">
-                        <i class="fas fa-download"></i> Simpan Gambar Struk (PNG)
+                        <i class="fas fa-download"></i> Unduh Gambar Struk (PNG)
                     </button>
                 </div>
             </div>
@@ -494,7 +501,14 @@
             <div class="p-6">
                 <div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-6 text-center mb-6">
                     <p class="text-sm text-gray-500 mb-2">Total yang harus ditransfer:</p>
-                    <h2 class="text-2xl font-bold text-primary mb-6" id="instruction-amount">Rp 0</h2>
+                    
+                    <div class="flex justify-center items-center gap-3 mb-6">
+                        <h2 class="text-2xl font-bold text-primary" id="instruction-amount">Rp 0</h2>
+                        <!-- Tombol Salin Nominal -->
+                        <button onclick="copyAmount()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-gray-200 transition">
+                            <i class="fas fa-copy"></i> Salin
+                        </button>
+                    </div>
                     
                     <div id="bank-box" class="bg-blue-50 rounded-xl p-5 border border-blue-100 text-left relative overflow-hidden">
                         <div id="bank-bg-accent" class="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full opacity-50"></div>
@@ -569,6 +583,7 @@
         <div id="screen-history" class="screen">
             <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
                 <h2 class="text-lg font-bold text-primary">Riwayat Transaksi</h2>
+                <!-- Tombol Refresh Riwayat -->
                 <button onclick="refreshData()" class="w-8 h-8 bg-blue-50 text-primary rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm border border-blue-100">
                     <i class="fas fa-sync-alt"></i>
                 </button>
@@ -660,7 +675,6 @@
     </div>
 
     <script>
-        // Konfigurasi Koneksi Database Supabase
         const SUPABASE_URL = 'https://zbfzdrrtqtvfbmsogskt.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_R1e0gprQBAAEOM76AaF8Qw_Pytw-_ca';
         const HEADERS = {
@@ -669,20 +683,82 @@
             'Content-Type': 'application/json'
         };
         
-        // Konstanta Aplikasi
-        const PRESET_ICONS = ['fa-graduation-cap', 'fa-book', 'fa-shirt', 'fa-store', 'fa-bus', 'fa-utensils', 'fa-mosque', 'fa-laptop', 'fa-futbol', 'fa-medal', 'fa-file-invoice-dollar', 'fa-wallet', 'fa-money-bill', 'fa-history', 'fa-users', 'fa-calendar-alt', 'fa-chart-bar', 'fa-bullhorn', 'fa-star', 'fa-heart', 'fa-ambulance', 'fa-pen', 'fa-car', 'fa-church', 'fa-hands-helping', 'fa-school', 'fa-user-graduate', 'fa-print', 'fa-wifi', 'fa-bus-alt', 'fa-box-open'];
-
-        const DEFAULT_MENUS = [
-            { id: '1', title: 'Tagihan SPP', icon: 'fa-graduation-cap', color: 'text-primary|bg-white', target: 'screen-bills', url: '', isActive: true },
-            { id: '5', title: 'Seragam', icon: 'fa-shirt', color: 'text-primary|bg-white', target: 'screen-rupa', url: '', isActive: true },
-            { id: '6', title: 'Buku', icon: 'fa-book-open', color: 'text-primary|bg-white', target: 'screen-rupa', url: '', isActive: true },
-            { id: '19', title: 'Tagihan Utama', icon: 'fa-file-invoice-dollar', color: 'text-blue-600|bg-blue-50', target: 'screen-bills', url: '', isActive: true },
-            { id: '99', title: 'Tagihan Lainnya', icon: 'fa-box-open', color: 'text-purple-600|bg-purple-50', target: 'screen-other-bills', url: '', isActive: true },
-            { id: '20', title: 'Riwayat', icon: 'fa-history', color: 'text-green-600|bg-green-50', target: 'screen-history', url: '', isActive: true }
+        const PRESET_ICONS = [
+            'fa-graduation-cap', 'fa-book', 'fa-shirt', 'fa-store', 'fa-bus', 
+            'fa-utensils', 'fa-mosque', 'fa-laptop', 'fa-futbol', 'fa-medal', 
+            'fa-file-invoice-dollar', 'fa-wallet', 'fa-money-bill', 'fa-history', 
+            'fa-users', 'fa-calendar-alt', 'fa-chart-bar', 'fa-bullhorn', 'fa-star', 
+            'fa-heart', 'fa-ambulance', 'fa-pen', 'fa-car', 'fa-church', 
+            'fa-hands-helping', 'fa-school', 'fa-user-graduate', 'fa-print', 
+            'fa-wifi', 'fa-bus-alt', 'fa-box-open'
         ];
 
-        // Variabel Penyimpan Data Internal
-        let appDB = { userRole: 'guest', menuItems: [], bills: [], otherBills: [], history: [] };
+        const DEFAULT_MENUS = [
+            { 
+                id: '1', 
+                title: 'Tagihan SPP', 
+                icon: 'fa-graduation-cap', 
+                color: 'text-primary|bg-white', 
+                target: 'screen-bills', 
+                url: '', 
+                isActive: true 
+            },
+            { 
+                id: '5', 
+                title: 'Seragam', 
+                icon: 'fa-shirt', 
+                color: 'text-primary|bg-white', 
+                target: 'screen-rupa', 
+                url: '', 
+                isActive: true 
+            },
+            { 
+                id: '6', 
+                title: 'Buku', 
+                icon: 'fa-book-open', 
+                color: 'text-primary|bg-white', 
+                target: 'screen-rupa', 
+                url: '', 
+                isActive: true 
+            },
+            { 
+                id: '19', 
+                title: 'Tagihan Utama', 
+                icon: 'fa-file-invoice-dollar', 
+                color: 'text-blue-600|bg-blue-50', 
+                target: 'screen-bills', 
+                url: '', 
+                isActive: true 
+            },
+            { 
+                id: '99', 
+                title: 'Tagihan Lainnya', 
+                icon: 'fa-box-open', 
+                color: 'text-purple-600|bg-purple-50', 
+                target: 'screen-other-bills', 
+                url: '', 
+                isActive: true 
+            },
+            { 
+                id: '20', 
+                title: 'Riwayat', 
+                icon: 'fa-history', 
+                color: 'text-green-600|bg-green-50', 
+                target: 'screen-history', 
+                url: '', 
+                isActive: true 
+            }
+        ];
+
+        let appDB = { 
+            userRole: 'guest', 
+            menuItems: [], 
+            bills: [], 
+            otherBills: [], 
+            history: [], 
+            currentStudentData: null 
+        };
+        
         let currentStudentToken = ""; 
         let currentStudentNIS = ""; 
         let currentStudentName = ""; 
@@ -692,32 +768,48 @@
         let isFileUploaded = false; 
         let paymentDataPayload = {};
         
-        let currentPaymentType = 'main'; // 'main' untuk Bank BRI, 'other' untuk Bank BSI
+        let currentPaymentType = 'main';
         
-        // Pengaturan Nomor Rekening
-        const BANK_BRI_INFO = { bank: 'BRI', account: '0112 01 001620 30 3', name: 'BANK BRI', owner: 'a.n. SD Muhammadiyah Sudagaran Wonosobo' };
-        const BANK_BSI_INFO = { bank: 'BSI', account: '2033169216', name: 'BANK BSI', owner: 'a.n. SD Muhammadiyah Sudagaran' };
+        const BANK_BRI_INFO = { 
+            bank: 'BRI', 
+            account: '0112 01 001620 30 3', 
+            name: 'BANK BRI', 
+            owner: 'a.n. SD Muhammadiyah Sudagaran Wonosobo' 
+        };
+        const BANK_BSI_INFO = { 
+            bank: 'BSI', 
+            account: '2033169216', 
+            name: 'BANK BSI', 
+            owner: 'a.n. SD Muhammadiyah Sudagaran' 
+        };
         
         let currentBank = 'BRI';
         let currentBankAccount = '0112 01 001620 30 3';
         let currentBankOwner = 'a.n. SD Muhammadiyah Sudagaran Wonosobo';
         let previousScreen = 'screen-bills';
 
-        // Fungsi Salin Rekening
-        function copyBankAccount() { 
-            copyToClipboard(currentBankAccount.replace(/\s+/g, '')); 
+        
+        // Fungsi Salin Nominal (Mengambil angka saja)
+        function copyAmount() {
+            let amtText = document.getElementById('instruction-amount').innerText;
+            // Menghapus tulisan Rp dan titik (.)
+            let cleanAmt = amtText.replace(/[^0-9]/g, ''); 
+            copyToClipboard(cleanAmt, 'Nominal berhasil disalin!');
         }
 
-        // Fungsi Penulisan Nominal Mata Uang
+        // Fungsi Salin Rekening
+        function copyBankAccount() { 
+            copyToClipboard(currentBankAccount.replace(/\s+/g, ''), 'Nomor rekening berhasil disalin!'); 
+        }
+        
         function formatCurrency(num) { 
             return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); 
         }
         
-        // Fungsi Tombol Ikon Mata untuk Tampilkan Password (Login)
         function togglePassword() {
             let p = document.getElementById('loginPass'); 
             let i = document.getElementById('eyeIcon');
-            if(p.type === 'password'){ 
+            if (p.type === 'password') { 
                 p.type = 'text'; 
                 i.className = 'fas fa-eye-slash'; 
             } else { 
@@ -726,11 +818,10 @@
             }
         }
 
-        // Fungsi Tombol Ikon Mata untuk Tampilkan Password (Ubah Akun)
         function toggleNewPassword() {
             let p = document.getElementById('new-password'); 
             let i = document.getElementById('eyeIconNew');
-            if(p.type === 'password'){ 
+            if (p.type === 'password') { 
                 p.type = 'text'; 
                 i.className = 'fas fa-eye-slash text-primary'; 
             } else { 
@@ -739,13 +830,14 @@
             }
         }
 
-        // Fungsi Penarik Data Menu dari Database Server
         async function fetchMenuData() {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/menus?select=*&order=sortOrder.asc`, { headers: HEADERS });
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/menus?select=*&order=sortOrder.asc`, { 
+                    headers: HEADERS 
+                });
                 if(res.ok) {
                     const data = await res.json();
-                    if(data.length > 0) {
+                    if (data.length > 0) {
                         appDB.menuItems = data.map(m => ({
                             id: m.id, 
                             title: m.title, 
@@ -756,8 +848,8 @@
                             isActive: m.isActive
                         }));
                         
-                        // Menjamin bahwa menu Tagihan Lainnya otomatis ditambahkan bila admin belum membuatnya
-                        if(!appDB.menuItems.find(x => x.target === 'screen-other-bills')) {
+                        // Memastikan Menu "Tagihan Lainnya" tersedia secara default
+                        if (!appDB.menuItems.find(x => x.target === 'screen-other-bills')) {
                             appDB.menuItems.push({ 
                                 id: '99', 
                                 title: 'Tagihan Lainnya', 
@@ -777,33 +869,31 @@
             }
         }
 
-        // Definisi Tagihan yang Diolah Aplikasi
         const mapColsMain = [
-            {code: 'bps', title: 'BPS', db: 'bps'}, 
-            {code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli'},
-            {code: 'spp', title: 'Tagihan SPP', db: 'spp'}, 
-            {code: 'daftarUlang1', title: 'Daftar Ulang I', db: 'daftarUlang1'},
-            {code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2'}, 
-            {code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3'},
-            {code: 'tahfidzPlus', title: 'Tagihan Tahfidz Plus', db: 'tahfidzPlus'}, 
-            {code: 'tahfidz', title: 'Tagihan Tahfidz', db: 'tahfidz'},
-            {code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan'}
+            { code: 'bps', title: 'BPS', db: 'bps' }, 
+            { code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli' },
+            { code: 'spp', title: 'Tagihan SPP', db: 'spp' }, 
+            { code: 'daftarUlang1', title: 'Daftar Ulang I', db: 'daftarUlang1' },
+            { code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2' }, 
+            { code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3' },
+            { code: 'tahfidzPlus', title: 'Tagihan Tahfidz Plus', db: 'tahfidzPlus' }, 
+            { code: 'tahfidz', title: 'Tagihan Tahfidz', db: 'tahfidz' },
+            { code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan' }
         ];
 
         const mapColsOther = [
-            {code: 'icp', title: 'Tagihan ICP', db: 'icp'}, 
-            {code: 'icpSore', title: 'Tagihan ICP Sore', db: 'icpSore'},
-            {code: 'ajs', title: 'Tagihan AJS', db: 'ajs'}, 
-            {code: 'tpq', title: 'Tagihan TPQ', db: 'tpq'},
-            {code: 'olimpiade', title: 'Tagihan Olimpiade', db: 'olimpiade'}, 
-            {code: 'rihlah', title: 'Tagihan Rihlah', db: 'rihlah'},
-            {code: 'infaqPembangunan', title: 'Infaq Pembangunan', db: 'infaqPembangunan'}, 
-            {code: 'donasiSosial', title: 'Donasi Sosial', db: 'donasiSosial'}
+            { code: 'icp', title: 'Tagihan ICP', db: 'icp' }, 
+            { code: 'icpSore', title: 'Tagihan ICP Sore', db: 'icpSore' },
+            { code: 'ajs', title: 'Tagihan AJS', db: 'ajs' }, 
+            { code: 'tpq', title: 'Tagihan TPQ', db: 'tpq' },
+            { code: 'olimpiade', title: 'Tagihan Olimpiade', db: 'olimpiade' }, 
+            { code: 'rihlah', title: 'Tagihan Rihlah', db: 'rihlah' },
+            { code: 'infaqPembangunan', title: 'Infaq Pembangunan', db: 'infaqPembangunan' }, 
+            { code: 'donasiSosial', title: 'Donasi Sosial', db: 'donasiSosial' }
         ];
         
-        // Daftar Kolom yang Menggunakan Fitur Dropdown "Pilih Rentang Bulan"
-        const mListMain = ['spp','tahfidzPlus','tahfidz'];
-        const mListOther = ['icp','icpSore','ajs','tpq','olimpiade'];
+        const mListMain = ['spp', 'tahfidzPlus', 'tahfidz'];
+        const mListOther = ['icp', 'icpSore', 'ajs', 'tpq', 'olimpiade'];
 
         async function handleLogin() {
             const idInput = document.getElementById('loginId').value.trim();
@@ -813,8 +903,7 @@
             
             await fetchMenuData();
 
-            // Pintu Masuk Khusus Mode Admin
-            if(idInput === 'admin' && passInput === 'bismillah'){
+            if (idInput === 'admin' && passInput === 'bismillah') {
                 appDB.userRole = 'admin'; 
                 closeMessageBox(); 
                 showScreen('screen-admin-dashboard'); 
@@ -822,37 +911,36 @@
             }
 
             try {
-                // Autentikasi ke Supabase Tabel Siswa
                 const studentRes = await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${idInput}&token=eq.${passInput}&select=*`, { headers: HEADERS });
                 const students = await studentRes.json();
 
-                if(!students || students.length === 0) { 
+                if (!students || students.length === 0) { 
                     showMessageBox('Gagal', 'NIS atau Password salah.', 'fa-times', 'bg-red-50 text-danger'); 
                     return; 
                 }
 
-                // Data Siswa Berhasil Disimpan di Memori
                 const student = students[0];
+                appDB.currentStudentData = student; // Simpan data utuh siswa
+                
                 currentStudentToken = student.token; 
                 currentStudentNIS = student.nis;
                 currentStudentName = student.nama; 
                 
-                // Menyatukan Kelas dan Nama Kelas
+                // Gabungkan kelas dan nama kelas dengan rapi
                 let namaKelasAsli = student.namaKelas || "";
                 currentStudentClass = namaKelasAsli ? `${student.kelas} ${namaKelasAsli}` : student.kelas;
                 
-                // Mereset Antrean Tagihan
                 appDB.bills = []; 
                 appDB.otherBills = []; 
                 appDB.history = [];
 
-                // Parsing Tagihan yang Masuk Bank BRI (Tagihan Utama)
+                // Load tagihan utama
                 mapColsMain.forEach(c => {
-                    if(student[c.db]) {
+                    if (student[c.db]) {
                         let amt = parseInt(student[c.db]);
-                        if(!isNaN(amt) && amt > 0) {
+                        if (!isNaN(amt) && amt > 0) {
                             appDB.bills.push({ 
-                                id: 'B-'+c.code, 
+                                id: 'B-' + c.code, 
                                 code: c.code, 
                                 title: c.title, 
                                 amount: amt, 
@@ -862,13 +950,13 @@
                     }
                 });
                 
-                // Parsing Tagihan yang Masuk Bank BSI (Tagihan Lainnya)
+                // Load tagihan lainnya
                 mapColsOther.forEach(c => {
-                    if(student[c.db]) {
+                    if (student[c.db]) {
                         let amt = parseInt(student[c.db]);
-                        if(!isNaN(amt) && amt > 0) {
+                        if (!isNaN(amt) && amt > 0) {
                             appDB.otherBills.push({ 
-                                id: 'B-'+c.code, 
+                                id: 'B-' + c.code, 
                                 code: c.code, 
                                 title: c.title, 
                                 amount: amt, 
@@ -878,17 +966,16 @@
                     }
                 });
 
-                // Membaca Riwayat Transaksi Sebelumnya dari Database
+                // Load riwayat
                 const txRes = await fetch(`${SUPABASE_URL}/rest/v1/transactions?nis=eq.${currentStudentNIS}&order=date.desc`, { headers: HEADERS });
-                if(txRes.ok) {
+                if (txRes.ok) {
                     const transactions = await txRes.json();
-                    
                     transactions.forEach(tx => {
                         let tot = 0; 
                         let det = [];
                         let txStatus = tx.status;
                         
-                        // Konversi Status
+                        // Menangani status bukti tertolak
                         if (tx.konfirmasi === true || tx.status === 'success' || tx.status === 'lunas') {
                             txStatus = 'success';
                         } else if (tx.status === 'rejected' || tx.status === 'ditolak') {
@@ -897,63 +984,51 @@
                             txStatus = 'pending';
                         }
 
-                        // Menggabungkan Histori Tagihan Utama
+                        // Parse detail tagihan utama
                         mapColsMain.forEach(c => {
-                            if(tx[c.db]) { 
+                            if (tx[c.db]) { 
                                 let amt = parseInt(tx[c.db]); 
-                                if(amt > 0) { 
+                                if (amt > 0) { 
                                     tot += amt; 
                                     let bTitle = c.title;
-                                    
-                                    // Menarik Keterangan Bulan dari Database
-                                    if(c.code === 'spp' && tx.ketSpp) bTitle += ` (${tx.ketSpp})`;
-                                    if(c.code === 'tahfidzPlus' && tx.ketTahfidzPlus) bTitle += ` (${tx.ketTahfidzPlus})`;
-                                    if(c.code === 'tahfidz' && tx.ketTahfidz) bTitle += ` (${tx.ketTahfidz})`;
+                                    if (c.code === 'spp' && tx.ketSpp) bTitle += ` (${tx.ketSpp})`;
+                                    if (c.code === 'tahfidzPlus' && tx.ketTahfidzPlus) bTitle += ` (${tx.ketTahfidzPlus})`;
+                                    if (c.code === 'tahfidz' && tx.ketTahfidz) bTitle += ` (${tx.ketTahfidz})`;
                                     
                                     det.push({ title: bTitle, amount: amt }); 
-                                    
                                     let b = appDB.bills.find(x => x.code === c.code); 
-                                    if(b) {
-                                        if(txStatus === 'success') {
-                                            b.status = 'paid';
-                                        } else if (b.status === 'unpaid' && txStatus !== 'rejected') {
-                                            b.status = 'pending';
-                                        }
+                                    if (b) {
+                                        if (txStatus === 'success') b.status = 'paid';
+                                        else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
                                     } 
                                 } 
                             }
                         });
                         
-                        // Menggabungkan Histori Tagihan Lainnya
+                        // Parse detail tagihan lainnya
                         mapColsOther.forEach(c => {
-                            if(tx[c.db]) { 
+                            if (tx[c.db]) { 
                                 let amt = parseInt(tx[c.db]); 
-                                if(amt > 0) { 
+                                if (amt > 0) { 
                                     tot += amt; 
                                     let bTitle = c.title;
-                                    
-                                    // Menarik Keterangan Bulan dari Database
-                                    if(c.code === 'icp' && tx.ketIcp) bTitle += ` (${tx.ketIcp})`;
-                                    if(c.code === 'icpSore' && tx.ketIcpSore) bTitle += ` (${tx.ketIcpSore})`;
-                                    if(c.code === 'ajs' && tx.ketAjs) bTitle += ` (${tx.ketAjs})`;
-                                    if(c.code === 'tpq' && tx.ketTpq) bTitle += ` (${tx.ketTpq})`;
-                                    if(c.code === 'olimpiade' && tx.ketOlimpiade) bTitle += ` (${tx.ketOlimpiade})`;
+                                    if (c.code === 'icp' && tx.ketIcp) bTitle += ` (${tx.ketIcp})`;
+                                    if (c.code === 'icpSore' && tx.ketIcpSore) bTitle += ` (${tx.ketIcpSore})`;
+                                    if (c.code === 'ajs' && tx.ketAjs) bTitle += ` (${tx.ketAjs})`;
+                                    if (c.code === 'tpq' && tx.ketTpq) bTitle += ` (${tx.ketTpq})`;
+                                    if (c.code === 'olimpiade' && tx.ketOlimpiade) bTitle += ` (${tx.ketOlimpiade})`;
                                     
                                     det.push({ title: bTitle, amount: amt }); 
-                                    
                                     let b = appDB.otherBills.find(x => x.code === c.code); 
-                                    if(b) {
-                                        if(txStatus === 'success') {
-                                            b.status = 'paid';
-                                        } else if (b.status === 'unpaid' && txStatus !== 'rejected') {
-                                            b.status = 'pending';
-                                        }
+                                    if (b) {
+                                        if (txStatus === 'success') b.status = 'paid';
+                                        else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
                                     } 
                                 } 
                             }
                         });
 
-                        // Mendata Riwayat Pembayaran Rupa-rupa
+                        // Parse rupa-rupa
                         if (tx.rupaRupa) {
                             let amt = parseInt(tx.rupaRupa);
                             if (amt > 0) { 
@@ -962,8 +1037,7 @@
                             }
                         }
 
-                        // Merekam ke memori tampilan riwayat
-                        if(tot > 0) {
+                        if (tot > 0) {
                             appDB.history.push({ 
                                 id: tx.id, 
                                 date: tx.date, 
@@ -992,16 +1066,15 @@
                     id: m.id.toString(), 
                     title: m.title, 
                     icon: m.icon, 
-                    color: m.color,
+                    color: m.color, 
                     target: m.target, 
                     url: m.url, 
                     isActive: m.isActive, 
                     sortOrder: idx
                 }));
-                
                 await fetch(`${SUPABASE_URL}/rest/v1/menus?on_conflict=id`, {
-                    method: 'POST',
-                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+                    method: 'POST', 
+                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' }, 
                     body: JSON.stringify(payload)
                 });
             } catch(e) { 
@@ -1010,31 +1083,24 @@
         }
 
         function showScreen(screenId) {
-            // Sembunyikan semua layar
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-            
-            // Tampilkan layar yang dituju
             const targetScreen = document.getElementById(screenId);
-            if(targetScreen) {
-                targetScreen.classList.add('active');
-            }
+            if (targetScreen) targetScreen.classList.add('active');
             
-            // Pengelolaan Bottom Nav
             const bNav = document.getElementById('bottom-nav');
             const bNavAdmin = document.getElementById('bottom-nav-admin');
-            if(bNav) bNav.classList.add('hidden');
-            if(bNavAdmin) bNavAdmin.classList.add('hidden');
+            if (bNav) bNav.classList.add('hidden');
+            if (bNavAdmin) bNavAdmin.classList.add('hidden');
 
-            if(!['screen-login','screen-checkout','screen-instruction','screen-receipt'].includes(screenId)){
-                if(appDB.userRole === 'admin') { 
-                    if(bNavAdmin) bNavAdmin.classList.remove('hidden'); 
-                }
-                else {
-                    if(bNav) {
+            if (!['screen-login', 'screen-checkout', 'screen-instruction', 'screen-receipt'].includes(screenId)) {
+                if (appDB.userRole === 'admin') { 
+                    if (bNavAdmin) bNavAdmin.classList.remove('hidden'); 
+                } else {
+                    if (bNav) {
                         bNav.classList.remove('hidden');
                         document.querySelectorAll('.nav-btn').forEach(btn => {
                             let dt = btn.dataset.target;
-                            if(dt === screenId || (screenId === 'screen-other-bills' && dt === 'screen-bills')){ 
+                            if (dt === screenId || (screenId === 'screen-other-bills' && dt === 'screen-bills')) { 
                                 btn.classList.add('text-primary'); 
                                 btn.classList.remove('text-gray-400'); 
                             } else { 
@@ -1046,8 +1112,7 @@
                 }
             }
 
-            // Pembangunan Tampilan Halaman Beranda Siswa
-            if(screenId === 'screen-home' && appDB.userRole === 'student') {
+            if (screenId === 'screen-home' && appDB.userRole === 'student') {
                 document.getElementById('home-user-name').innerText = `Ayah/Bunda ${currentStudentName}`;
                 document.getElementById('home-student-class').innerText = currentStudentClass;
                 document.getElementById('home-student-info').innerHTML = `${currentStudentName} <br><span class="text-[11px] text-gray-500 font-normal">Kelas: ${currentStudentClass} | NIS: ${currentStudentNIS}</span>`;
@@ -1056,10 +1121,9 @@
                 document.getElementById('profile-name').innerText = `Ayah/Bunda ${currentStudentName}`;
                 document.getElementById('profile-student').innerText = `${currentStudentName} (Kelas: ${currentStudentClass} | NIS: ${currentStudentNIS})`;
 
-                let bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][new Date().getMonth()];
+                let bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][new Date().getMonth()];
                 document.getElementById('label-tunggakan').innerText = `Tagihan Bulan ${bulan}`;
 
-                // Rumus Pengecekan Bulan Aktif (Berjalan dari Juli)
                 let mult = (new Date().getMonth() >= 6) ? new Date().getMonth() - 5 : new Date().getMonth() + 7;
                 
                 let unpaid = 0; 
@@ -1068,11 +1132,9 @@
                 let allMonthList = mListMain.concat(mListOther);
                 
                 allBills.forEach(b => {
-                    if(b.status === 'unpaid' || b.status === 'pending') {
+                    if (b.status === 'unpaid' || b.status === 'pending') {
                         let finalAmt = b.amount; 
-                        if(allMonthList.includes(b.code) && appDB.history.length === 0) {
-                            finalAmt = b.amount * mult;
-                        }
+                        if (allMonthList.includes(b.code) && appDB.history.length === 0) finalAmt = b.amount * mult;
                         unpaid += finalAmt; 
                         count++;
                     }
@@ -1082,10 +1144,10 @@
                 document.getElementById('home-tunggakan').innerText = count + " Tagihan Aktif";
                 
                 let bs = document.getElementById('home-bill-status');
-                if(count === 0) { 
+                if (count === 0) { 
                     bs.className = 'bg-green-500/20 text-green-100 border border-green-400/30 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm'; 
                     bs.innerHTML = '<i class="fas fa-check-circle"></i> LUNAS'; 
-                } else if(allBills.some(b => b.status === 'pending')) { 
+                } else if (allBills.some(b => b.status === 'pending')) { 
                     bs.className = 'bg-orange-500/20 text-orange-100 border border-orange-400/30 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm'; 
                     bs.innerHTML = '<i class="fas fa-clock"></i> MENUNGGU'; 
                 } else { 
@@ -1099,14 +1161,16 @@
                 let grid = document.getElementById('home-menu-grid'); 
                 grid.innerHTML = '';
                 
-                // Menanamkan Menu Aktif Ke Beranda
                 appDB.menuItems.filter(m => m.isActive).forEach(m => {
-                    let css = (m.color||'text-primary|bg-white').split('|'); 
+                    let css = (m.color || 'text-primary|bg-white').split('|'); 
                     let act = '';
                     
-                    if(m.url) { 
+                    if (m.url) { 
                         act = `onclick="window.open('${m.url}', '_blank')"`; 
-                    } else if(m.target) { 
+                    } else if (m.target && m.target.startsWith('direct-')) {
+                        let tagihanCode = m.target.split('-')[1]; // contoh: ajs, tpq
+                        act = `onclick="processDirectBill('${tagihanCode}')"`;
+                    } else if (m.target) { 
                         act = `onclick="showScreen('${m.target}')"`; 
                     } else { 
                         act = `onclick="showMessageBox('Info', 'Layanan ${m.title} segera hadir.', 'fa-info-circle', 'bg-blue-50 text-blue-600', 'Tutup')"`; 
@@ -1123,8 +1187,7 @@
                 });
             }
 
-            // Pembangunan Halaman Tagihan Saya dan Tagihan Lainnya
-            if(screenId === 'screen-bills' || screenId === 'screen-other-bills') {
+            if (screenId === 'screen-bills' || screenId === 'screen-other-bills') {
                 let isMain = (screenId === 'screen-bills');
                 let postfix = isMain ? 'main' : 'other';
                 let dataSource = isMain ? appDB.bills : appDB.otherBills;
@@ -1138,11 +1201,11 @@
                 cont.innerHTML = '';
                 
                 let cbAll = document.getElementById(`chk-select-all-${postfix}`); 
-                if(cbAll) cbAll.checked = false;
+                if (cbAll) cbAll.checked = false;
                 
                 let ub = dataSource.filter(b => b.status !== 'paid');
                 
-                if(ub.length === 0){
+                if (ub.length === 0) {
                     document.getElementById(`bill-warning-box-${postfix}`).classList.add('hidden');
                     document.getElementById(`container-select-all-${postfix}`).classList.add('hidden');
                     cont.innerHTML = `
@@ -1156,10 +1219,9 @@
                     document.getElementById(`bill-warning-box-${postfix}`).classList.remove('hidden');
                     document.getElementById(`container-select-all-${postfix}`).classList.remove('hidden');
                     
-                    // Logika Urutan Bulan Ajaran (Dimulai dari Juli)
-                    let monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-                    let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; // 0=Juli, 1=Agustus ... 11=Juni
-                    let currentMonthIdx = new Date().getMonth(); // 0 sampai 11 bawaan sistem
+                    let monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                    let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; // 0=Juli
+                    let currentMonthIdx = new Date().getMonth(); 
                     let defaultEndIdx = syOrder.indexOf(currentMonthIdx);
                     if (defaultEndIdx === -1) defaultEndIdx = 0;
 
@@ -1168,19 +1230,15 @@
                         let ketBulan = ""; 
                         let interactiveUI = "";
                         
-                        if(monthList.includes(b.code)) {
+                        if (monthList.includes(b.code)) {
                             let startIdx = (appDB.history.length === 0) ? 0 : defaultEndIdx;
                             let endIdx = defaultEndIdx;
-                            if (endIdx < startIdx) {
-                                endIdx = startIdx;
-                            }
+                            if (endIdx < startIdx) endIdx = startIdx;
                             
                             fAmt = b.amount * (endIdx - startIdx + 1); 
                             
                             let unpList = [];
-                            for(let i = startIdx; i <= endIdx; i++) {
-                                unpList.push(monthNames[syOrder[i]]);
-                            }
+                            for(let i = startIdx; i <= endIdx; i++) unpList.push(monthNames[syOrder[i]]);
                             ketBulan = unpList.join(', ');
                             
                             let optHTML = '';
@@ -1224,12 +1282,11 @@
                 }
             }
 
-            // Pembangunan Halaman Riwayat Transaksi
-            if(screenId === 'screen-history') {
+            if (screenId === 'screen-history') {
                 let hc = document.getElementById('history-container'); 
                 hc.innerHTML = '';
                 
-                if(appDB.history.length === 0) {
+                if (appDB.history.length === 0) {
                     hc.innerHTML = `<div class="text-center py-10 text-gray-400"><i class="fas fa-box-open text-4xl mb-2"></i><p>Belum ada riwayat.</p></div>`;
                 }
                 
@@ -1237,24 +1294,17 @@
                     let d = h.details.map(x => `- ${x.title}: ${formatCurrency(x.amount)}`).join('<br>');
                     let statusHtml = '';
                     
-                    // Mendeteksi jenis status di dalam riwayat
-                    if(h.status === 'success') {
+                    if (h.status === 'success') {
                         statusHtml = '<span class="text-xs font-semibold text-success"><i class="fas fa-check-circle"></i> Berhasil</span>';
-                    } else if(h.status === 'rejected') {
-                        statusHtml = `
-                            <div class="text-right">
-                                <span class="text-xs font-semibold text-danger"><i class="fas fa-times-circle"></i> Konfirmasi Tertolak</span><br>
-                                <span class="text-[10px] text-gray-500 font-normal">Bukti tidak valid</span>
-                            </div>
-                        `;
+                    } else if (h.status === 'rejected') {
+                        // Keterangan khusus konfirmasi ditolak
+                        statusHtml = `<div class="text-right"><span class="text-xs font-semibold text-danger"><i class="fas fa-times-circle"></i> Konfirmasi Tertolak</span><br><span class="text-[10px] text-gray-500 font-normal">Bukti tidak valid</span></div>`;
                     } else {
                         statusHtml = '<span class="text-xs font-semibold text-accent"><i class="fas fa-clock"></i> Menunggu Konfirmasi</span>';
                     }
 
-                    // Tampilkan Tombol Preview apabila sudah sukses dan divalidasi Admin
                     let btnPreview = h.status === 'success' 
-                        ? `<button onclick="previewReceipt('${h.id}')" class="text-[10px] bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg border border-blue-100 mt-2 font-bold hover:bg-blue-100 transition flex items-center gap-1"><i class="fas fa-eye"></i> Lihat Struk</button>` 
-                        : '';
+                        ? `<button onclick="previewReceipt('${h.id}')" class="text-[10px] bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg border border-blue-100 mt-2 font-bold hover:bg-blue-100 transition flex items-center gap-1"><i class="fas fa-eye"></i> Lihat Struk</button>` : '';
                     
                     hc.innerHTML += `
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3">
@@ -1263,11 +1313,7 @@
                                 ${statusHtml}
                             </div>
                             <div class="flex justify-between items-end">
-                                <div class="text-xs text-gray-500">
-                                    ${h.date}<br>
-                                    <div class="mt-1 text-[10px] text-gray-600 leading-tight">${d}</div>
-                                    ${btnPreview}
-                                </div>
+                                <div class="text-xs text-gray-500">${h.date}<br><div class="mt-1 text-[10px] text-gray-600 leading-tight">${d}</div>${btnPreview}</div>
                                 <p class="text-sm font-bold text-primary">${formatCurrency(h.amount)}</p>
                             </div>
                         </div>
@@ -1275,8 +1321,7 @@
                 });
             }
 
-            // Pembangunan Tampilan Kelola Admin
-            if(screenId === 'screen-admin-dashboard') {
+            if (screenId === 'screen-admin-dashboard') {
                 document.getElementById('admin-menu-count').innerText = `${appDB.menuItems.length} Menu Tersedia`;
                 let al = document.getElementById('admin-menu-list'); 
                 al.innerHTML = '';
@@ -1286,12 +1331,8 @@
                     let stat = m.isActive 
                         ? '<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold"><i class="fas fa-eye"></i> Publik</span>' 
                         : '<span class="text-[10px] bg-gray-200 text-gray-500 px-2 py-0.5 rounded font-bold"><i class="fas fa-eye-slash"></i> Sembunyi</span>';
-                    let upBtn = idx > 0 
-                        ? `<button onclick="moveMenu(${idx}, -1)" class="text-gray-400 hover:text-primary"><i class="fas fa-chevron-up"></i></button>` 
-                        : `<span class="w-4"></span>`;
-                    let dnBtn = idx < appDB.menuItems.length - 1 
-                        ? `<button onclick="moveMenu(${idx}, 1)" class="text-gray-400 hover:text-primary"><i class="fas fa-chevron-down"></i></button>` 
-                        : `<span class="w-4"></span>`;
+                    let upBtn = idx > 0 ? `<button onclick="moveMenu(${idx}, -1)" class="text-gray-400 hover:text-primary"><i class="fas fa-chevron-up"></i></button>` : `<span class="w-4"></span>`;
+                    let dnBtn = idx < appDB.menuItems.length - 1 ? `<button onclick="moveMenu(${idx}, 1)" class="text-gray-400 hover:text-primary"><i class="fas fa-chevron-down"></i></button>` : `<span class="w-4"></span>`;
 
                     al.innerHTML += `
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex items-center justify-between">
@@ -1305,17 +1346,13 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-4">
-                                <div class="flex flex-col gap-2">
-                                    ${upBtn}${dnBtn}
-                                </div>
+                                <div class="flex flex-col gap-2">${upBtn}${dnBtn}</div>
                                 <button onclick="editMenu('${m.id}')" class="text-xs font-bold text-primary px-4 py-2 bg-blue-50 rounded-lg border border-blue-100">Edit</button>
                             </div>
                         </div>
                     `;
                 });
             }
-            
-            // Selalu scroll ke atas saat pindah halaman
             document.getElementById('app-container').scrollTop = 0;
         }
 
@@ -1323,7 +1360,6 @@
             let temp = appDB.menuItems[index];
             appDB.menuItems[index] = appDB.menuItems[index + dir];
             appDB.menuItems[index + dir] = temp;
-            
             showMessageBox('Menyimpan...', 'Mengupdate urutan di server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             await syncMenuToServer(); 
             closeMessageBox(); 
@@ -1361,7 +1397,6 @@
             let startIdx = parseInt(startSel.value);
             let endIdx = parseInt(endSel.value);
             
-            // Jika wali murid mengeklik urutan bulan terbalik, kembalikan ke arah yang benar
             if (endIdx < startIdx) { 
                 endIdx = startIdx; 
                 endSel.value = endIdx; 
@@ -1370,11 +1405,11 @@
             let count = endIdx - startIdx + 1;
             let fAmt = baseAmount * count;
             
-            let monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-            let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; // Dimulai Bulan Juli
+            let monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; 
             
             let unpList = [];
-            for(let i = startIdx; i <= endIdx; i++) {
+            for (let i = startIdx; i <= endIdx; i++) {
                 unpList.push(monthNames[syOrder[i]]);
             }
             let ketBulan = unpList.join(', ');
@@ -1385,10 +1420,50 @@
             if (chk) { 
                 chk.dataset.amt = fAmt; 
                 chk.dataset.ket = ketBulan; 
-                if (chk.checked) {
-                    calcSelectedBills(postfix); 
-                }
+                if (chk.checked) calcSelectedBills(postfix); 
             }
+        }
+
+        function processDirectBill(code) {
+            if (!appDB.currentStudentData) return;
+            
+            let amt = parseInt(appDB.currentStudentData[code]);
+            if (isNaN(amt) || amt <= 0) {
+                showMessageBox('Alhamdulillah', 'Tidak ada tagihan aktif untuk layanan ini.', 'fa-check-circle', 'bg-green-50 text-success');
+                return;
+            }
+
+            let titleMapping = { 
+                'ajs': 'Tagihan AJS', 
+                'tpq': 'Tagihan TPQ', 
+                'icp': 'Tagihan ICP', 
+                'olimpiade': 'Tagihan Olimpiade' 
+            };
+            let title = titleMapping[code] || ('Tagihan ' + code.toUpperCase());
+
+            currentPaymentType = 'other';
+            currentBank = BANK_BSI_INFO.bank;
+            currentBankAccount = BANK_BSI_INFO.account;
+            currentBankOwner = BANK_BSI_INFO.owner;
+            previousScreen = 'screen-home';
+            
+            paymentDataPayload = { 
+                token: currentStudentToken, 
+                date: new Date().toLocaleString('id-ID'), 
+                nis: currentStudentNIS, 
+                nama: currentStudentName, 
+                kelas: currentStudentClass
+            };
+            
+            paymentDataPayload[code] = amt; 
+
+            document.getElementById('checkout-student-info').innerHTML = `${currentStudentName}<br><span class="text-xs text-gray-400 font-normal">${currentStudentClass}</span>`;
+            document.getElementById('checkout-title').innerText = title;
+            document.getElementById('checkout-total').innerText = formatCurrency(amt);
+            document.getElementById('instruction-amount').innerText = formatCurrency(amt);
+            
+            updateBankInstructionUI(); 
+            showScreen('screen-checkout');
         }
 
         function processSelectedBills(postfix) {
@@ -1397,20 +1472,18 @@
             
             currentPaymentType = postfix;
             
-            // Pengaturan Rekening Berdasarkan Sistem Pintu Pembayaran
-            if(postfix === 'main') {
-                currentBank = BANK_BRI_INFO.bank;
-                currentBankAccount = BANK_BRI_INFO.account;
-                currentBankOwner = BANK_BRI_INFO.owner;
+            if (postfix === 'main') {
+                currentBank = BANK_BRI_INFO.bank; 
+                currentBankAccount = BANK_BRI_INFO.account; 
+                currentBankOwner = BANK_BRI_INFO.owner; 
                 previousScreen = 'screen-bills';
             } else {
-                currentBank = BANK_BSI_INFO.bank;
-                currentBankAccount = BANK_BSI_INFO.account;
-                currentBankOwner = BANK_BSI_INFO.owner;
+                currentBank = BANK_BSI_INFO.bank; 
+                currentBankAccount = BANK_BSI_INFO.account; 
+                currentBankOwner = BANK_BSI_INFO.owner; 
                 previousScreen = 'screen-other-bills';
             }
             
-            // Membuat Basis Payload Untuk Dikirim ke Database
             paymentDataPayload = { 
                 token: currentStudentToken, 
                 date: new Date().toLocaleString('id-ID'), 
@@ -1419,17 +1492,15 @@
                 kelas: currentStudentClass 
             };
             
-            // Merekam Tagihan Tercentang
             selectedBillIds.forEach(cb => {
-                let code = cb.dataset.code;
-                let amt = parseInt(cb.dataset.amt);
-                let ket = cb.dataset.ket;
+                let code = cb.dataset.code; 
+                let amt = parseInt(cb.dataset.amt); 
+                let ket = cb.dataset.ket; 
                 let bTitle = cb.dataset.title;
-
+                
                 tot += amt; 
                 paymentDataPayload[code] = amt;
                 
-                // Set keterangan bulan spesifik ke payload db untuk dibaca struk dan tabel
                 if (code === 'spp') paymentDataPayload.ketSpp = ket;
                 if (code === 'tahfidzPlus') paymentDataPayload.ketTahfidzPlus = ket;
                 if (code === 'tahfidz') paymentDataPayload.ketTahfidz = ket;
@@ -1439,7 +1510,7 @@
                 if (code === 'tpq') paymentDataPayload.ketTpq = ket;
                 if (code === 'olimpiade') paymentDataPayload.ketOlimpiade = ket;
 
-                if(ket && ['spp','tahfidzPlus','tahfidz','icp','icpSore','ajs','tpq','olimpiade'].includes(code)) {
+                if (ket && ['spp', 'tahfidzPlus', 'tahfidz', 'icp', 'icpSore', 'ajs', 'tpq', 'olimpiade'].includes(code)) {
                     bTitle += ` (${ket})`;
                 }
                 titles.push(bTitle);
@@ -1458,16 +1529,15 @@
             let title = document.getElementById('rupa-title').value.trim();
             let amt = parseInt(document.getElementById('rupa-amount').value);
             
-            if(!title || isNaN(amt) || amt <= 0) { 
+            if (!title || isNaN(amt) || amt <= 0) { 
                 showMessageBox('Peringatan', 'Masukkan keterangan dan nominal pembayaran terlebih dahulu.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent'); 
                 return; 
             }
 
-            // Rupa-rupa selalu diarahkan ke BSI
-            currentPaymentType = 'other';
-            currentBank = BANK_BSI_INFO.bank;
-            currentBankAccount = BANK_BSI_INFO.account;
-            currentBankOwner = BANK_BSI_INFO.owner;
+            currentPaymentType = 'other'; 
+            currentBank = BANK_BSI_INFO.bank; 
+            currentBankAccount = BANK_BSI_INFO.account; 
+            currentBankOwner = BANK_BSI_INFO.owner; 
             previousScreen = 'screen-rupa';
             
             paymentDataPayload = { 
@@ -1485,7 +1555,6 @@
             document.getElementById('checkout-total').innerText = formatCurrency(amt);
             document.getElementById('instruction-amount').innerText = formatCurrency(amt);
             
-            // Bersihkan kolom Rupa-rupa
             document.getElementById('rupa-title').value = ''; 
             document.getElementById('rupa-amount').value = '';
             
@@ -1500,62 +1569,53 @@
             let bgAcc = document.getElementById('bank-bg-accent');
             let nameDisp = document.getElementById('bank-name-display'); 
             let accDisp = document.getElementById('bank-account-display'); 
-            let btnCopy = document.getElementById('btn-copy-bank');
+            let btnCopy = document.getElementById('btn-copy-bank'); 
             let ownerDisp = document.getElementById('bank-owner-display');
             let btnLanjut = document.getElementById('btn-checkout-lanjut');
 
             if (currentBank === 'BRI') {
                 chkBankName.innerText = 'Transfer Bank BRI'; 
                 chkIconBg.className = 'w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600';
-                
                 box.className = 'bg-blue-50 rounded-xl p-5 border border-blue-100 text-left relative overflow-hidden';
                 bgAcc.className = 'absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full opacity-50';
                 nameDisp.className = 'text-lg font-bold text-blue-800 mb-3 flex items-center gap-2'; 
                 nameDisp.innerHTML = '<i class="fas fa-building text-blue-600"></i> BANK BRI';
                 accDisp.innerText = currentBankAccount; 
                 ownerDisp.innerText = currentBankOwner;
-                
                 btnCopy.className = 'text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-blue-200 transition';
                 btnLanjut.className = 'w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2';
-            } 
-            else if (currentBank === 'BSI') {
+            } else if (currentBank === 'BSI') {
                 chkBankName.innerText = 'Transfer Bank BSI'; 
                 chkIconBg.className = 'w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center text-teal-600';
-                
                 box.className = 'bg-teal-50 rounded-xl p-5 border border-teal-100 text-left relative overflow-hidden';
                 bgAcc.className = 'absolute top-0 right-0 w-16 h-16 bg-teal-100 rounded-bl-full opacity-50';
                 nameDisp.className = 'text-lg font-bold text-teal-800 mb-3 flex items-center gap-2'; 
                 nameDisp.innerHTML = '<i class="fas fa-building text-teal-600"></i> BANK BSI';
                 accDisp.innerText = currentBankAccount; 
                 ownerDisp.innerText = currentBankOwner;
-                
                 btnCopy.className = 'text-xs bg-teal-100 text-teal-700 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-teal-200 transition';
                 btnLanjut.className = 'w-full bg-teal-600 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2';
             }
         }
 
         function processPayment() {
-            // Reset status pengunggahan saat berpindah halaman
             isFileUploaded = false; 
             document.getElementById('upload-preview').classList.add('hidden');
             document.getElementById('upload-placeholder').classList.remove('hidden');
             document.getElementById('receipt-upload').value = '';
             
             let btnC = document.getElementById('btn-confirm-transfer');
-            if(currentBank === 'BSI') { 
+            if (currentBank === 'BSI') { 
                 btnC.className = 'w-full bg-teal-600 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2'; 
             } else { 
                 btnC.className = 'w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2'; 
             }
-            
             showScreen('screen-instruction');
         }
 
         function handleFileUpload(e) {
-            if(e.target.files[0]){
+            if (e.target.files[0]) {
                 const file = e.target.files[0];
-                
-                // Mencegah unggah file sembarangan
                 if (!file.type.match('image.*')) { 
                     showMessageBox('Peringatan', 'Hanya diperbolehkan mengunggah file gambar (PNG, JPG, JPEG).', 'fa-exclamation-triangle', 'bg-orange-50 text-accent'); 
                     e.target.value = ''; 
@@ -1574,19 +1634,17 @@
         }
 
         async function confirmInstruction() {
-            if(!isFileUploaded) { 
+            if (!isFileUploaded) { 
                 showMessageBox('Peringatan', 'Mohon unggah bukti transfer.', 'fa-exclamation-triangle', 'bg-red-50 text-danger'); 
                 return; 
             }
             
             showMessageBox('Memproses...', 'Mengunggah bukti & mengirim data ke server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             
-            // Merangkai ID Transaksi
             let txId = 'SDG-' + Math.floor(100000 + Math.random() * 900000);
             let publicUrl = "";
 
             try {
-                // Eksekusi Unggah Foto ke Supabase Storage
                 const fileInput = document.getElementById('receipt-upload'); 
                 const file = fileInput.files[0];
                 const fileExt = file.name.split('.').pop(); 
@@ -1594,19 +1652,19 @@
                 
                 const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/bukti_tf/${cleanFileName}`, { 
                     method: 'POST', 
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': file.type }, 
+                    headers: { 
+                        'apikey': SUPABASE_KEY, 
+                        'Authorization': `Bearer ${SUPABASE_KEY}`, 
+                        'Content-Type': file.type 
+                    }, 
                     body: file 
                 });
                 
-                if(!uploadRes.ok) { 
-                    const err = await uploadRes.json(); 
-                    throw new Error("Penyimpanan Foto Gagal: " + (err.message || "Pastikan Bucket 'bukti_tf' sudah diatur public.")); 
+                if (!uploadRes.ok) {
+                    throw new Error("Penyimpanan Foto Gagal."); 
                 }
-                
-                // Mengambil URL Publik Struk
                 publicUrl = `${SUPABASE_URL}/storage/v1/object/public/bukti_tf/${cleanFileName}`;
                 
-                // Membentuk Skema Laporan Transaksi untuk Supabase
                 let dbPayload = {
                     id: txId, 
                     token: currentStudentToken, 
@@ -1644,35 +1702,32 @@
                     "donasiSosial": paymentDataPayload.donasiSosial || 0
                 };
 
-                // Lempar Data ke Tabel Transaksi
                 const txInsertRes = await fetch(`${SUPABASE_URL}/rest/v1/transactions`, { 
                     method: 'POST', 
                     headers: { ...HEADERS, 'Prefer': 'return=minimal' }, 
                     body: JSON.stringify(dbPayload) 
                 });
                 
-                if(!txInsertRes.ok) { 
-                    const err = await txInsertRes.json(); 
-                    throw new Error("Database Gagal: " + (err.message || "Pastikan tabel/kolom sudah sesuai.")); 
+                if (!txInsertRes.ok) {
+                    throw new Error("Database Gagal."); 
                 }
 
                 closeMessageBox();
                 
-                // Konstruksi Tampilan Resi (Success Screen)
                 document.getElementById('receipt-tx').innerText = txId; 
                 document.getElementById('receipt-student').innerText = currentStudentName;
                 document.getElementById('receipt-title').innerText = document.getElementById('checkout-title').innerText; 
                 document.getElementById('receipt-total').innerText = document.getElementById('checkout-total').innerText;
                 document.getElementById('receipt-date').innerText = paymentDataPayload.date;
                 
-                // Mengubah status tagihan menjadi pending
                 selectedBillIds.forEach(cb => { 
                     let bd = (currentPaymentType === 'main') ? appDB.bills : appDB.otherBills;
                     let b = bd.find(x => x.id === cb.value); 
-                    if(b) b.status = 'pending'; 
+                    if (b) {
+                        b.status = 'pending'; 
+                    }
                 });
                 
-                // Update histori dengan transaksi baru tanpa harus logout
                 appDB.history.unshift({ 
                     id: txId, 
                     date: paymentDataPayload.date, 
@@ -1685,19 +1740,19 @@
                 showScreen('screen-receipt');
                 
             } catch(e) { 
-                console.error("Error Detail:", e); 
                 showMessageBox('Gagal', e.message || 'Terjadi kesalahan sistem/jaringan.', 'fa-times', 'bg-red-50 text-danger'); 
             }
         }
 
-        function copyToClipboard(text) {
+        function copyToClipboard(text, successMessage = 'Teks berhasil disalin!') {
             let tempInput = document.createElement("input"); 
-            tempInput.value = text;
+            tempInput.value = text; 
             document.body.appendChild(tempInput); 
             tempInput.select(); 
             document.execCommand("copy"); 
             document.body.removeChild(tempInput);
-            showMessageBox('Berhasil', 'Nomor rekening berhasil disalin!', 'fa-check', 'bg-green-50 text-success');
+            
+            showMessageBox('Berhasil', successMessage, 'fa-check', 'bg-green-50 text-success');
         }
 
         function openMenuModal() {
@@ -1722,7 +1777,8 @@
         function renderIcons(sel) {
             let ht = ''; 
             PRESET_ICONS.forEach(i => { 
-                ht += `<div onclick="document.getElementById('edit-menu-icon').value='${i}'; renderIcons('${i}')" class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg border-2 cursor-pointer transition ${i===sel?'border-primary text-primary bg-blue-50':'border-gray-100 text-gray-400'}"><i class="fas ${i}"></i></div>`; 
+                let selectedClass = (i === sel) ? 'border-primary text-primary bg-blue-50' : 'border-gray-100 text-gray-400';
+                ht += `<div onclick="document.getElementById('edit-menu-icon').value='${i}'; renderIcons('${i}')" class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg border-2 cursor-pointer transition ${selectedClass}"><i class="fas ${i}"></i></div>`; 
             });
             document.getElementById('admin-icon-presets').innerHTML = ht; 
             document.getElementById('edit-menu-icon').value = sel;
@@ -1730,7 +1786,7 @@
 
         function editMenu(id) {
             let m = appDB.menuItems.find(x => x.id == id);
-            if(m){ 
+            if (m) { 
                 openMenuModal(); 
                 document.getElementById('modal-menu-title').innerText = 'Edit Menu'; 
                 document.getElementById('edit-menu-id').value = m.id; 
@@ -1753,15 +1809,14 @@
             let url = document.getElementById('edit-menu-url').value; 
             let isActive = document.getElementById('edit-menu-active').checked;
             
-            if(!title) return;
-            
+            if (!title) return;
             showMessageBox('Menyimpan...', 'Sinkronisasi menu ke Supabase...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             
-            if(id) { 
+            if (id) { 
                 let ix = appDB.menuItems.findIndex(x => x.id == id); 
-                appDB.menuItems[ix] = {id:id, title, icon, color, target, url, isActive}; 
+                appDB.menuItems[ix] = { id:id, title, icon, color, target, url, isActive }; 
             } else { 
-                appDB.menuItems.push({id:'M-'+Date.now(), title, icon, color, target, url, isActive}); 
+                appDB.menuItems.push({ id:'M-'+Date.now(), title, icon, color, target, url, isActive }); 
             }
             
             await syncMenuToServer(); 
@@ -1773,11 +1828,11 @@
         async function deleteMenu() { 
             let id = document.getElementById('edit-menu-id').value;
             showMessageBox('Menghapus...', 'Menghapus menu dari Supabase...', 'fa-spinner fa-spin', 'text-danger bg-red-50', '', 'hidden');
-            
             try { 
                 await fetch(`${SUPABASE_URL}/rest/v1/menus?id=eq.${id}`, { method: 'DELETE', headers: HEADERS }); 
-            } catch(e) {}
-            
+            } catch(e) {
+                console.log(e);
+            }
             appDB.menuItems = appDB.menuItems.filter(x => x.id != id); 
             await syncMenuToServer(); 
             closeMessageBox(); 
@@ -1792,7 +1847,7 @@
             document.getElementById('messageIcon').innerHTML = `<i class="fas ${ic} text-xl"></i>`;
             
             let b = document.getElementById('messageBtn'); 
-            if(btnc === 'hidden') {
+            if (btnc === 'hidden') { 
                 b.style.display = 'none'; 
             } else { 
                 b.style.display = 'block'; 
@@ -1817,17 +1872,15 @@
             document.getElementById('loginForm').reset(); 
         }
 
-        // Fitur Ubah Akun Wali Murid (Password Baru)
         async function changePassword() {
             const newPass = document.getElementById('new-password').value;
-            // Validasi: Harus minimal 6 karakter, mengandung huruf, dan mengandung angka.
+            // Wajib huruf dan angka, minimal 6 karakter
             const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
             
             if (!regex.test(newPass)) { 
                 showMessageBox('Peringatan', 'Password minimal 6 karakter dan harus berupa kombinasi huruf dan angka.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent'); 
                 return; 
             }
-            
             showMessageBox('Memproses...', 'Menyimpan password baru ke database...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             
             try {
@@ -1836,24 +1889,24 @@
                     headers: { ...HEADERS, 'Prefer': 'return=minimal' }, 
                     body: JSON.stringify({ token: newPass }) 
                 });
-                if (!res.ok) throw new Error("Gagal update");
+                
+                if (!res.ok) {
+                    throw new Error("Gagal update");
+                }
                 
                 currentStudentToken = newPass; 
                 document.getElementById('new-password').value = ''; 
                 showMessageBox('Berhasil', 'Password berhasil diperbarui!', 'fa-check', 'bg-green-50 text-success');
-                
             } catch (error) { 
                 showMessageBox('Gagal', 'Terjadi kesalahan jaringan saat menyimpan password.', 'fa-times', 'bg-red-50 text-danger'); 
             }
         }
 
-        // Fungsi Segarkan Data tanpa Log Out
         async function refreshData() {
-            if(appDB.userRole !== 'student' || !currentStudentNIS) return;
-            
+            if (appDB.userRole !== 'student' || !currentStudentNIS) return;
             let activeScreenId = 'screen-home';
             document.querySelectorAll('.screen').forEach(el => { 
-                if(el.classList.contains('active')) activeScreenId = el.id; 
+                if (el.classList.contains('active')) activeScreenId = el.id; 
             });
             
             showMessageBox('Menyegarkan...', 'Memperbarui data tagihan & riwayat...', 'fa-sync fa-spin', 'text-primary bg-blue-50', '', 'hidden');
@@ -1862,8 +1915,11 @@
                 const studentRes = await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${currentStudentNIS}&select=*`, { headers: HEADERS });
                 const students = await studentRes.json();
                 
-                if(students && students.length > 0) {
+                if (students && students.length > 0) {
                     const student = students[0];
+                    appDB.currentStudentData = student; 
+                    
+                    // Menggabungkan nama kelas
                     let namaKelasAsli = student.namaKelas || ""; 
                     currentStudentClass = namaKelasAsli ? `${student.kelas} ${namaKelasAsli}` : student.kelas;
 
@@ -1872,25 +1928,25 @@
                     appDB.history = [];
                     
                     mapColsMain.forEach(c => {
-                        if(student[c.db]) { 
+                        if (student[c.db]) { 
                             let amt = parseInt(student[c.db]); 
-                            if(!isNaN(amt) && amt > 0) {
+                            if (!isNaN(amt) && amt > 0) {
                                 appDB.bills.push({ id: 'B-'+c.code, code: c.code, title: c.title, amount: amt, status: 'unpaid' }); 
                             }
                         }
                     });
                     
                     mapColsOther.forEach(c => {
-                        if(student[c.db]) { 
+                        if (student[c.db]) { 
                             let amt = parseInt(student[c.db]); 
-                            if(!isNaN(amt) && amt > 0) {
+                            if (!isNaN(amt) && amt > 0) {
                                 appDB.otherBills.push({ id: 'B-'+c.code, code: c.code, title: c.title, amount: amt, status: 'unpaid' }); 
                             }
                         }
                     });
 
                     const txRes = await fetch(`${SUPABASE_URL}/rest/v1/transactions?nis=eq.${currentStudentNIS}&order=date.desc`, { headers: HEADERS });
-                    if(txRes.ok) {
+                    if (txRes.ok) {
                         const transactions = await txRes.json();
                         transactions.forEach(tx => {
                             let tot = 0; 
@@ -1906,19 +1962,18 @@
                             }
 
                             mapColsMain.forEach(c => {
-                                if(tx[c.db]) { 
+                                if (tx[c.db]) { 
                                     let amt = parseInt(tx[c.db]); 
-                                    if(amt > 0) { 
+                                    if (amt > 0) { 
                                         tot += amt; 
                                         let bTitle = c.title;
-                                        if(c.code === 'spp' && tx.ketSpp) bTitle += ` (${tx.ketSpp})`;
-                                        if(c.code === 'tahfidzPlus' && tx.ketTahfidzPlus) bTitle += ` (${tx.ketTahfidzPlus})`;
-                                        if(c.code === 'tahfidz' && tx.ketTahfidz) bTitle += ` (${tx.ketTahfidz})`;
-                                        
+                                        if (c.code === 'spp' && tx.ketSpp) bTitle += ` (${tx.ketSpp})`;
+                                        if (c.code === 'tahfidzPlus' && tx.ketTahfidzPlus) bTitle += ` (${tx.ketTahfidzPlus})`;
+                                        if (c.code === 'tahfidz' && tx.ketTahfidz) bTitle += ` (${tx.ketTahfidz})`;
                                         det.push({ title: bTitle, amount: amt }); 
                                         let b = appDB.bills.find(x => x.code === c.code); 
-                                        if(b) { 
-                                            if(txStatus === 'success') b.status = 'paid'; 
+                                        if (b) { 
+                                            if (txStatus === 'success') b.status = 'paid'; 
                                             else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending'; 
                                         } 
                                     } 
@@ -1926,21 +1981,20 @@
                             });
                             
                             mapColsOther.forEach(c => {
-                                if(tx[c.db]) { 
+                                if (tx[c.db]) { 
                                     let amt = parseInt(tx[c.db]); 
-                                    if(amt > 0) { 
+                                    if (amt > 0) { 
                                         tot += amt; 
                                         let bTitle = c.title;
-                                        if(c.code === 'icp' && tx.ketIcp) bTitle += ` (${tx.ketIcp})`;
-                                        if(c.code === 'icpSore' && tx.ketIcpSore) bTitle += ` (${tx.ketIcpSore})`;
-                                        if(c.code === 'ajs' && tx.ketAjs) bTitle += ` (${tx.ketAjs})`;
-                                        if(c.code === 'tpq' && tx.ketTpq) bTitle += ` (${tx.ketTpq})`;
-                                        if(c.code === 'olimpiade' && tx.ketOlimpiade) bTitle += ` (${tx.ketOlimpiade})`;
-                                        
+                                        if (c.code === 'icp' && tx.ketIcp) bTitle += ` (${tx.ketIcp})`;
+                                        if (c.code === 'icpSore' && tx.ketIcpSore) bTitle += ` (${tx.ketIcpSore})`;
+                                        if (c.code === 'ajs' && tx.ketAjs) bTitle += ` (${tx.ketAjs})`;
+                                        if (c.code === 'tpq' && tx.ketTpq) bTitle += ` (${tx.ketTpq})`;
+                                        if (c.code === 'olimpiade' && tx.ketOlimpiade) bTitle += ` (${tx.ketOlimpiade})`;
                                         det.push({ title: bTitle, amount: amt }); 
                                         let b = appDB.otherBills.find(x => x.code === c.code); 
-                                        if(b) { 
-                                            if(txStatus === 'success') b.status = 'paid'; 
+                                        if (b) { 
+                                            if (txStatus === 'success') b.status = 'paid'; 
                                             else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending'; 
                                         } 
                                     } 
@@ -1955,8 +2009,16 @@
                                 } 
                             }
                             
-                            if(tot > 0) {
-                                appDB.history.push({ id: tx.id, date: tx.date, title: det.length > 1 ? 'Multi Tagihan' : det[0].title, amount: tot, status: txStatus, details: det, kasir: tx.kasir || '-' });
+                            if (tot > 0) {
+                                appDB.history.push({ 
+                                    id: tx.id, 
+                                    date: tx.date, 
+                                    title: det.length > 1 ? 'Multi Tagihan' : det[0].title, 
+                                    amount: tot, 
+                                    status: txStatus, 
+                                    details: det, 
+                                    kasir: tx.kasir || '-' 
+                                });
                             }
                         });
                     }
@@ -1970,9 +2032,8 @@
 
         function previewReceipt(txId) {
             let h = appDB.history.find(x => x.id === txId); 
-            if(!h) return;
+            if (!h) return;
             
-            // Format HTML khusus agar identik dengan struk printer kasir asli (Thermal 80mm)
             let receiptHTML = `
                 <div style="text-align: center; margin-bottom: 15px;">
                     <img src="https://iili.io/nHwYAuV.png" style="width: 50px; display: block; margin: 0 auto 10px auto; filter: grayscale(100%);">
@@ -2008,7 +2069,6 @@
             const modal = document.getElementById('modal-receipt-preview');
             const content = document.getElementById('modal-receipt-content');
             modal.classList.remove('hidden');
-            
             setTimeout(() => { 
                 modal.classList.remove('opacity-0'); 
                 content.classList.remove('scale-95'); 
@@ -2033,14 +2093,12 @@
             html2canvas(paperWrapper, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
                 paperWrapper.style.backgroundColor = originalBg; 
                 const imgData = canvas.toDataURL('image/png');
-                
                 const link = document.createElement('a'); 
                 link.download = `Struk_SudagaranPay_${currentStudentName.replace(/\s+/g, '_')}_${Date.now()}.png`;
                 link.href = imgData; 
                 document.body.appendChild(link); 
                 link.click(); 
                 document.body.removeChild(link);
-                
                 closeMessageBox();
             }).catch(err => {
                 paperWrapper.style.backgroundColor = originalBg; 
