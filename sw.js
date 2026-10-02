@@ -1,40 +1,42 @@
-const CACHE_NAME = 'sudapay-v1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+const CACHE_NAME = 'sudapay-cache-v1';
+const urlsToCache = [
+  './',
+  './index.html',
+  './manifest.json',
+  'https://iili.io/nHwYAuV.png'
 ];
 
-self.addEventListener('install', (event) => {
+// Install Service Worker
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
   );
-  self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+// Fetch Service Worker (Network first, fallback to cache)
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
+    })
+  );
+});
+
+// Activate Service Worker
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
           }
         })
       );
-    })
-  );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    }).catch(() => {
-      // Fallback offline murni bisa ditambahkan di sini jika butuh
     })
   );
 });
