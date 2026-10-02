@@ -154,7 +154,17 @@
             color: #000;
         }
     </style>
-</head>
+<style>
+  /* Kunci paksa viewport root agar selalu biru pekat tanpa celah */
+  html, body {
+    background-color: #0A2A66 !important;
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important; 
+    margin: 0 !important;
+    padding: 0 !important;
+    overscroll-behavior-y: none; /* Mencegah layar tertarik dan memunculkan warna dasar putih */
+  }
+</style>
 </head>
 <body class="bg-[#0A2A66] font-['Poppins'] text-slate-800 min-h-[100dvh] overflow-x-hidden antialiased">
     
