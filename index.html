@@ -40,9 +40,9 @@
                         sans: ['Poppins', 'sans-serif'] 
                     },
                     boxShadow: { 
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        'float': '0 10px 40px rgba(10, 42, 102, 0.15)',
-                        'card': '0 12px 30px -10px rgba(10, 42, 102, 0.3)'
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.03)',
+                        'float': '0 10px 40px rgba(10, 42, 102, 0.12)',
+                        'card': '0 12px 30px -10px rgba(29, 78, 216, 0.3)'
                     }
                 }
             }
@@ -50,28 +50,25 @@
     </script>
 
     <style>
-        :root {
-            background-color: #0A2A66 !important;
-        }
+        /* RESET DASAR UNTUK MENCEGAH KEBOCORAN WARNA */
         html, body {
-            background-color: #0A2A66 !important;
-            min-height: 100vh !important;
-            min-height: 100dvh !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            overscroll-behavior-y: none;
-            -webkit-text-size-adjust: 100%;
+            background-color: #e2e8f0; /* Latar luar untuk tampilan desktop */
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
             font-family: 'Poppins', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* CONTAINER UTAMA APLIKASI (Area Mobile) */
         #app-container { 
             width: 100%; 
             max-width: 414px; 
             min-height: 100dvh; 
-            background-color: #F8FAFC; 
+            background-color: #F8FAFC; /* Latar dalam aplikasi (Abu-abu sangat muda) */
             position: relative; 
-            box-shadow: 0 0 30px rgba(0,0,0,0.3); 
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1); 
             overflow-x: hidden; 
             overflow-y: auto; 
             scrollbar-width: none; 
@@ -81,14 +78,14 @@
         
         .screen { 
             display: none; 
-            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-            padding-bottom: 120px; 
+            animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+            padding-bottom: 120px; /* Ruang agar konten tidak tertutup bottom nav */
             min-height: 100dvh;
         }
         .screen.active { display: block; }
         
         @keyframes slideUpFade { 
-            from { opacity: 0; transform: translateY(20px); } 
+            from { opacity: 0; transform: translateY(15px); } 
             to { opacity: 1; transform: translateY(0); } 
         }
         @keyframes fadeIn {
@@ -101,7 +98,7 @@
             background: linear-gradient(135deg, #0A2A66 0%, #1D4ED8 100%); 
         }
         .islamic-pattern { 
-            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); 
+            background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px); 
             background-size: 20px 20px; 
             position: absolute; 
             top: 0; left: 0; right: 0; bottom: 0; 
@@ -116,8 +113,8 @@
 
         .glass-nav {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
 
         @page { size: 80mm auto; margin: 0; }
@@ -130,41 +127,41 @@
 </head>
 <body class="text-slate-800 antialiased">
     
-    <div id="app-container" class="mx-auto flex flex-col justify-start">
+    <div id="app-container">
         
-        <!-- LAYAR LOGIN -->
-        <div id="screen-login" class="screen active bg-transparent">
-            <div class="min-h-[100dvh] flex flex-col justify-center px-6 relative bg-banking-gradient">
-                <div class="islamic-pattern"></div>
-                
-                <div class="z-10 w-full max-w-sm mx-auto bg-white p-8 rounded-[32px] shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 rounded-bl-full -z-10"></div>
+        <!-- ================= LAYAR LOGIN ================= -->
+        <div id="screen-login" class="screen active bg-banking-gradient relative">
+            <div class="islamic-pattern opacity-50"></div>
+            <div class="min-h-[100dvh] flex flex-col justify-center px-6 relative z-10">
+                <!-- White Card Login -->
+                <div class="bg-white p-8 rounded-[32px] shadow-2xl relative w-full mx-auto overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-50/50 rounded-full -z-10 blur-xl"></div>
                     
-                    <div class="text-center mb-10">
-                        <img src="https://iili.io/nHwYAuV.png" alt="Sudagaran Logo" class="w-20 h-auto mx-auto mb-5 object-contain">
+                    <div class="text-center mb-10 mt-2">
+                        <img src="https://iili.io/nHwYAuV.png" alt="Sudagaran Logo" class="w-20 h-auto mx-auto mb-4 object-contain drop-shadow-sm">
                         <h1 class="text-2xl font-bold text-primary tracking-tight">Sudagaran Pay</h1>
-                        <p class="text-xs text-gray-500 mt-1.5 font-medium">Layanan Pembayaran Digital Sekolah</p>
+                        <p class="text-xs text-gray-500 mt-1 font-medium">Layanan Pembayaran Digital Sekolah</p>
                     </div>
 
                     <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
-                        <div class="mb-5 relative">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">Nomor Induk Siswa</label>
+                        <div class="mb-5">
+                            <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">Nomor Induk Siswa</label>
                             <div class="relative flex items-center">
                                 <span class="absolute left-4 text-gray-400"><i class="fas fa-user text-lg"></i></span>
-                                <input type="text" id="loginId" class="w-full pl-12 pr-4 py-4 rounded-[20px] bg-gray-50 border border-transparent focus:bg-white focus:border-secondary focus:ring-4 focus:ring-blue-50 transition text-sm font-semibold outline-none" placeholder="Masukkan NIS" required>
+                                <input type="text" id="loginId" class="w-full pl-12 pr-4 py-4 rounded-[16px] bg-gray-50 border border-gray-100 focus:bg-white focus:border-secondary focus:ring-2 focus:ring-blue-100 transition text-sm font-semibold outline-none" placeholder="Masukkan NIS" required>
                             </div>
                         </div>
-                        <div class="mb-8 relative">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">Kata Sandi</label>
+                        <div class="mb-8">
+                            <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">Kata Sandi</label>
                             <div class="relative flex items-center">
                                 <span class="absolute left-4 text-gray-400"><i class="fas fa-lock text-lg"></i></span>
-                                <input type="password" id="loginPass" class="w-full pl-12 pr-12 py-4 rounded-[20px] bg-gray-50 border border-transparent focus:bg-white focus:border-secondary focus:ring-4 focus:ring-blue-50 transition text-sm font-semibold outline-none" placeholder="Masukkan Sandi" required>
+                                <input type="password" id="loginPass" class="w-full pl-12 pr-12 py-4 rounded-[16px] bg-gray-50 border border-gray-100 focus:bg-white focus:border-secondary focus:ring-2 focus:ring-blue-100 transition text-sm font-semibold outline-none" placeholder="Masukkan Sandi" required>
                                 <button type="button" onclick="togglePassword()" class="absolute right-4 text-gray-400 hover:text-primary transition">
                                     <i class="fas fa-eye" id="eyeIcon"></i>
                                 </button>
                             </div>
                         </div>
-                        <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-[20px] transition shadow-card btn-press flex justify-center items-center gap-2">
+                        <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-[16px] transition shadow-[0_8px_20px_rgba(10,42,102,0.25)] btn-press flex justify-center items-center gap-2">
                             Masuk <i class="fas fa-arrow-right text-sm"></i>
                         </button>
                     </form>
@@ -172,438 +169,429 @@
             </div>
         </div>
 
-        <!-- LAYAR DASHBOARD / HOME -->
-        <div id="screen-home" class="screen bg-bglight relative">
-            <div class="absolute top-0 w-full h-[280px] bg-primary -z-10 rounded-b-[40px]"></div>
-            
-            <!-- Header Profil -->
-            <div class="px-6 pt-12 pb-6 flex justify-between items-center text-white relative z-10">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md p-1 border border-white/20 flex items-center justify-center">
-                        <img src="https://iili.io/nHwYAuV.png" alt="Avatar" class="w-full h-full object-contain drop-shadow-md brightness-0 invert">
-                    </div>
-                    <div>
-                        <p class="text-[11px] text-blue-200 font-medium tracking-wide">Assalamu'alaikum,</p>
-                        <h2 class="text-sm font-bold tracking-wider wrap-text uppercase leading-tight mt-0.5" id="home-user-name">Ayah/Bunda</h2>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="refreshData()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 hover:bg-white/20 transition btn-press">
-                        <i class="fas fa-sync-alt text-white text-sm"></i>
-                    </button>
-                    <button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 hover:bg-white/20 transition relative btn-press">
-                        <i class="fas fa-bell text-white text-sm"></i>
-                        <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-accent border-2 border-primary rounded-full"></span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tag Identitas -->
-            <div class="px-6 mb-4 relative z-10">
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-full py-2 px-4 inline-flex items-center gap-2.5 shadow-sm">
-                    <i class="fas fa-user-graduate text-blue-200 text-xs"></i>
-                    <span id="home-student-info" class="text-xs text-white font-medium wrap-text tracking-wide">Siswa Info</span>
-                </div>
-            </div>
-
-            <!-- Kartu Finansial Utama -->
-            <div class="px-5 relative z-20">
-                <div class="bg-banking-gradient rounded-[24px] p-6 text-white shadow-card relative overflow-hidden border border-blue-400/30">
-                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                    <div class="absolute -left-8 -bottom-8 w-24 h-24 bg-blue-400/20 rounded-full blur-xl"></div>
-                    
-                    <div class="relative z-10 flex justify-between items-start mb-2">
+        <!-- ================= LAYAR BERANDA (DASHBOARD) ================= -->
+        <div id="screen-home" class="screen bg-bglight">
+            <!-- Header Profil (Putih Bersih ala Livin) -->
+            <div class="bg-white rounded-b-[32px] px-6 pt-10 pb-20 shadow-sm relative z-10">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full border-2 border-gray-100 p-0.5 shadow-sm bg-white overflow-hidden">
+                            <img src="https://iili.io/nHwYAuV.png" alt="Avatar" class="w-full h-full object-contain">
+                        </div>
                         <div>
-                            <p class="text-xs text-blue-200 font-medium tracking-wide">Total Tagihan Aktif</p>
-                            <div class="flex items-baseline gap-1 mt-1">
-                                <h3 class="text-3xl font-bold tracking-tight drop-shadow-sm" id="home-total-bill">Rp 0</h3>
+                            <p class="text-[10px] text-gray-500 font-medium mb-0.5">Assalamu'alaikum,</p>
+                            <h2 class="text-sm font-bold text-primary wrap-text leading-tight uppercase" id="home-user-name">Ayah/Bunda</h2>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="refreshData()" class="w-9 h-9 rounded-full bg-gray-50 text-gray-500 border border-gray-100 hover:text-primary hover:bg-blue-50 transition btn-press flex items-center justify-center">
+                            <i class="fas fa-sync-alt text-xs"></i>
+                        </button>
+                        <button class="w-9 h-9 rounded-full bg-gray-50 text-gray-500 border border-gray-100 hover:text-primary hover:bg-blue-50 transition relative btn-press flex items-center justify-center">
+                            <i class="fas fa-bell text-xs"></i>
+                            <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Info Siswa -->
+                <div class="inline-flex items-center gap-2 bg-blue-50/50 border border-blue-100 text-secondary px-3 py-1.5 rounded-lg">
+                    <i class="fas fa-user-graduate text-[10px]"></i>
+                    <span id="home-student-info" class="text-[11px] font-semibold tracking-wide">Info Siswa</span>
+                </div>
+            </div>
+
+            <!-- Kartu Finansial Utama (Melayang di atas batas header) -->
+            <div class="px-5 -mt-14 relative z-20">
+                <div class="bg-banking-gradient rounded-[24px] p-6 text-white shadow-card relative overflow-hidden border border-blue-400/20">
+                    <div class="islamic-pattern opacity-10"></div>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    
+                    <div class="relative z-10">
+                        <p class="text-[11px] text-blue-200 font-medium tracking-wide mb-1 uppercase">Total Tagihan Aktif</p>
+                        <h3 class="text-[32px] font-bold tracking-tight mb-4 drop-shadow-sm" id="home-total-bill">Rp 0</h3>
+                        
+                        <div class="mb-5">
+                            <div id="home-bill-status" class="inline-flex items-center gap-1.5 bg-white/20 border border-white/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm">
+                                <i class="fas fa-circle-notch fa-spin"></i> Memuat...
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 border-t border-white/10 pt-4 mt-2">
+                            <div>
+                                <p class="text-[10px] text-blue-200 font-medium mb-0.5" id="label-tunggakan">Tagihan Bulan Ini</p>
+                                <p class="text-sm font-bold tracking-wide" id="home-tunggakan">0 Item</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] text-blue-200 font-medium mb-0.5">Terakhir Bayar</p>
+                                <p class="text-sm font-bold tracking-wide line-clamp-1" id="home-last-paid">-</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="mb-5 relative z-10">
-                        <div id="home-bill-status" class="inline-flex items-center gap-1.5 bg-white/20 border border-white/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm">
-                            <i class="fas fa-circle-notch fa-spin"></i> Memuat...
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 relative z-10 border-t border-white/20 pt-4 mt-2">
-                        <div>
-                            <p class="text-[10px] text-blue-200 font-medium mb-0.5" id="label-tunggakan">Tagihan Bulan Ini</p>
-                            <p class="font-bold text-sm tracking-wide" id="home-tunggakan">0 Item</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[10px] text-blue-200 font-medium mb-0.5">Terakhir Bayar</p>
-                            <p class="font-bold text-sm tracking-wide line-clamp-1" id="home-last-paid">-</p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Layanan Cepat Grid -->
+            <!-- Grid Layanan Cepat (Quick Actions) -->
             <div class="px-6 mt-8">
                 <h3 class="text-sm font-bold text-gray-800 mb-5 tracking-tight px-1">Layanan Sekolah</h3>
                 <div id="home-menu-grid" class="grid grid-cols-4 gap-y-6 gap-x-2">
-                    <!-- JS Rendered Quick Actions -->
+                    <!-- Dirender oleh JavaScript -->
                 </div>
             </div>
         </div>
 
-        <!-- LAYAR TAGIHAN SAYA (BILLS) -->
+        <!-- ================= LAYAR TAGIHAN UTAMA (BRI) ================= -->
         <div id="screen-bills" class="screen bg-bglight">
-            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showScreen('screen-home')" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-full transition btn-press">
-                    <i class="fas fa-arrow-left text-lg"></i>
+            <div class="bg-white px-6 py-4 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showScreen('screen-home')" class="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100 hover:text-primary transition btn-press">
+                    <i class="fas fa-arrow-left text-sm"></i>
                 </button>
-                <h2 class="text-lg font-bold text-primary tracking-tight">Tagihan Rutin</h2>
+                <h2 class="text-base font-bold text-primary tracking-tight">Tagihan Rutin</h2>
             </div>
             
-            <div class="p-6">
-                <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 mb-6 flex gap-3 items-start shadow-sm" id="bill-warning-box-main">
-                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 text-secondary shadow-sm">
-                        <i class="fas fa-info text-sm"></i>
+            <div class="p-5">
+                <div class="bg-blue-50/70 border border-blue-100 rounded-[16px] p-4 mb-5 flex gap-3 items-start shadow-sm" id="bill-warning-box-main">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 text-secondary shadow-sm mt-0.5">
+                        <i class="fas fa-info text-xs"></i>
                     </div>
                     <div>
-                        <h4 class="text-sm font-bold text-primary">Pembayaran via BRI</h4>
-                        <p class="text-xs text-gray-600 mt-1.5 leading-relaxed">Pilih periode tagihan rutin (SPP, BPS) yang ingin dibayarkan.</p>
+                        <h4 class="text-sm font-bold text-primary mb-1">Pembayaran via BRI</h4>
+                        <p class="text-[11px] text-gray-600 leading-relaxed">Pilih periode tagihan rutin (SPP, BPS) yang ingin dibayarkan.</p>
                     </div>
                 </div>
                 
-                <label id="container-select-all-main" class="flex items-center gap-3 mb-5 px-2 hidden cursor-pointer group">
-                    <div class="relative flex items-center justify-center w-6 h-6">
-                        <input type="checkbox" id="chk-select-all-main" onchange="toggleSelectAll(this, 'main')" class="peer appearance-none w-6 h-6 border-2 border-gray-300 rounded-md checked:bg-secondary checked:border-secondary transition cursor-pointer">
-                        <i class="fas fa-check text-white absolute text-xs opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
+                <label id="container-select-all-main" class="flex items-center gap-3 mb-4 px-2 hidden cursor-pointer group">
+                    <div class="relative flex items-center justify-center w-5 h-5">
+                        <input type="checkbox" id="chk-select-all-main" onchange="toggleSelectAll(this, 'main')" class="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded md checked:bg-secondary checked:border-secondary transition cursor-pointer">
+                        <i class="fas fa-check text-white absolute text-[10px] opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
                     </div>
-                    <span class="text-sm font-bold text-gray-700 group-hover:text-primary transition">Pilih Semua Tagihan</span>
+                    <span class="text-sm font-bold text-gray-700 group-hover:text-primary transition">Pilih Semua</span>
                 </label>
 
                 <div class="space-y-4" id="bills-container-main"></div>
             </div>
 
-            <!-- Panel Bawah -->
-            <div class="fixed bottom-0 w-full max-w-[414px] bg-white border-t border-gray-100 p-5 pb-8 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] rounded-t-[32px]">
-                <div class="flex justify-between items-center mb-4 px-2">
-                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Pembayaran</span>
-                    <span class="text-2xl font-bold text-primary tracking-tight" id="bills-selected-total-main">Rp 0</span>
+            <div class="fixed bottom-0 w-full max-w-[414px] bg-white border-t border-gray-100 p-5 pb-8 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] rounded-t-[24px]">
+                <div class="flex justify-between items-center mb-4 px-1">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Bayar</span>
+                    <span class="text-xl font-bold text-primary tracking-tight" id="bills-selected-total-main">Rp 0</span>
                 </div>
-                <button onclick="processSelectedBills('main')" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-[20px] shadow-card transition disabled:opacity-50 disabled:shadow-none btn-press flex justify-center items-center gap-2" id="btn-pay-selected-main" disabled>
-                    Lanjutkan Pembayaran <i class="fas fa-arrow-right"></i>
+                <button onclick="processSelectedBills('main')" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-[16px] shadow-[0_8px_20px_rgba(10,42,102,0.2)] transition disabled:opacity-50 disabled:shadow-none btn-press flex justify-center items-center gap-2" id="btn-pay-selected-main" disabled>
+                    Lanjutkan <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             </div>
         </div>
 
-        <!-- LAYAR TAGIHAN LAINNYA (BSI) -->
+        <!-- ================= LAYAR TAGIHAN TAMBAHAN (BSI) ================= -->
         <div id="screen-other-bills" class="screen bg-bglight">
-            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showScreen('screen-home')" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-full transition btn-press">
-                    <i class="fas fa-arrow-left text-lg"></i>
+            <div class="bg-white px-6 py-4 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showScreen('screen-home')" class="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100 hover:text-primary transition btn-press">
+                    <i class="fas fa-arrow-left text-sm"></i>
                 </button>
-                <h2 class="text-lg font-bold text-primary tracking-tight">Tagihan Tambahan</h2>
+                <h2 class="text-base font-bold text-primary tracking-tight">Tagihan Tambahan</h2>
             </div>
             
-            <div class="p-6">
-                <div class="bg-teal-50/50 border border-teal-100 rounded-2xl p-4 mb-6 flex gap-3 items-start shadow-sm" id="bill-warning-box-other">
-                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 text-teal-600 shadow-sm">
-                        <i class="fas fa-shield-alt text-sm"></i>
+            <div class="p-5">
+                <div class="bg-teal-50/70 border border-teal-100 rounded-[16px] p-4 mb-5 flex gap-3 items-start shadow-sm" id="bill-warning-box-other">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 text-teal-600 shadow-sm mt-0.5">
+                        <i class="fas fa-shield-alt text-xs"></i>
                     </div>
                     <div>
-                        <h4 class="text-sm font-bold text-teal-900">Pembayaran via BSI</h4>
-                        <p class="text-xs text-teal-700 mt-1.5 leading-relaxed">Khusus untuk tagihan tambahan (TPQ, ICP, AJS, Olimpiade).</p>
+                        <h4 class="text-sm font-bold text-teal-900 mb-1">Pembayaran via BSI</h4>
+                        <p class="text-[11px] text-teal-700 leading-relaxed">Khusus untuk tagihan tambahan (TPQ, ICP, AJS, Olimpiade).</p>
                     </div>
                 </div>
                 
-                <label id="container-select-all-other" class="flex items-center gap-3 mb-5 px-2 hidden cursor-pointer group">
-                    <div class="relative flex items-center justify-center w-6 h-6">
-                        <input type="checkbox" id="chk-select-all-other" onchange="toggleSelectAll(this, 'other')" class="peer appearance-none w-6 h-6 border-2 border-gray-300 rounded-md checked:bg-teal-600 checked:border-teal-600 transition cursor-pointer">
-                        <i class="fas fa-check text-white absolute text-xs opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
+                <label id="container-select-all-other" class="flex items-center gap-3 mb-4 px-2 hidden cursor-pointer group">
+                    <div class="relative flex items-center justify-center w-5 h-5">
+                        <input type="checkbox" id="chk-select-all-other" onchange="toggleSelectAll(this, 'other')" class="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded md checked:bg-teal-600 checked:border-teal-600 transition cursor-pointer">
+                        <i class="fas fa-check text-white absolute text-[10px] opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
                     </div>
-                    <span class="text-sm font-bold text-gray-700 group-hover:text-teal-700 transition">Pilih Semua Tagihan Tambahan</span>
+                    <span class="text-sm font-bold text-gray-700 group-hover:text-teal-700 transition">Pilih Semua</span>
                 </label>
 
                 <div class="space-y-4" id="bills-container-other"></div>
             </div>
 
-            <div class="fixed bottom-0 w-full max-w-[414px] bg-white border-t border-gray-100 p-5 pb-8 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] rounded-t-[32px]">
-                <div class="flex justify-between items-center mb-4 px-2">
-                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Pembayaran</span>
-                    <span class="text-2xl font-bold text-teal-700 tracking-tight" id="bills-selected-total-other">Rp 0</span>
+            <div class="fixed bottom-0 w-full max-w-[414px] bg-white border-t border-gray-100 p-5 pb-8 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] rounded-t-[24px]">
+                <div class="flex justify-between items-center mb-4 px-1">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Bayar</span>
+                    <span class="text-xl font-bold text-teal-700 tracking-tight" id="bills-selected-total-other">Rp 0</span>
                 </div>
-                <button onclick="processSelectedBills('other')" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-[20px] shadow-[0_10px_25px_-5px_rgba(13,148,136,0.4)] transition disabled:opacity-50 disabled:shadow-none btn-press flex justify-center items-center gap-2" id="btn-pay-selected-other" disabled>
-                    Lanjutkan ke BSI <i class="fas fa-arrow-right"></i>
+                <button onclick="processSelectedBills('other')" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-[16px] shadow-[0_8px_20px_rgba(13,148,136,0.3)] transition disabled:opacity-50 disabled:shadow-none btn-press flex justify-center items-center gap-2" id="btn-pay-selected-other" disabled>
+                    Lanjutkan ke BSI <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             </div>
         </div>
 
-        <!-- LAYAR RIWAYAT TRANSAKSI -->
+        <!-- ================= LAYAR RIWAYAT ================= -->
         <div id="screen-history" class="screen bg-bglight">
-            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
-                <h2 class="text-lg font-bold text-primary tracking-tight">Riwayat Transaksi</h2>
-                <button onclick="refreshData()" class="w-10 h-10 bg-gray-50 text-gray-600 rounded-full flex items-center justify-center hover:bg-blue-50 hover:text-primary transition btn-press">
-                    <i class="fas fa-sync-alt"></i>
+            <div class="bg-white px-6 py-4 shadow-sm sticky top-0 z-30 flex justify-between items-center">
+                <h2 class="text-base font-bold text-primary tracking-tight">Riwayat Transaksi</h2>
+                <button onclick="refreshData()" class="w-9 h-9 bg-gray-50 text-gray-600 rounded-full flex items-center justify-center border border-gray-100 hover:bg-blue-50 hover:text-primary transition btn-press">
+                    <i class="fas fa-sync-alt text-xs"></i>
                 </button>
             </div>
             
-            <div class="p-6">
-                <div class="space-y-4" id="history-container">
-                    <!-- JS Rendered History Cards -->
+            <div class="p-5">
+                <div class="space-y-3" id="history-container">
+                    <!-- Rendered by JS -->
                 </div>
             </div>
         </div>
         
-        <!-- LAYAR PROFIL -->
+        <!-- ================= LAYAR PROFIL / AKUN ================= -->
         <div id="screen-profile" class="screen bg-bglight">
-            <div class="bg-banking-gradient pt-14 pb-24 px-6 text-center text-white relative rounded-b-[40px] shadow-sm">
+            <div class="bg-banking-gradient pt-10 pb-20 px-6 text-center text-white relative rounded-b-[32px] shadow-sm">
                  <div class="islamic-pattern opacity-10"></div>
                  <div class="relative z-10">
-                    <div class="w-24 h-24 bg-white rounded-full p-1.5 shadow-card mx-auto mb-4 flex items-center justify-center overflow-hidden">
+                    <div class="w-20 h-20 bg-white rounded-full p-1 shadow-card mx-auto mb-3 flex items-center justify-center overflow-hidden">
                         <img src="https://iili.io/nHwYAuV.png" alt="Logo" class="w-full h-full object-contain">
                     </div>
-                    <h2 class="text-xl font-bold wrap-text px-4 tracking-tight uppercase" id="profile-name">Ayah/Bunda</h2>
-                    <p class="text-xs text-blue-200 mt-1 wrap-text font-medium" id="profile-student">Siswa</p>
+                    <h2 class="text-lg font-bold wrap-text px-4 tracking-tight uppercase" id="profile-name">Nama</h2>
+                    <p class="text-[11px] text-blue-200 mt-1 wrap-text font-medium tracking-wide" id="profile-student">Siswa</p>
                  </div>
             </div>
             
-            <div class="px-6 -mt-12 relative z-20 space-y-5">
-                
-                <div class="bg-white rounded-[24px] shadow-soft border border-gray-100 p-6">
-                    <h3 class="text-sm font-bold text-primary mb-5 flex items-center gap-3 border-b border-gray-50 pb-4">
+            <div class="px-5 -mt-10 relative z-20 space-y-4">
+                <div class="bg-white rounded-[20px] shadow-soft border border-gray-100 p-5">
+                    <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-3 border-b border-gray-50 pb-3">
                         <div class="w-8 h-8 rounded-full bg-blue-50 text-secondary flex items-center justify-center"><i class="fas fa-lock text-sm"></i></div> 
-                        Pengaturan Keamanan
+                        Keamanan
                     </h3>
-                    <div class="mb-5 relative">
+                    <div class="mb-4 relative">
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">Password Baru</label>
                         <div class="relative flex items-center">
-                            <input type="password" id="new-password" class="w-full pl-4 pr-12 py-3.5 rounded-[16px] bg-gray-50 border border-transparent focus:border-secondary focus:bg-white focus:ring-4 focus:ring-blue-50 text-sm outline-none transition font-medium" placeholder="Min. 6 huruf & angka">
+                            <input type="password" id="new-password" class="w-full pl-4 pr-12 py-3.5 rounded-[12px] bg-gray-50 border border-gray-100 focus:bg-white focus:border-secondary focus:ring-2 focus:ring-blue-50 text-sm outline-none transition font-medium" placeholder="Min. 6 huruf & angka">
                             <button type="button" onclick="toggleNewPassword()" class="absolute right-4 text-gray-400 hover:text-primary transition">
                                 <i class="fas fa-eye" id="eyeIconNew"></i>
                             </button>
                         </div>
                     </div>
-                    <button onclick="changePassword()" class="w-full bg-primary hover:bg-secondary text-white font-bold py-3.5 rounded-[16px] shadow-card transition text-sm btn-press">
-                        Simpan Password Baru
+                    <button onclick="changePassword()" class="w-full bg-primary hover:bg-secondary text-white font-bold py-3.5 rounded-[12px] shadow-sm transition text-sm btn-press">
+                        Simpan Perubahan
                     </button>
                 </div>
                 
-                <button onclick="logout()" class="w-full bg-red-50/80 border border-red-100 text-danger hover:bg-red-100 font-bold py-4 rounded-[20px] transition shadow-sm flex items-center justify-center gap-2 btn-press">
+                <button onclick="logout()" class="w-full bg-red-50 border border-red-100 text-danger hover:bg-red-100 font-bold py-4 rounded-[20px] transition shadow-sm flex items-center justify-center gap-2 btn-press">
                     <i class="fas fa-power-off"></i> Keluar Aplikasi
                 </button>
             </div>
         </div>
 
-        <!-- SISAKAN LAYAR LAINNYA (CHECKOUT, INSTRUCTION, DLL) DENGAN STRUKTUR DASAR -->
-        <!-- Karena batasan teks, struktur JS tetap sama, layar checkout & struk saya pertahankan strukturnya agar fitur tetap jalan 100% -->
+        <!-- ================= LAYAR RUPA-RUPA ================= -->
         <div id="screen-rupa" class="screen bg-bglight">
-            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showScreen('screen-home')" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-full transition btn-press">
-                    <i class="fas fa-arrow-left text-lg"></i>
+            <div class="bg-white px-6 py-4 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showScreen('screen-home')" class="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100 transition btn-press">
+                    <i class="fas fa-arrow-left text-sm"></i>
                 </button>
-                <h2 class="text-lg font-bold text-primary tracking-tight">Pembayaran Bebas</h2>
+                <h2 class="text-base font-bold text-primary tracking-tight">Pembayaran Bebas</h2>
             </div>
             
-            <div class="p-6">
-                <div class="bg-gradient-to-r from-teal-500 to-teal-600 rounded-[24px] p-6 mb-6 text-white shadow-card relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                    <div class="flex gap-4 items-start relative z-10">
-                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm shadow-sm">
-                            <i class="fas fa-edit text-xl"></i>
+            <div class="p-5">
+                <div class="bg-gradient-to-r from-teal-500 to-teal-600 rounded-[20px] p-5 mb-5 text-white shadow-sm relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full blur-xl -mr-10 -mt-10"></div>
+                    <div class="flex gap-4 items-center relative z-10">
+                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm shadow-sm border border-white/20">
+                            <i class="fas fa-edit text-lg"></i>
                         </div>
                         <div>
                             <h4 class="text-sm font-bold">Transfer Bebas (BSI)</h4>
-                            <p class="text-[11px] text-teal-50 mt-1 leading-relaxed">Gunakan form ini untuk transaksi di luar tagihan tetap.</p>
+                            <p class="text-[10px] text-teal-50 mt-0.5 leading-relaxed">Untuk transaksi di luar tagihan tetap.</p>
                         </div>
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 mb-8">
-                    <div class="mb-5">
+                <div class="bg-white rounded-[20px] shadow-soft border border-gray-100 p-5 mb-6">
+                    <div class="mb-4">
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Tujuan Pembayaran</label>
-                        <input type="text" id="rupa-title" class="w-full px-4 py-4 rounded-[16px] bg-gray-50 border border-transparent focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-50 text-sm font-medium outline-none transition" placeholder="Contoh: Beli Seragam">
+                        <input type="text" id="rupa-title" class="w-full px-4 py-3.5 rounded-[12px] bg-gray-50 border border-gray-100 focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-50 text-sm font-medium outline-none transition" placeholder="Contoh: Beli Seragam">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Nominal (Rp)</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-bold">Rp</span>
-                            <input type="number" id="rupa-amount" class="w-full pl-12 pr-4 py-4 rounded-[16px] bg-gray-50 border border-transparent focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-50 text-lg font-bold outline-none transition" placeholder="0">
+                            <input type="number" id="rupa-amount" class="w-full pl-12 pr-4 py-3.5 rounded-[12px] bg-gray-50 border border-gray-100 focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-50 text-base font-bold outline-none transition" placeholder="0">
                         </div>
                     </div>
                 </div>
                 
-                <button onclick="processRupaPayment()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-[20px] shadow-[0_10px_25px_-5px_rgba(13,148,136,0.4)] transition btn-press flex justify-center items-center gap-2">
-                    Lanjutkan ke BSI <i class="fas fa-arrow-right"></i>
+                <button onclick="processRupaPayment()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-[16px] shadow-[0_8px_20px_rgba(13,148,136,0.25)] transition btn-press flex justify-center items-center gap-2">
+                    Lanjutkan ke BSI <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             </div>
         </div>
 
+        <!-- ================= LAYAR CHECKOUT ================= -->
         <div id="screen-checkout" class="screen bg-bglight">
-            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showScreen(previousScreen)" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-full transition btn-press">
-                    <i class="fas fa-arrow-left text-lg"></i>
+            <div class="bg-white px-6 py-4 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showScreen(previousScreen)" class="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100 transition btn-press">
+                    <i class="fas fa-arrow-left text-sm"></i>
                 </button>
-                <h2 class="text-lg font-bold text-primary tracking-tight">Rincian Bayar</h2>
+                <h2 class="text-base font-bold text-primary tracking-tight">Rincian Bayar</h2>
             </div>
-            <div class="p-6">
-                <div class="bg-white rounded-[24px] shadow-sm p-6 border border-gray-100 mb-6 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-secondary"></div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-5">Informasi Tagihan</h3>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-medium text-gray-500">Siswa</span>
-                        <span class="text-sm font-bold text-primary text-right wrap-text" id="checkout-student-info">Nama</span>
+            <div class="p-5">
+                <div class="bg-white rounded-[20px] shadow-soft p-5 border border-gray-100 mb-6 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-secondary"></div>
+                    <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4">Informasi Tagihan</h3>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[13px] font-medium text-gray-500">Siswa</span>
+                        <span class="text-[13px] font-bold text-primary text-right wrap-text" id="checkout-student-info">Nama</span>
                     </div>
-                    <div class="flex justify-between items-start mb-6">
-                        <span class="text-sm font-medium text-gray-500 mt-0.5">Item</span>
-                        <span class="text-sm font-semibold text-gray-800 text-right wrap-text max-w-[65%]" id="checkout-title">Tagihan</span>
+                    <div class="flex justify-between items-start mb-5">
+                        <span class="text-[13px] font-medium text-gray-500 mt-0.5">Item</span>
+                        <span class="text-[13px] font-bold text-gray-800 text-right wrap-text max-w-[65%]" id="checkout-title">Tagihan</span>
                     </div>
                     <div class="border-t border-dashed border-gray-200 pt-4 mt-2 flex justify-between items-center">
-                        <span class="font-bold text-gray-600">Total Nominal</span>
-                        <span class="text-2xl font-bold text-primary tracking-tight" id="checkout-total">Rp 0</span>
+                        <span class="text-sm font-bold text-gray-600">Total Nominal</span>
+                        <span class="text-xl font-bold text-primary tracking-tight" id="checkout-total">Rp 0</span>
                     </div>
                 </div>
                 
-                <button onclick="processPayment()" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-[20px] shadow-card transition btn-press flex items-center justify-center gap-2" id="btn-checkout-lanjut">
+                <button onclick="processPayment()" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-[16px] shadow-[0_8px_20px_rgba(10,42,102,0.25)] transition btn-press flex items-center justify-center gap-2" id="btn-checkout-lanjut">
                     Buat Instruksi Bayar <i class="fas fa-chevron-right text-xs"></i>
                 </button>
             </div>
         </div>
 
+        <!-- ================= LAYAR INTRUKSI ================= -->
         <div id="screen-instruction" class="screen bg-bglight">
-            <div class="bg-white px-6 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showScreen('screen-checkout')" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-full transition btn-press">
-                    <i class="fas fa-arrow-left text-lg"></i>
+            <div class="bg-white px-6 py-4 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showScreen('screen-checkout')" class="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100 transition btn-press">
+                    <i class="fas fa-arrow-left text-sm"></i>
                 </button>
-                <h2 class="text-lg font-bold text-primary tracking-tight">Instruksi Transfer</h2>
+                <h2 class="text-base font-bold text-primary tracking-tight">Instruksi Transfer</h2>
             </div>
-            <div class="p-6">
-                <div class="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 text-center mb-5">
+            <div class="p-5">
+                <div class="bg-white rounded-[20px] shadow-soft border border-gray-100 p-5 text-center mb-5">
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Total Transfer</p>
                     <div class="flex justify-center items-center gap-3 mb-6">
-                        <h2 class="text-3xl font-bold text-primary tracking-tight drop-shadow-sm" id="instruction-amount">Rp 0</h2>
-                        <button onclick="copyAmount()" class="w-10 h-10 bg-blue-50 text-secondary rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm btn-press">
-                            <i class="fas fa-copy"></i>
+                        <h2 class="text-2xl font-bold text-primary tracking-tight" id="instruction-amount">Rp 0</h2>
+                        <button onclick="copyAmount()" class="w-8 h-8 bg-blue-50 text-secondary rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm btn-press">
+                            <i class="fas fa-copy text-sm"></i>
                         </button>
                     </div>
-                    <div id="bank-box" class="bg-gradient-to-r from-blue-50 to-white rounded-[20px] p-5 border border-blue-100 text-left relative overflow-hidden shadow-sm">
+                    <div id="bank-box" class="bg-gradient-to-r from-blue-50 to-white rounded-[16px] p-4 border border-blue-100 text-left relative overflow-hidden shadow-sm">
                         <div id="bank-bg-accent" class="absolute top-0 right-0 w-24 h-24 bg-blue-100/50 rounded-bl-full"></div>
-                        <h3 id="bank-name-display" class="text-sm font-bold text-gray-500 mb-4 flex items-center gap-2 uppercase tracking-wider relative z-10"><i class="fas fa-building text-secondary" id="bank-icon-display"></i> BANK</h3>
+                        <h3 id="bank-name-display" class="text-[13px] font-bold text-gray-500 mb-3 flex items-center gap-2 uppercase tracking-wider relative z-10"><i class="fas fa-building text-secondary" id="bank-icon-display"></i> BANK</h3>
                         <div class="flex justify-between items-center mb-2 relative z-10">
-                            <p class="text-2xl font-bold font-mono text-primary tracking-widest drop-shadow-sm" id="bank-account-display">000</p>
-                            <button id="btn-copy-bank" onclick="copyBankAccount()" class="bg-white text-secondary px-4 py-2 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-50 transition shadow-sm btn-press flex items-center gap-2"><i class="fas fa-copy"></i> Salin</button>
+                            <p class="text-xl font-bold font-mono text-primary tracking-widest" id="bank-account-display">000</p>
+                            <button id="btn-copy-bank" onclick="copyBankAccount()" class="bg-white text-secondary px-3 py-1.5 rounded-full text-[10px] font-bold border border-blue-100 hover:bg-blue-50 transition shadow-sm btn-press flex items-center gap-1.5"><i class="fas fa-copy"></i> Salin</button>
                         </div>
-                        <p class="text-[11px] font-semibold text-gray-600 relative z-10" id="bank-owner-display">a.n. Instansi</p>
+                        <p class="text-[10px] font-semibold text-gray-600 relative z-10" id="bank-owner-display">a.n. Instansi</p>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 mb-8">
-                    <div class="flex items-center gap-4 mb-5">
-                        <div class="w-10 h-10 bg-orange-50 text-accent rounded-full flex items-center justify-center shadow-sm">
-                            <i class="fas fa-camera"></i>
+                <div class="bg-white rounded-[20px] shadow-soft border border-gray-100 p-5 mb-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-9 h-9 bg-orange-50 text-accent rounded-full flex items-center justify-center shadow-sm">
+                            <i class="fas fa-camera text-sm"></i>
                         </div>
                         <div>
-                            <h3 class="text-sm font-bold text-gray-800">Bukti Transfer</h3>
-                            <p class="text-[11px] text-gray-500 font-medium">Wajib diunggah untuk verifikasi</p>
+                            <h3 class="text-[13px] font-bold text-gray-800">Bukti Transfer</h3>
+                            <p class="text-[10px] text-gray-500 font-medium">Wajib diunggah untuk verifikasi</p>
                         </div>
                     </div>
-                    <label class="block w-full border-2 border-dashed border-gray-300 rounded-[20px] p-8 text-center cursor-pointer hover:border-secondary hover:bg-blue-50 transition bg-gray-50" id="upload-label">
+                    <label class="block w-full border-2 border-dashed border-gray-300 rounded-[16px] p-6 text-center cursor-pointer hover:border-secondary hover:bg-blue-50 transition bg-gray-50" id="upload-label">
                         <div id="upload-placeholder">
-                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
-                            <p class="text-sm font-bold text-primary">Ketuk Memilih Foto</p>
+                            <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-xs font-bold text-primary">Ketuk Memilih Foto</p>
                         </div>
-                        <img id="upload-preview" class="hidden w-full h-40 object-contain mx-auto rounded-lg shadow-sm bg-white">
+                        <img id="upload-preview" class="hidden w-full h-32 object-contain mx-auto rounded-lg shadow-sm bg-white border border-gray-100 p-1">
                         <input type="file" id="receipt-upload" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
                     </label>
                 </div>
                 
-                <button onclick="confirmInstruction()" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-[20px] shadow-card transition btn-press flex items-center justify-center gap-2" id="btn-confirm-transfer">
+                <button onclick="confirmInstruction()" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-[16px] shadow-card transition btn-press flex items-center justify-center gap-2" id="btn-confirm-transfer">
                     <i class="fas fa-check-circle"></i> Selesai & Kirim Bukti
                 </button>
             </div>
         </div>
 
+        <!-- ================= LAYAR STRUK ================= -->
         <div id="screen-receipt" class="screen bg-banking-gradient">
-            <div class="px-6 py-10 flex flex-col items-center justify-center min-h-[100dvh]">
-                <div class="w-full bg-white rounded-[32px] shadow-2xl overflow-hidden relative border border-white/20">
-                    <div class="h-3 bg-accent w-full" id="receipt-top-bar"></div>
-                    <div class="p-8 text-center border-b border-dashed border-gray-200 relative bg-gray-50/50">
-                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center text-accent mx-auto mb-4 shadow-sm border border-gray-100"><i class="fas fa-clock text-4xl"></i></div>
-                        <h2 class="text-xl font-bold text-primary tracking-tight">Menunggu Verifikasi</h2>
-                        <p class="text-xs font-medium text-gray-500 mt-2" id="receipt-date">-</p>
+            <div class="px-5 py-10 flex flex-col items-center justify-center min-h-[100dvh]">
+                <div class="w-full bg-white rounded-[24px] shadow-2xl overflow-hidden relative border border-white/20">
+                    <div class="h-2.5 bg-accent w-full" id="receipt-top-bar"></div>
+                    <div class="p-6 text-center border-b border-dashed border-gray-200 relative bg-gray-50/50">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-accent mx-auto mb-3 shadow-sm border border-gray-100"><i class="fas fa-clock text-2xl"></i></div>
+                        <h2 class="text-lg font-bold text-primary tracking-tight">Menunggu Verifikasi</h2>
+                        <p class="text-[11px] font-medium text-gray-500 mt-1" id="receipt-date">-</p>
                     </div>
-                    <div class="p-6">
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center"><p class="text-[11px] font-bold text-gray-400 uppercase">No. Tx</p><p class="text-sm font-bold font-mono text-gray-800" id="receipt-tx">-</p></div>
-                            <div class="flex justify-between items-center"><p class="text-[11px] font-bold text-gray-400 uppercase">Siswa</p><p class="text-sm font-bold text-gray-800 wrap-text" id="receipt-student">-</p></div>
-                            <div class="pt-2 border-t border-gray-100"><p class="text-[11px] font-bold text-gray-400 uppercase mb-1">Item</p><p class="text-sm font-semibold text-gray-800 wrap-text leading-relaxed" id="receipt-title">-</p></div>
+                    <div class="p-5">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center"><p class="text-[10px] font-bold text-gray-400 uppercase">No. Tx</p><p class="text-[13px] font-bold font-mono text-gray-800" id="receipt-tx">-</p></div>
+                            <div class="flex justify-between items-center"><p class="text-[10px] font-bold text-gray-400 uppercase">Siswa</p><p class="text-[13px] font-bold text-gray-800 wrap-text" id="receipt-student">-</p></div>
+                            <div class="pt-2 border-t border-gray-100"><p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Item</p><p class="text-[13px] font-semibold text-gray-800 wrap-text leading-relaxed" id="receipt-title">-</p></div>
                         </div>
-                        <div class="mt-6 bg-blue-50/50 rounded-2xl p-5 flex justify-between items-center border border-blue-100">
-                            <span class="text-xs font-bold text-gray-600 uppercase">Total</span>
-                            <span class="text-2xl font-bold text-primary tracking-tight" id="receipt-total">Rp 0</span>
+                        <div class="mt-5 bg-blue-50/50 rounded-[12px] p-4 flex justify-between items-center border border-blue-100">
+                            <span class="text-[11px] font-bold text-gray-600 uppercase">Total</span>
+                            <span class="text-xl font-bold text-primary tracking-tight" id="receipt-total">Rp 0</span>
                         </div>
                     </div>
                 </div>
-                <button class="w-full mt-8 bg-white/20 backdrop-blur-md text-white border border-white/30 py-4 rounded-[20px] font-bold shadow-lg btn-press" onclick="showScreen('screen-home')">Kembali ke Beranda</button>
+                <button class="w-full mt-6 bg-white/20 backdrop-blur-md text-white border border-white/30 py-4 rounded-[16px] text-sm font-bold shadow-lg btn-press" onclick="showScreen('screen-home')">Kembali ke Beranda</button>
             </div>
         </div>
 
         <div id="screen-admin-dashboard" class="screen">
-            <div class="bg-banking-gradient pt-12 pb-14 px-6 text-white rounded-b-[40px] relative mb-6 shadow-sm">
-                <h2 class="text-2xl font-bold mb-1">Kelola Menu</h2>
+            <div class="bg-banking-gradient pt-10 pb-12 px-6 text-white rounded-b-[32px] relative mb-5 shadow-sm">
+                <h2 class="text-xl font-bold mb-1">Kelola Menu</h2>
             </div>
-            <div class="px-6 space-y-3 pb-24" id="admin-menu-list"></div>
+            <div class="px-5 space-y-3 pb-24" id="admin-menu-list"></div>
         </div>
         <div id="modal-edit-menu" class="hidden"></div>
         <div id="modal-receipt-preview" class="hidden"></div>
 
-        <!-- BOTTOM NAVIGATION: FLOATING LIVIN STYLE -->
-        <nav id="bottom-nav" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-[380px] glass-nav rounded-full shadow-float border border-white/50 z-40 hidden">
-            <div class="flex justify-around items-center py-2.5 px-3 relative">
+        <!-- ================= BOTTOM NAVIGATION (MURNI MELAYANG) ================= -->
+        <nav id="bottom-nav" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-[360px] glass-nav rounded-full shadow-[0_10px_30px_rgba(10,42,102,0.12)] border border-white z-50 hidden">
+            <div class="flex justify-between items-center py-2 px-3 relative">
+                
                 <button onclick="showScreen('screen-home')" class="nav-btn flex flex-col items-center p-2 w-14 text-primary relative group" data-target="screen-home">
-                    <i class="fas fa-home text-xl mb-1 group-active:scale-90 transition-transform"></i>
+                    <i class="fas fa-home text-[18px] mb-1 group-active:scale-90 transition-transform"></i>
                     <span class="text-[9px] font-bold tracking-wide">Beranda</span>
                 </button>
                 
                 <button onclick="showScreen('screen-bills')" class="nav-btn flex flex-col items-center p-2 w-14 text-gray-400 hover:text-primary relative group transition-colors" data-target="screen-bills">
-                    <i class="fas fa-file-invoice text-xl mb-1 group-active:scale-90 transition-transform"></i>
+                    <i class="fas fa-file-invoice-dollar text-[18px] mb-1 group-active:scale-90 transition-transform"></i>
                     <span class="text-[9px] font-bold tracking-wide">Tagihan</span>
                 </button>
                 
-                <!-- Main Action Button / QR Style -->
-                <div class="relative -top-7">
-                    <button class="w-16 h-16 bg-banking-gradient rounded-full flex items-center justify-center text-white shadow-[0_10px_20px_rgba(29,78,216,0.4)] border-[5px] border-white btn-press" onclick="showScreen('screen-bills')">
-                        <img src="https://iili.io/nHwYAuV.png" class="w-7 h-7 object-contain brightness-0 invert drop-shadow-sm" alt="Logo Nav">
+                <!-- Tombol Utama Tengah (QR/Scan Style) -->
+                <div class="relative -top-6">
+                    <button class="w-14 h-14 bg-gradient-to-tr from-primary to-secondary rounded-full flex items-center justify-center text-white shadow-[0_8px_15px_rgba(29,78,216,0.3)] border-4 border-[#F8FAFC] btn-press" onclick="showScreen('screen-bills')">
+                        <img src="https://iili.io/nHwYAuV.png" class="w-6 h-6 object-contain brightness-0 invert" alt="Nav">
                     </button>
                 </div>
                 
                 <button onclick="showScreen('screen-history')" class="nav-btn flex flex-col items-center p-2 w-14 text-gray-400 hover:text-primary relative group transition-colors" data-target="screen-history">
-                    <i class="fas fa-receipt text-xl mb-1 group-active:scale-90 transition-transform"></i>
+                    <i class="fas fa-receipt text-[18px] mb-1 group-active:scale-90 transition-transform"></i>
                     <span class="text-[9px] font-bold tracking-wide">Riwayat</span>
                 </button>
                 
                 <button onclick="showScreen('screen-profile')" class="nav-btn flex flex-col items-center p-2 w-14 text-gray-400 hover:text-primary relative group transition-colors" data-target="screen-profile">
-                    <i class="fas fa-user-circle text-xl mb-1 group-active:scale-90 transition-transform"></i>
+                    <i class="fas fa-user text-[18px] mb-1 group-active:scale-90 transition-transform"></i>
                     <span class="text-[9px] font-bold tracking-wide">Akun</span>
                 </button>
             </div>
         </nav>
         <nav id="bottom-nav-admin" class="hidden"></nav>
 
-        <div id="messageBox" class="fixed inset-0 bg-primary/60 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 backdrop-blur-md">
-            <div class="bg-white rounded-[32px] p-8 max-w-[320px] w-11/12 shadow-2xl transform scale-95 transition-transform duration-300 text-center relative overflow-hidden" id="messageBoxContent">
+        <!-- Message Box Modal -->
+        <div id="messageBox" class="fixed inset-0 bg-primary/60 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+            <div class="bg-white rounded-[24px] p-6 max-w-[300px] w-11/12 shadow-2xl transform scale-95 transition-transform duration-300 text-center relative overflow-hidden" id="messageBoxContent">
                 <div id="messageIcon"></div>
-                <h3 id="messageTitle" class="text-xl font-bold text-primary tracking-tight"></h3>
-                <p id="messageText" class="text-sm font-medium text-gray-500 mt-2 leading-relaxed"></p>
-                <button onclick="closeMessageBox()" class="w-full py-4 rounded-[20px] font-bold transition mt-6 btn-press shadow-sm" id="messageBtn">Mengerti</button>
+                <h3 id="messageTitle" class="text-lg font-bold text-primary tracking-tight"></h3>
+                <p id="messageText" class="text-[13px] font-medium text-gray-500 mt-2 leading-relaxed"></p>
+                <button onclick="closeMessageBox()" class="w-full py-3.5 rounded-[16px] text-sm font-bold transition mt-5 btn-press shadow-sm" id="messageBtn">Mengerti</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT (LOGIKA TIDAK ADA YANG DIUBAH, HANYA UPDATE TEMPLATE HTML DI DALAM JS UNTUK DESAIN BARU) -->
+    <!-- SCRIPT (LOGIKA TIDAK ADA YANG DIUBAH, HANYA UPDATE TEMPLATE HTML DI DALAM JS) -->
     <script>
         const SUPABASE_URL = 'https://zbfzdrrtqtvfbmsogskt.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_R1e0gprQBAAEOM76AaF8Qw_Pytw-_ca';
-        const HEADERS = {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-        };
+        const HEADERS = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
         const PRESET_ICONS = ['fa-graduation-cap', 'fa-book', 'fa-shirt', 'fa-store', 'fa-bus', 'fa-utensils', 'fa-mosque', 'fa-laptop', 'fa-futbol', 'fa-medal', 'fa-file-invoice-dollar', 'fa-wallet', 'fa-money-bill', 'fa-history', 'fa-users', 'fa-calendar-alt', 'fa-chart-bar', 'fa-bullhorn', 'fa-star', 'fa-heart', 'fa-ambulance', 'fa-pen', 'fa-car', 'fa-church', 'fa-hands-helping', 'fa-school', 'fa-user-graduate', 'fa-print', 'fa-wifi', 'fa-bus-alt', 'fa-box-open', 'fa-layer-group', 'fa-shield-alt'];
 
         let appDB = { userRole: 'guest', menuItems: [], bills: [], otherBills: [], history: [], currentStudentData: null };
@@ -615,13 +603,11 @@
 
         const mapColsMain = [{ code: 'bps', title: 'Tagihan BPS', db: 'bps' }, { code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli' },{ code: 'spp', title: 'Tagihan SPP', db: 'spp' }, { code: 'daftarUlang1', title: 'Daftar Ulang I', db: 'daftarUlang1' },{ code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2' }, { code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3' },{ code: 'tahfidzPlus', title: 'Tagihan Tahfidz Plus', db: 'tahfidzPlus' }, { code: 'tahfidz', title: 'Tagihan Tahfidz', db: 'tahfidz' },{ code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan' }];
         const mapColsOther = [{ code: 'icp', title: 'Tagihan ICP', db: 'icp' }, { code: 'icpSore', title: 'Tagihan ICP Sore', db: 'icpSore' },{ code: 'ajs', title: 'Tagihan AJS', db: 'ajs' }, { code: 'tpq', title: 'Tagihan TPQ', db: 'tpq' },{ code: 'olimpiade', title: 'Tagihan Olimpiade', db: 'olimpiade' }, { code: 'rihlah', title: 'Tagihan Rihlah', db: 'rihlah' },{ code: 'infaqPembangunan', title: 'Tagihan Infaq Pembangunan', db: 'infaqPembangunan' }, { code: 'donasiSosial', title: 'Tagihan Donasi Sosial', db: 'donasiSosial' }];
-        const mListMain = ['spp', 'tahfidzPlus', 'tahfidz'];
-        const mListOther = ['icp', 'icpSore', 'ajs', 'tpq', 'olimpiade'];
-        
+        const mListMain = ['spp', 'tahfidzPlus', 'tahfidz']; const mListOther = ['icp', 'icpSore', 'ajs', 'tpq', 'olimpiade'];
         const DEFAULT_MENUS = [{ id: '19', title: 'Tagihan Saya', icon: 'fa-file-invoice-dollar', color: 'text-secondary|bg-blue-50', target: 'screen-bills', url: '', isActive: true },{ id: '99', title: 'Tagihan Lainnya', icon: 'fa-box-open', color: 'text-teal-600|bg-teal-50', target: 'screen-other-bills', url: '', isActive: true },{ id: '20', title: 'Riwayat', icon: 'fa-history', color: 'text-primary|bg-gray-100', target: 'screen-history', url: '', isActive: true }];
 
         function copyAmount() { let amtText = document.getElementById('instruction-amount').innerText; copyToClipboard(amtText.replace(/[^0-9]/g, ''), 'Nominal berhasil disalin!'); }
-        function copyBankAccount() { copyToClipboard(currentBankAccount.replace(/\s+/g, ''), 'Nomor rekening berhasil disalin!'); }
+        function copyBankAccount() { copyToClipboard(currentBankAccount.replace(/\s+/g, ''), 'Nomor rekening disalin!'); }
         function copyToClipboard(text, successMessage) { let tempInput = document.createElement("input"); tempInput.value = text; document.body.appendChild(tempInput); tempInput.select(); document.execCommand("copy"); document.body.removeChild(tempInput); showMessageBox('Berhasil', successMessage, 'fa-check', 'bg-green-50 text-success', 'OK', 'block', 'bg-green-500'); }
         function formatCurrency(num) { return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
         function togglePassword() { let p = document.getElementById('loginPass'); let i = document.getElementById('eyeIcon'); if (p.type === 'password') { p.type = 'text'; i.className = 'fas fa-eye-slash text-secondary'; } else { p.type = 'password'; i.className = 'fas fa-eye text-gray-400'; } }
@@ -643,8 +629,7 @@
         }
 
         async function handleLogin() {
-            const idInput = document.getElementById('loginId').value.trim();
-            const passInput = document.getElementById('loginPass').value.trim();
+            const idInput = document.getElementById('loginId').value.trim(); const passInput = document.getElementById('loginPass').value.trim();
             showMessageBox('Mohon Tunggu', 'Memuat data sistem...', 'fa-circle-notch fa-spin', 'text-secondary bg-blue-50', '', 'hidden');
             await fetchMenuData();
             if (idInput === 'admin' && passInput === 'bismillah') { appDB.userRole = 'admin'; closeMessageBox(); showScreen('screen-admin-dashboard'); return; }
@@ -652,8 +637,8 @@
                 const studentRes = await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${idInput}&token=eq.${passInput}&select=*`, { headers: HEADERS });
                 const students = await studentRes.json();
                 if (!students || students.length === 0) { showMessageBox('Gagal', 'NIS atau Kata Sandi salah.', 'fa-times', 'bg-red-50 text-danger', 'Coba Lagi', 'block', 'bg-red-500 text-white'); return; }
-                const student = students[0];
-                appDB.currentStudentData = student; currentStudentToken = student.token; currentStudentNIS = student.nis; currentStudentName = student.nama; 
+                
+                const student = students[0]; appDB.currentStudentData = student; currentStudentToken = student.token; currentStudentNIS = student.nis; currentStudentName = student.nama; 
                 let namaKelasAsli = student.namaKelas || ""; currentStudentClass = namaKelasAsli ? `${student.kelas} ${namaKelasAsli}` : student.kelas;
                 appDB.bills = []; appDB.otherBills = []; appDB.history = [];
 
@@ -729,27 +714,29 @@
                 document.getElementById('home-tunggakan').innerText = count + " Item Tagihan";
                 
                 let bs = document.getElementById('home-bill-status');
-                if (count === 0) { bs.className = 'inline-flex items-center gap-1.5 bg-green-500/20 border border-green-400/30 text-green-50 text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm'; bs.innerHTML = '<i class="fas fa-check-circle text-green-300"></i> LUNAS SELURUHNYA'; } 
-                else if (allBills.some(b => b.status === 'pending')) { bs.className = 'inline-flex items-center gap-1.5 bg-orange-500/20 border border-orange-400/30 text-orange-50 text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm'; bs.innerHTML = '<i class="fas fa-clock text-orange-300"></i> VERIFIKASI PEMBAYARAN'; } 
-                else { bs.className = 'inline-flex items-center gap-1.5 bg-red-500/20 border border-red-400/30 text-red-50 text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm'; bs.innerHTML = '<i class="fas fa-exclamation-circle text-red-300"></i> ADA TUNGGAKAN'; }
+                if (count === 0) { bs.className = 'inline-flex items-center gap-1 bg-green-500/20 border border-green-400/30 text-green-50 text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm'; bs.innerHTML = '<i class="fas fa-check-circle text-green-300"></i> LUNAS SELURUHNYA'; } 
+                else if (allBills.some(b => b.status === 'pending')) { bs.className = 'inline-flex items-center gap-1 bg-orange-500/20 border border-orange-400/30 text-orange-50 text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm'; bs.innerHTML = '<i class="fas fa-clock text-orange-300"></i> PROSES VERIFIKASI'; } 
+                else { bs.className = 'inline-flex items-center gap-1 bg-red-500/20 border border-red-400/30 text-red-50 text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm'; bs.innerHTML = '<i class="fas fa-exclamation-circle text-red-300"></i> ADA TUNGGAKAN'; }
 
                 let lh = appDB.history.find(x => x.status === 'success'); document.getElementById('home-last-paid').innerText = lh ? lh.date.split(',')[0] : 'Belum Ada';
 
                 let grid = document.getElementById('home-menu-grid'); grid.innerHTML = '';
                 appDB.menuItems.filter(m => m.isActive).forEach(m => {
                     let css = (m.color || 'text-primary|bg-white').split('|'); 
-                    // Update Template UI untuk Livin Style Menu Icons
-                    let iconBg = 'bg-white shadow-[0_6px_15px_rgba(10,42,102,0.08)]';
-                    let iconTxt = css[0]; let act = '';
+                    
+                    // Ikon Membulat Bersih Ala Livin
+                    let iconBg = 'bg-white shadow-[0_4px_15px_rgba(0,0,0,0.04)] border border-gray-100/50';
+                    let iconTxt = 'text-secondary'; 
+                    let act = '';
                     
                     if (m.url) { act = `onclick="window.open('${m.url}', '_blank')"` } else if (m.target && m.target.startsWith('direct|')) { let tagihanCode = m.target.split('|')[1]; act = `onclick="processDirectBill('${tagihanCode}')"`; } else if (m.target) { act = `onclick="showScreen('${m.target}')"`; } else { act = `onclick="showMessageBox('Info', 'Layanan ${m.title} segera hadir.', 'fa-info-circle', 'bg-blue-50 text-blue-600', 'Mengerti', 'block', 'bg-primary text-white')"`; }
                     
                     grid.innerHTML += `
                         <div class="flex flex-col items-center gap-2 group cursor-pointer" ${act}>
-                            <div class="w-14 h-14 ${iconBg} rounded-full flex items-center justify-center ${iconTxt} group-active:scale-90 transition-transform duration-200">
-                                <i class="fas ${m.icon} text-[22px]"></i>
+                            <div class="w-[52px] h-[52px] ${iconBg} rounded-full flex items-center justify-center ${iconTxt} group-active:scale-90 transition-transform duration-200">
+                                <i class="fas ${m.icon} text-xl"></i>
                             </div>
-                            <span class="text-[10px] font-bold text-gray-600 text-center leading-tight px-1">${m.title}</span>
+                            <span class="text-[10px] font-bold text-gray-700 text-center leading-tight px-1">${m.title}</span>
                         </div>
                     `;
                 });
@@ -764,7 +751,7 @@
                 
                 if (ub.length === 0) {
                     document.getElementById(`bill-warning-box-${postfix}`).classList.add('hidden'); document.getElementById(`container-select-all-${postfix}`).classList.add('hidden');
-                    cont.innerHTML = `<div class="text-center py-12 flex flex-col items-center fade-in"><div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-4 shadow-sm"><i class="fas fa-check-circle text-4xl text-success"></i></div><p class="font-bold text-gray-800 text-lg">Alhamdulillah</p><p class="text-xs text-gray-500 mt-1">Seluruh tagihan Anda lunas.</p></div>`;
+                    cont.innerHTML = `<div class="text-center py-12 flex flex-col items-center fade-in"><div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-3 shadow-sm"><i class="fas fa-check text-2xl text-success"></i></div><p class="font-bold text-gray-800 text-sm">Alhamdulillah</p><p class="text-[11px] text-gray-500 mt-1">Seluruh tagihan Anda lunas.</p></div>`;
                 } else {
                     document.getElementById(`bill-warning-box-${postfix}`).classList.remove('hidden'); document.getElementById(`container-select-all-${postfix}`).classList.remove('hidden');
                     let monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']; let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; let currentMonthIdx = new Date().getMonth(); let defaultEndIdx = syOrder.indexOf(currentMonthIdx); if (defaultEndIdx === -1) defaultEndIdx = 0;
@@ -777,34 +764,40 @@
                             let startIdx = (appDB.history.length === 0) ? 0 : defaultEndIdx; let endIdx = defaultEndIdx; if (endIdx < startIdx) endIdx = startIdx; fAmt = b.amount * (endIdx - startIdx + 1); 
                             let unpList = []; for(let i = startIdx; i <= endIdx; i++) unpList.push(monthNames[syOrder[i]]); ketBulan = unpList.join(', ');
                             let optHTML = ''; syOrder.forEach((mIdx, i) => { optHTML += `<option value="${i}">${monthNames[mIdx]}</option>`; });
+                            
                             interactiveUI = `
-                                <div class="mt-3 flex items-center gap-2 text-[11px] text-gray-600 bg-gray-50 p-3 rounded-xl border border-gray-100 shadow-sm">
+                                <div class="mt-3 flex items-center gap-2 text-[10px] text-gray-600 bg-gray-50 p-2.5 rounded-xl border border-gray-100 shadow-sm">
                                     <span class="font-bold uppercase tracking-wider text-gray-400">Periode:</span>
-                                    <select id="start-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount}, '${postfix}')" class="bg-white border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-secondary font-semibold w-full max-w-[80px]" ${isP ? 'disabled' : ''}>${optHTML.replace(`value="${startIdx}"`, `value="${startIdx}" selected`)}</select>
+                                    <select id="start-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount}, '${postfix}')" class="bg-white border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-secondary font-bold w-full max-w-[75px]" ${isP ? 'disabled' : ''}>${optHTML.replace(`value="${startIdx}"`, `value="${startIdx}" selected`)}</select>
                                     <span class="font-bold text-gray-300">-</span>
-                                    <select id="end-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount}, '${postfix}')" class="bg-white border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-secondary font-semibold w-full max-w-[80px]" ${isP ? 'disabled' : ''}>${optHTML.replace(`value="${endIdx}"`, `value="${endIdx}" selected`)}</select>
+                                    <select id="end-month-${b.id}" onchange="updateBillAmt('${b.id}', ${b.amount}, '${postfix}')" class="bg-white border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-secondary font-bold w-full max-w-[75px]" ${isP ? 'disabled' : ''}>${optHTML.replace(`value="${endIdx}"`, `value="${endIdx}" selected`)}</select>
                                 </div>`;
-                            amountDisplay = `<p class="text-xl font-bold ${amountCol} mt-2 tracking-tight" id="amt-text-${b.id}">${formatCurrency(fAmt)}</p>`;
+                            amountDisplay = `<p class="text-lg font-bold ${amountCol} tracking-tight" id="amt-text-${b.id}">${formatCurrency(fAmt)}</p>`;
                         } else {
                             interactiveUI = `
                                 <div class="mt-3">
-                                    <label class="text-[10px] font-bold text-accent bg-orange-50 px-3 py-1.5 rounded-md uppercase tracking-wider">Bayar Sebagian</label>
+                                    <label class="text-[9px] font-bold text-accent bg-orange-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Bayar Sebagian</label>
                                     <div class="relative mt-2">
-                                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-bold text-xs">Rp</span>
-                                        <input type="number" id="input-angsuran-${b.id}" class="w-full bg-gray-50 border border-gray-100 rounded-xl pl-10 pr-4 py-3 text-sm font-bold ${amountCol} focus:border-secondary focus:bg-white focus:ring-4 focus:ring-blue-50 outline-none transition shadow-sm" value="${fAmt}" max="${fAmt}" min="1" oninput="updateAngsuranAmt('${b.id}', this.value, '${postfix}', ${fAmt})" onblur="if(!this.value || this.value <= 0) { this.value = ${fAmt}; updateAngsuranAmt('${b.id}', ${fAmt}, '${postfix}', ${fAmt}); }" ${isP ? 'disabled' : ''}>
+                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 font-bold text-[10px]">Rp</span>
+                                        <input type="number" id="input-angsuran-${b.id}" class="w-full bg-gray-50 border border-gray-100 rounded-[12px] pl-8 pr-3 py-2 text-xs font-bold ${amountCol} focus:border-secondary focus:bg-white focus:ring-2 focus:ring-blue-50 outline-none transition shadow-sm" value="${fAmt}" max="${fAmt}" min="1" oninput="updateAngsuranAmt('${b.id}', this.value, '${postfix}', ${fAmt})" onblur="if(!this.value || this.value <= 0) { this.value = ${fAmt}; updateAngsuranAmt('${b.id}', ${fAmt}, '${postfix}', ${fAmt}); }" ${isP ? 'disabled' : ''}>
                                     </div>
                                 </div>`;
-                            amountDisplay = `<p class="text-[10px] text-gray-400 mt-2 font-bold tracking-wider">Maks: ${formatCurrency(fAmt)}</p>`;
+                            amountDisplay = `<p class="text-[10px] text-gray-400 font-bold tracking-wider">Maks: <br>${formatCurrency(fAmt)}</p>`;
                         }
-                        let chk = isP ? `<i class="fas fa-clock text-accent text-2xl"></i>` : `<div class="relative flex items-center justify-center w-6 h-6 flex-shrink-0"><input type="checkbox" id="chk-${b.id}" class="bill-chk-${postfix} peer appearance-none w-6 h-6 border-2 border-gray-300 rounded-md ${accentColChecked} transition cursor-pointer" value="${b.id}" data-amt="${fAmt}" data-max="${fAmt}" data-title="${b.title}" data-code="${b.code}" data-ket="${ketBulan}" onchange="calcSelectedBills('${postfix}')"><i class="fas fa-check text-white absolute text-xs opacity-0 peer-checked:opacity-100 pointer-events-none"></i></div>`;
-                        // Templat Kartu Tagihan Livin Style
+                        
+                        let chk = isP ? `<i class="fas fa-clock text-accent text-xl"></i>` : `<div class="relative flex items-center justify-center w-5 h-5 flex-shrink-0"><input type="checkbox" id="chk-${b.id}" class="bill-chk-${postfix} peer appearance-none w-5 h-5 border-2 border-gray-300 rounded md ${accentColChecked} transition cursor-pointer" value="${b.id}" data-amt="${fAmt}" data-max="${fAmt}" data-title="${b.title}" data-code="${b.code}" data-ket="${ketBulan}" onchange="calcSelectedBills('${postfix}')"><i class="fas fa-check text-white absolute text-[10px] opacity-0 peer-checked:opacity-100 pointer-events-none"></i></div>`;
+                        
+                        // Kartu Tagihan Bersih
                         cont.innerHTML += `
-                            <div class="bg-white rounded-[24px] shadow-soft border border-gray-100 p-5 flex gap-4 items-start ${isP ? 'opacity-60 bg-gray-50' : 'fade-in hover:border-blue-200 transition'}">
-                                <div class="mt-1">${chk}</div>
+                            <div class="bg-white rounded-[20px] shadow-soft border border-gray-100 p-5 mb-4 flex gap-4 items-start ${isP ? 'opacity-60 bg-gray-50' : 'fade-in hover:border-blue-200 transition'}">
+                                <div class="mt-0.5">${chk}</div>
                                 <div class="flex-1 w-full">
-                                    <h3 class="font-bold text-gray-800 text-[15px] tracking-tight">${b.title}</h3>
+                                    <h3 class="font-bold text-gray-800 text-[13px] tracking-tight mb-1">${b.title}</h3>
                                     ${interactiveUI}
-                                    ${amountDisplay}
+                                    <div class="mt-3 flex justify-between items-center">
+                                        <span class="text-[10px] font-bold text-gray-400">Total Nominal</span>
+                                        ${amountDisplay}
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -814,31 +807,33 @@
 
             if (screenId === 'screen-history') {
                 let hc = document.getElementById('history-container'); hc.innerHTML = '';
-                if (appDB.history.length === 0) { hc.innerHTML = `<div class="text-center py-12 flex flex-col items-center text-gray-400 fade-in"><i class="fas fa-receipt text-4xl mb-3 opacity-50"></i><p class="text-sm font-medium">Belum ada transaksi</p></div>`; }
+                if (appDB.history.length === 0) { hc.innerHTML = `<div class="text-center py-12 flex flex-col items-center text-gray-400 fade-in"><i class="fas fa-receipt text-4xl mb-3 opacity-50"></i><p class="text-xs font-medium">Belum ada transaksi</p></div>`; }
+                
                 appDB.history.forEach(h => {
                     let d = h.details.map(x => `&bull; ${x.title}`).join('<br>');
                     let statusHtml = ''; let iconConfig = '';
-                    if (h.status === 'success') { statusHtml = '<span class="text-[10px] font-bold text-success bg-green-50 px-2 py-1 rounded-md tracking-wider">BERHASIL</span>'; iconConfig = 'bg-green-50 text-success fa-arrow-down'; } 
-                    else if (h.status === 'rejected') { statusHtml = `<div class="text-right flex flex-col items-end"><span class="text-[10px] font-bold text-danger bg-red-50 px-2 py-1 rounded-md tracking-wider">DITOLAK</span><span class="text-[9px] text-danger mt-1">Bukti tak valid</span></div>`; iconConfig = 'bg-red-50 text-danger fa-times'; } 
-                    else { statusHtml = '<span class="text-[10px] font-bold text-accent bg-orange-50 px-2 py-1 rounded-md tracking-wider">PROSES</span>'; iconConfig = 'bg-orange-50 text-accent fa-clock'; }
-                    let btnPreview = h.status === 'success' ? `<button onclick="previewReceipt('${h.id}')" class="text-[10px] bg-white text-secondary px-3 py-1.5 rounded-full border border-blue-100 font-bold hover:bg-blue-50 transition shadow-sm btn-press"><i class="fas fa-file-invoice mr-1"></i> Lihat Struk</button>` : '';
+                    if (h.status === 'success') { statusHtml = '<span class="text-[9px] font-bold text-success bg-green-50 px-2 py-1 rounded-md tracking-wider">BERHASIL</span>'; iconConfig = 'bg-green-50 text-success fa-arrow-down'; } 
+                    else if (h.status === 'rejected') { statusHtml = `<div class="text-right flex flex-col items-end"><span class="text-[9px] font-bold text-danger bg-red-50 px-2 py-1 rounded-md tracking-wider">DITOLAK</span><span class="text-[9px] text-danger mt-1">Bukti tak valid</span></div>`; iconConfig = 'bg-red-50 text-danger fa-times'; } 
+                    else { statusHtml = '<span class="text-[9px] font-bold text-accent bg-orange-50 px-2 py-1 rounded-md tracking-wider">PROSES</span>'; iconConfig = 'bg-orange-50 text-accent fa-clock'; }
                     
-                    // Templat Riwayat Livin Style
+                    let btnPreview = h.status === 'success' ? `<button onclick="previewReceipt('${h.id}')" class="text-[10px] bg-white text-secondary px-3 py-1.5 rounded-[10px] border border-blue-100 font-bold hover:bg-blue-50 transition shadow-sm btn-press flex items-center gap-1.5"><i class="fas fa-file-invoice"></i> Struk</button>` : '';
+                    
+                    // Kartu Riwayat Bersih Ala Livin
                     hc.innerHTML += `
-                        <div class="bg-white rounded-[24px] shadow-soft border border-gray-100 p-5 mb-4 flex items-start gap-4 fade-in">
-                            <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-50 ${iconConfig.split(' ')[0]} ${iconConfig.split(' ')[1]}">
-                                <i class="fas ${iconConfig.split(' ')[2]} text-lg"></i>
+                        <div class="bg-white rounded-[20px] shadow-soft border border-gray-100 p-4 mb-4 flex items-start gap-3 fade-in">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-50 ${iconConfig.split(' ')[0]} ${iconConfig.split(' ')[1]}">
+                                <i class="fas ${iconConfig.split(' ')[2]} text-[14px]"></i>
                             </div>
-                            <div class="flex-1 w-full border-b border-gray-50 pb-2">
+                            <div class="flex-1 w-full">
                                 <div class="flex justify-between items-start mb-1">
-                                    <h4 class="text-sm font-bold text-gray-800 wrap-text pr-2 leading-tight">${h.title}</h4>
+                                    <h4 class="text-[13px] font-bold text-gray-800 wrap-text pr-2 leading-tight">${h.title}</h4>
                                     <div class="flex-shrink-0">${statusHtml}</div>
                                 </div>
                                 <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">${h.date}</p>
-                                <div class="mt-2 text-[11px] text-gray-500 font-medium leading-relaxed bg-gray-50 p-2 rounded-lg">${d}</div>
-                                <div class="flex justify-between items-end mt-4">
+                                <div class="mt-1 text-[11px] text-gray-500 font-medium leading-relaxed bg-gray-50 p-2.5 rounded-[12px] border border-gray-100">${d}</div>
+                                <div class="flex justify-between items-end mt-4 border-t border-gray-50 pt-3">
                                     <div>${btnPreview}</div>
-                                    <p class="text-base font-bold text-primary tracking-tight">${formatCurrency(h.amount)}</p>
+                                    <p class="text-sm font-bold text-primary tracking-tight">${formatCurrency(h.amount)}</p>
                                 </div>
                             </div>
                         </div>
@@ -848,7 +843,7 @@
             document.getElementById('app-container').scrollTop = 0;
         }
 
-        /* ----- SISA FUNGSI JS PERSIS SAMA (TIDAK ADA PERUBAHAN LOGIKA DARI SINI) ----- */
+        // ================= BAGIAN LOGIKA JAVASCRIPT YANG TIDAK DIUBAH ================= //
         function toggleSelectAll(cb, postfix) { document.querySelectorAll(`.bill-chk-${postfix}`).forEach(el => { if(!el.disabled) el.checked = cb.checked; }); calcSelectedBills(postfix); }
         function updateAngsuranAmt(billId, val, postfix, maxVal) { let inputEl = document.getElementById(`input-angsuran-${billId}`); let newAmt = parseInt(val); if (isNaN(newAmt)) { newAmt = 0; } else if (newAmt > maxVal) { newAmt = maxVal; inputEl.value = maxVal; } else if (newAmt < 0) { newAmt = 0; inputEl.value = ''; } let chk = document.getElementById(`chk-${billId}`); if (chk) { chk.dataset.amt = newAmt; if (chk.checked) calcSelectedBills(postfix); } }
         function calcSelectedBills(postfix) { selectedBillIds = []; let total = 0; let allCheckboxes = document.querySelectorAll(`.bill-chk-${postfix}`); let checkedBoxes = document.querySelectorAll(`.bill-chk-${postfix}:checked`); checkedBoxes.forEach(cb => { let amt = parseInt(cb.dataset.amt) || 0; if (amt > 0) { selectedBillIds.push(cb); total += amt; } }); let idTotal = document.getElementById(`bills-selected-total-${postfix}`); let idBtn = document.getElementById(`btn-pay-selected-${postfix}`); idTotal.innerText = formatCurrency(total); if(selectedBillIds.length === 0 || total === 0){ idBtn.disabled = true; } else { idBtn.disabled = false; } let cbAll = document.getElementById(`chk-select-all-${postfix}`); if (cbAll && allCheckboxes.length > 0) { cbAll.checked = (checkedBoxes.length === allCheckboxes.length); } }
@@ -856,7 +851,7 @@
         function processDirectBill(code) { if (!appDB.currentStudentData) return; let amt = parseInt(appDB.currentStudentData[code]); if (isNaN(amt) || amt <= 0) { showMessageBox('Alhamdulillah', 'Tidak ada tagihan aktif.', 'fa-check-circle', 'bg-green-50 text-success', 'Tutup', 'block', 'bg-primary text-white'); return; } let titleMapping = { 'ajs': 'Tagihan AJS', 'tpq': 'Tagihan TPQ', 'icp': 'Tagihan ICP', 'olimpiade': 'Tagihan Olimpiade' }; let title = titleMapping[code] || ('Tagihan ' + code.toUpperCase()); currentPaymentType = 'other'; currentBank = BANK_BSI_INFO.bank; currentBankAccount = BANK_BSI_INFO.account; currentBankOwner = BANK_BSI_INFO.owner; previousScreen = 'screen-home'; paymentDataPayload = { token: currentStudentToken, date: new Date().toLocaleString('id-ID'), nis: currentStudentNIS, nama: currentStudentName, kelas: currentStudentClass }; paymentDataPayload[code] = amt; document.getElementById('checkout-student-info').innerHTML = `${currentStudentName}<br><span class="text-[10px] text-gray-400 font-medium">${currentStudentClass}</span>`; document.getElementById('checkout-title').innerText = title; document.getElementById('checkout-total').innerText = formatCurrency(amt); document.getElementById('instruction-amount').innerText = formatCurrency(amt); updateBankInstructionUI(); showScreen('screen-checkout'); }
         function processSelectedBills(postfix) { let tot = 0; let titles = []; currentPaymentType = postfix; if (postfix === 'main') { currentBank = BANK_BRI_INFO.bank; currentBankAccount = BANK_BRI_INFO.account; currentBankOwner = BANK_BRI_INFO.owner; previousScreen = 'screen-bills'; } else { currentBank = BANK_BSI_INFO.bank; currentBankAccount = BANK_BSI_INFO.account; currentBankOwner = BANK_BSI_INFO.owner; previousScreen = 'screen-other-bills'; } paymentDataPayload = { token: currentStudentToken, date: new Date().toLocaleString('id-ID'), nis: currentStudentNIS, nama: currentStudentName, kelas: currentStudentClass }; selectedBillIds.forEach(cb => { let code = cb.dataset.code; let amt = parseInt(cb.dataset.amt); let maxAmt = parseInt(cb.dataset.max); let ket = cb.dataset.ket; let bTitle = cb.dataset.title; tot += amt; paymentDataPayload[code] = amt; if (code === 'spp') paymentDataPayload.ketSpp = ket; if (code === 'tahfidzPlus') paymentDataPayload.ketTahfidzPlus = ket; if (code === 'tahfidz') paymentDataPayload.ketTahfidz = ket; if (code === 'icp') paymentDataPayload.ketIcp = ket; if (code === 'icpSore') paymentDataPayload.ketIcpSore = ket; if (code === 'ajs') paymentDataPayload.ketAjs = ket; if (code === 'tpq') paymentDataPayload.ketTpq = ket; if (code === 'olimpiade') paymentDataPayload.ketOlimpiade = ket; if (ket && ['spp', 'tahfidzPlus', 'tahfidz', 'icp', 'icpSore', 'ajs', 'tpq', 'olimpiade'].includes(code)) { bTitle += ` (${ket})`; } else if (amt < maxAmt) { bTitle = `Angsuran ${bTitle}`; } titles.push(bTitle); }); document.getElementById('checkout-student-info').innerHTML = `${currentStudentName}<br><span class="text-[10px] text-gray-400 font-medium">${currentStudentClass}</span>`; document.getElementById('checkout-title').innerText = titles.join(', '); document.getElementById('checkout-total').innerText = formatCurrency(tot); document.getElementById('instruction-amount').innerText = formatCurrency(tot); updateBankInstructionUI(); showScreen('screen-checkout'); }
         function processRupaPayment() { let title = document.getElementById('rupa-title').value.trim(); let amt = parseInt(document.getElementById('rupa-amount').value); if (!title || isNaN(amt) || amt <= 0) { showMessageBox('Perhatian', 'Isi keterangan dan nominal terlebih dahulu.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent', 'Mengerti', 'block', 'bg-primary text-white'); return; } currentPaymentType = 'other'; currentBank = BANK_BSI_INFO.bank; currentBankAccount = BANK_BSI_INFO.account; currentBankOwner = BANK_BSI_INFO.owner; previousScreen = 'screen-rupa'; paymentDataPayload = { token: currentStudentToken, date: new Date().toLocaleString('id-ID'), nis: currentStudentNIS, nama: currentStudentName, kelas: currentStudentClass, rupaRupa: amt, ketRupa: title }; document.getElementById('checkout-student-info').innerHTML = `${currentStudentName}<br><span class="text-[10px] text-gray-400 font-medium">${currentStudentClass}</span>`; document.getElementById('checkout-title').innerText = title; document.getElementById('checkout-total').innerText = formatCurrency(amt); document.getElementById('instruction-amount').innerText = formatCurrency(amt); document.getElementById('rupa-title').value = ''; document.getElementById('rupa-amount').value = ''; updateBankInstructionUI(); showScreen('screen-checkout'); }
-        function updateBankInstructionUI() { let nameDisp = document.getElementById('bank-name-display'); let accDisp = document.getElementById('bank-account-display'); let ownerDisp = document.getElementById('bank-owner-display'); if (currentBank === 'BRI') { nameDisp.innerHTML = '<i class="fas fa-building text-secondary"></i> BANK BRI'; accDisp.innerText = currentBankAccount; accDisp.className = 'text-2xl font-bold font-mono text-primary tracking-widest drop-shadow-sm'; ownerDisp.innerText = currentBankOwner; } else if (currentBank === 'BSI') { nameDisp.innerHTML = '<i class="fas fa-building text-teal-600"></i> BANK BSI'; accDisp.innerText = currentBankAccount; accDisp.className = 'text-2xl font-bold font-mono text-teal-700 tracking-widest drop-shadow-sm'; ownerDisp.innerText = currentBankOwner; } }
+        function updateBankInstructionUI() { let nameDisp = document.getElementById('bank-name-display'); let accDisp = document.getElementById('bank-account-display'); let ownerDisp = document.getElementById('bank-owner-display'); if (currentBank === 'BRI') { nameDisp.innerHTML = '<i class="fas fa-building text-secondary"></i> BANK BRI'; accDisp.innerText = currentBankAccount; accDisp.className = 'text-xl font-bold font-mono text-primary tracking-widest drop-shadow-sm'; ownerDisp.innerText = currentBankOwner; } else if (currentBank === 'BSI') { nameDisp.innerHTML = '<i class="fas fa-building text-teal-600"></i> BANK BSI'; accDisp.innerText = currentBankAccount; accDisp.className = 'text-xl font-bold font-mono text-teal-700 tracking-widest drop-shadow-sm'; ownerDisp.innerText = currentBankOwner; } }
         function processPayment() { isFileUploaded = false; document.getElementById('upload-preview').classList.add('hidden'); document.getElementById('upload-placeholder').classList.remove('hidden'); document.getElementById('receipt-upload').value = ''; showScreen('screen-instruction'); }
         function handleFileUpload(e) { if (e.target.files[0]) { const file = e.target.files[0]; if (!file.type.match('image.*')) { showMessageBox('Perhatian', 'Hanya gambar yang diizinkan.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent', 'Mengerti', 'block', 'bg-primary text-white'); e.target.value = ''; return; } isFileUploaded = true; let r = new FileReader(); r.onload = function(ev) { document.getElementById('upload-preview').src = ev.target.result; document.getElementById('upload-preview').classList.remove('hidden'); document.getElementById('upload-placeholder').classList.add('hidden'); }; r.readAsDataURL(file); } }
         
@@ -880,14 +875,15 @@
             } catch(e) { showMessageBox('Gagal', e.message || 'Terjadi gangguan.', 'fa-times', 'bg-red-50 text-danger', 'Tutup', 'block', 'bg-primary text-white'); }
         }
 
-        function showMessageBox(ti, te, ic, icb, btn, dsp, btnc) { document.getElementById('messageTitle').innerText = ti; document.getElementById('messageText').innerText = te; document.getElementById('messageIcon').className = `w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-5 shadow-sm border-4 border-white ring-1 ring-gray-100 ${icb}`; document.getElementById('messageIcon').innerHTML = `<i class="fas ${ic} text-3xl"></i>`; let b = document.getElementById('messageBtn'); if (dsp === 'hidden') { b.style.display = 'none'; } else { b.style.display = 'block'; b.innerText = btn || 'OK'; b.className = `w-full py-4 rounded-[20px] font-bold transition mt-6 btn-press shadow-card ${btnc || 'bg-primary text-white'}`; } let x = document.getElementById('messageBox'); x.classList.remove('hidden'); void x.offsetWidth; x.classList.remove('opacity-0'); }
+        function showMessageBox(ti, te, ic, icb, btn, dsp, btnc) { document.getElementById('messageTitle').innerText = ti; document.getElementById('messageText').innerText = te; document.getElementById('messageIcon').className = `w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 shadow-sm border-[3px] border-white ring-1 ring-gray-100 ${icb}`; document.getElementById('messageIcon').innerHTML = `<i class="fas ${ic} text-2xl"></i>`; let b = document.getElementById('messageBtn'); if (dsp === 'hidden') { b.style.display = 'none'; } else { b.style.display = 'block'; b.innerText = btn || 'OK'; b.className = `w-full py-3.5 rounded-[16px] text-sm font-bold transition mt-5 btn-press shadow-sm ${btnc || 'bg-primary text-white'}`; } let x = document.getElementById('messageBox'); x.classList.remove('hidden'); void x.offsetWidth; x.classList.remove('opacity-0'); }
         function closeMessageBox() { document.getElementById('messageBox').classList.add('opacity-0'); setTimeout(() => document.getElementById('messageBox').classList.add('hidden'), 300); }
         function logout() { appDB.userRole = 'guest'; showScreen('screen-login'); document.getElementById('loginForm').reset(); }
         async function changePassword() { const newPass = document.getElementById('new-password').value; const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/; if (!regex.test(newPass)) { showMessageBox('Perhatian', 'Sandi harus 6 karakter.', 'fa-shield-alt', 'bg-orange-50 text-accent', 'Tutup', 'block', 'bg-primary text-white'); return; } showMessageBox('Memproses', 'Mengamankan kredensial...', 'fa-circle-notch fa-spin', 'text-secondary bg-blue-50', '', 'hidden'); try { const res = await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${currentStudentNIS}`, { method: 'PATCH', headers: { ...HEADERS, 'Prefer': 'return=minimal' }, body: JSON.stringify({ token: newPass }) }); if (!res.ok) throw new Error("Gagal"); currentStudentToken = newPass; document.getElementById('new-password').value = ''; showMessageBox('Berhasil', 'Keamanan akun ditingkatkan!', 'fa-check', 'bg-green-50 text-success', 'Tutup', 'block', 'bg-primary text-white'); } catch (error) { showMessageBox('Gagal', 'Sistem sibuk.', 'fa-times', 'bg-red-50 text-danger', 'Tutup', 'block', 'bg-primary text-white'); } }
-        async function refreshData() { if (appDB.userRole !== 'student' || !currentStudentNIS) return; let activeScreenId = 'screen-home'; document.querySelectorAll('.screen').forEach(el => { if (el.classList.contains('active')) activeScreenId = el.id; }); showMessageBox('Sinkronisasi', 'Mengambil data...', 'fa-circle-notch fa-spin', 'text-secondary bg-blue-50', '', 'hidden'); handleLogin(); } // Refresh is effectively a re-login
+        async function refreshData() { if (appDB.userRole !== 'student' || !currentStudentNIS) return; let activeScreenId = 'screen-home'; document.querySelectorAll('.screen').forEach(el => { if (el.classList.contains('active')) activeScreenId = el.id; }); showMessageBox('Sinkronisasi', 'Mengambil data...', 'fa-circle-notch fa-spin', 'text-secondary bg-blue-50', '', 'hidden'); handleLogin(); } 
         
         window.onload = () => showScreen('screen-login');
     </script>
+    
     <!-- PWA Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
