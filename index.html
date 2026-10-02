@@ -1219,9 +1219,9 @@
                 appDB.menuItems.filter(m => m.isActive).forEach(m => {
                     let css = (m.color || 'text-primary|bg-white').split('|'); 
                     // Penyesuaian warna gaya Livin
-                    let iconBg = css[1] === 'bg-white' ? 'bg-blue-50' : css[1];
-                    let iconTxt = css[0];
-                    let act = '';
+                    // Memaksa latar ikon menjadi transparan ala glassmorphism
+                    let iconBg = 'bg-white/10 backdrop-blur-sm border border-white/10 group-hover:bg-white/20';
+                    let iconTxt = 'text-white'; // Memaksa ikon berwarna putih agar kontras     let act = '';
                     
                     if (m.url) { 
                         act = `onclick="window.open('${m.url}', '_blank')"`; 
