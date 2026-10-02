@@ -1059,12 +1059,19 @@
                                     
                                     det.push({ title: bTitle, amount: amt }); 
                                     let b = appDB.bills.find(x => x.code === c.code); 
-                                    if (b) {
-                                        if (txStatus === 'success') {
-                                            if (mListMain.includes(c.code)) b.status = 'paid';
-                                        }
-                                        else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
-                                    } 
+                                        if (b) {
+                                            if (txStatus === 'success') {
+                                                if (mListMain.includes(c.code)) {
+                                                    // Akumulasi total nominal yang sudah pernah dibayar
+                                                    b.paidAmount = (b.paidAmount || 0) + amt;
+                                                } else {
+                                                    b.status = 'paid';
+                                                }
+                                            }
+                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') {
+                                                b.status = 'pending';
+                                            }
+                                        } 
                                 } 
                             }
                         });
@@ -1083,12 +1090,19 @@
                                     
                                     det.push({ title: bTitle, amount: amt }); 
                                     let b = appDB.otherBills.find(x => x.code === c.code); 
-                                    if (b) {
-                                        if (txStatus === 'success') {
-                                            if (mListOther.includes(c.code)) b.status = 'paid';
+                                        if (b) {
+                                            if (txStatus === 'success') {
+                                                if (mListOther.includes(c.code)) {
+                                                    // Akumulasi total nominal yang sudah pernah dibayar
+                                                    b.paidAmount = (b.paidAmount || 0) + amt;
+                                                } else {
+                                                    b.status = 'paid';
+                                                }
+                                            }
+                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') {
+                                                b.status = 'pending';
+                                            }
                                         }
-                                        else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
-                                    } 
                                 } 
                             }
                         });
@@ -1110,11 +1124,34 @@
                                 status: txStatus, 
                                 details: det, 
                                 kasir: tx.kasir || '-',
-                                buktiTF: tx.buktiTF || null
-                            });
+                            buktiTF: tx.buktiTF || null
+                        });
+                    }
+                });
+                // ---- PASTE MULAI DARI SINI ----
+                let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; 
+                let currentSyIdx = syOrder.indexOf(new Date().getMonth());
+                if (currentSyIdx === -1) currentSyIdx = 0;
+
+                [...appDB.bills, ...appDB.otherBills].forEach(b => {
+                    let isMonthly = mListMain.includes(b.code) || mListOther.includes(b.code);
+                    if (isMonthly) {
+                        let paidMonths = Math.floor((b.paidAmount || 0) / b.amount);
+                        b.startMonthIdx = paidMonths; 
+
+                        if (paidMonths > currentSyIdx) {
+                            b.status = 'paid';
+                        } else if (b.status !== 'pending') {
+                            b.status = 'unpaid';
                         }
-                    });
-                }
+                    }
+                });
+                // ---- SAMPAI SINI ----
+            }
+
+            closeMessageBox(); 
+            appDB.userRole = 'student'; 
+            showScreen('screen-home');
 
                 closeMessageBox(); 
                 appDB.userRole = 'student'; 
@@ -1166,7 +1203,9 @@
                 let bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][new Date().getMonth()];
                 document.getElementById('label-tunggakan').innerText = `Tunggakan per ${bulan}`;
 
-                let mult = (new Date().getMonth() >= 6) ? new Date().getMonth() - 5 : new Date().getMonth() + 7;
+                let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; 
+                let currentSyIdx = syOrder.indexOf(new Date().getMonth());
+                if (currentSyIdx === -1) currentSyIdx = 0;
                 
                 let unpaid = 0; 
                 let count = 0;
@@ -1176,7 +1215,12 @@
                 allBills.forEach(b => {
                     if (b.status === 'unpaid' || b.status === 'pending') {
                         let finalAmt = b.amount; 
-                        if (allMonthList.includes(b.code) && appDB.history.length === 0) finalAmt = b.amount * mult;
+                        if (allMonthList.includes(b.code)) {
+                            let startIdx = b.startMonthIdx || 0; // Mulai dari sisa bulan yang nunggak
+                            let endIdx = currentSyIdx;
+                            if (endIdx < startIdx) endIdx = startIdx;
+                            finalAmt = b.amount * (endIdx - startIdx + 1);
+                        }
                         unpaid += finalAmt; 
                         count++;
                     }
@@ -1283,7 +1327,7 @@
                         let amountCol = isMain ? 'text-primary' : 'text-teal-700';
 
                         if (monthList.includes(b.code)) {
-                            let startIdx = (appDB.history.length === 0) ? 0 : defaultEndIdx;
+                            let startIdx = b.startMonthIdx || 0; // Mulai dropdown dari sisa bulan otomatis
                             let endIdx = defaultEndIdx;
                             if (endIdx < startIdx) endIdx = startIdx;
                             
@@ -2139,10 +2183,17 @@
                                         let b = appDB.bills.find(x => x.code === c.code); 
                                         if (b) {
                                             if (txStatus === 'success') {
-                                                if (mListMain.includes(c.code)) b.status = 'paid';
+                                                if (mListMain.includes(c.code)) {
+                                                    // Akumulasi total nominal yang sudah pernah dibayar
+                                                    b.paidAmount = (b.paidAmount || 0) + amt;
+                                                } else {
+                                                    b.status = 'paid';
+                                                }
                                             }
-                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
-                                        } 
+                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') {
+                                                b.status = 'pending';
+                                            }
+                                        }
                                     } 
                                 }
                             });
@@ -2162,10 +2213,17 @@
                                         let b = appDB.otherBills.find(x => x.code === c.code); 
                                         if (b) {
                                             if (txStatus === 'success') {
-                                                if (mListOther.includes(c.code)) b.status = 'paid';
+                                                if (mListOther.includes(c.code)) {
+                                                    // Akumulasi total nominal yang sudah pernah dibayar
+                                                    b.paidAmount = (b.paidAmount || 0) + amt;
+                                                } else {
+                                                    b.status = 'paid';
+                                                }
                                             }
-                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') b.status = 'pending';
-                                        } 
+                                            else if (b.status === 'unpaid' && txStatus !== 'rejected') {
+                                                b.status = 'pending';
+                                            }
+                                        }
                                     } 
                                 }
                             });
@@ -2187,11 +2245,34 @@
                                     status: txStatus, 
                                     details: det, 
                                     kasir: tx.kasir || '-',
-                                    buktiTF: tx.buktiTF || null
-                                });
-                            }
+                            buktiTF: tx.buktiTF || null
                         });
                     }
+                });
+                // ---- PASTE MULAI DARI SINI ----
+                let syOrder = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]; 
+                let currentSyIdx = syOrder.indexOf(new Date().getMonth());
+                if (currentSyIdx === -1) currentSyIdx = 0;
+
+                [...appDB.bills, ...appDB.otherBills].forEach(b => {
+                    let isMonthly = mListMain.includes(b.code) || mListOther.includes(b.code);
+                    if (isMonthly) {
+                        let paidMonths = Math.floor((b.paidAmount || 0) / b.amount);
+                        b.startMonthIdx = paidMonths; 
+
+                        if (paidMonths > currentSyIdx) {
+                            b.status = 'paid';
+                        } else if (b.status !== 'pending') {
+                            b.status = 'unpaid';
+                        }
+                    }
+                });
+                // ---- SAMPAI SINI ----
+            }
+
+            closeMessageBox(); 
+            appDB.userRole = 'student'; 
+            showScreen('screen-home');
                     showScreen(activeScreenId); 
                     closeMessageBox();
                 }
