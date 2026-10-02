@@ -219,69 +219,80 @@
         </div>
 
         <div id="screen-home" class="screen">
-            <!-- Header Background Area -->
-            <div class="bg-white rounded-b-[40px] px-6 pt-10 pb-8 relative z-10 shadow-sm">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center p-1 border-2 border-white shadow-sm overflow-hidden">
-                            <img src="https://iili.io/nHwYAuV.png" alt="Avatar" class="w-full h-full object-contain drop-shadow-sm">
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-medium text-gray-500 mb-0.5">Assalamu'alaikum,</p>
-                            <h2 class="text-sm font-bold text-primary wrap-text leading-tight" id="home-user-name">Ayah/Bunda</h2>
-                        </div>
+            <!-- Header Profil Elegan (Tanpa Latar Putih) -->
+            <div class="px-6 pt-10 pb-4 flex justify-between items-center text-white relative z-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm p-1.5 border border-white/20 flex items-center justify-center">
+                        <img src="https://iili.io/nHwYAuV.png" alt="Logo" class="w-full h-full object-contain brightness-0 invert drop-shadow-md">
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="refreshData()" class="w-10 h-10 bg-gray-50 text-gray-600 rounded-full flex items-center justify-center hover:bg-blue-50 hover:text-primary transition btn-press">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                        <button class="w-10 h-10 bg-gray-50 text-gray-600 rounded-full flex items-center justify-center hover:bg-blue-50 hover:text-primary transition btn-press relative">
-                            <i class="fas fa-bell"></i>
-                            <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-                        </button>
+                    <div>
+                        <p class="text-[10px] text-blue-200 font-medium mb-0.5 tracking-wide">Assalamu'alaikum,</p>
+                        <h2 class="text-sm font-bold tracking-wider wrap-text leading-tight uppercase" id="home-user-name">Ayah/Bunda</h2>
                     </div>
                 </div>
-                
-                <div class="flex items-center gap-2 text-xs text-gray-600 bg-gray-50 px-4 py-2.5 rounded-full border border-gray-100">
-                    <i class="fas fa-user-graduate text-secondary"></i>
-                    <span id="home-student-info" class="font-medium wrap-text line-clamp-1">Siswa Info</span>
+                <div class="flex gap-2">
+                    <button onclick="refreshData()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10 hover:bg-white/20 transition btn-press">
+                        <i class="fas fa-sync-alt text-white text-xs"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10 hover:bg-white/20 transition relative btn-press">
+                        <i class="fas fa-bell text-white text-xs"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Main Financial Card (Kartu Saldo/Tagihan) -->
-            <div class="px-5 -mt-6 relative z-20">
-                <div class="bg-banking-gradient rounded-[24px] p-6 text-white shadow-card overflow-hidden relative border border-blue-400/20">
+            <!-- Tag Identitas -->
+            <div class="px-6 mb-6 relative z-10">
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-full py-1.5 px-4 inline-flex items-center gap-3">
+                    <i class="fas fa-user-graduate text-blue-300 text-[10px]"></i>
+                    <span id="home-student-info" class="text-[11px] text-white font-medium wrap-text line-clamp-1 tracking-wide">Siswa Info</span>
+                </div>
+            </div>
+
+            <!-- Kartu Finansial Utama -->
+            <div class="px-5 mb-8 relative z-20">
+                <div class="bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-[24px] p-6 text-white shadow-[0_8px_30px_rgba(0,0,0,0.3)] border border-blue-400/30 relative overflow-hidden">
+                    <!-- Aksen Visual Kartu -->
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-400/20 rounded-full blur-xl"></div>
                     <div class="islamic-pattern opacity-10"></div>
-                    <!-- Hiasan Kartu -->
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
                     
-                    <div class="flex justify-between items-start mb-2 relative z-10">
-                        <div>
-                            <p class="text-xs text-blue-200 font-medium tracking-wide">Total Tagihan Aktif</p>
-                            <div class="flex items-baseline gap-1 mt-1">
-                                <h3 class="text-3xl font-bold tracking-tight" id="home-total-bill">Rp 0</h3>
+                    <div class="relative z-10">
+                        <p class="text-[11px] text-blue-200 font-medium tracking-wider mb-1 uppercase">Total Tagihan Aktif</p>
+                        <div class="flex items-end gap-3 mb-4">
+                            <h3 class="text-3xl font-bold tracking-tight" id="home-total-bill">Rp 0</h3>
+                        </div>
+                        
+                        <div class="mb-5">
+                            <!-- Status Tagihan akan dirender JS di sini -->
+                            <div id="home-bill-status" class="inline-flex items-center gap-1.5 bg-white/20 border border-white/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm">
+                                <i class="fas fa-circle-notch fa-spin"></i> Memuat...
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="mb-5 relative z-10">
-                        <div id="home-bill-status" class="inline-flex items-center gap-1.5 bg-white/20 border border-white/20 text-white text-[10px] font-semibold px-3 py-1 rounded-full backdrop-blur-md">
-                            <i class="fas fa-circle-notch fa-spin"></i> Memuat...
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 relative z-10 border-t border-white/10 pt-4 mt-2">
-                        <div>
-                            <p class="text-[10px] text-blue-200 font-medium mb-1" id="label-tunggakan">Tagihan Bulan Ini</p>
-                            <p class="font-semibold text-sm" id="home-tunggakan">0 Item</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-blue-200 font-medium mb-1">Terakhir Bayar</p>
-                            <p class="font-semibold text-sm line-clamp-1" id="home-last-paid">-</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-4 mt-2">
+                            <div>
+                                <p class="text-[10px] text-blue-200 font-medium mb-0.5" id="label-tunggakan">Tagihan Bulan Ini</p>
+                                <p class="text-xs font-bold tracking-wide" id="home-tunggakan">0 Item</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] text-blue-200 font-medium mb-0.5">Terakhir Bayar</p>
+                                <p class="text-xs font-bold tracking-wide line-clamp-1" id="home-last-paid">-</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Grid Layanan Cepat -->
+            <div class="px-6 mt-8 pb-32 relative z-10">
+                <h3 class="text-sm font-bold text-white mb-5 tracking-wide">Layanan Sekolah</h3>
+                <!-- Ikon layanan akan dirender JS dengan latar transparan karena ID ini -->
+                <div id="home-menu-grid" class="grid grid-cols-4 gap-y-6 gap-x-2">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </div>
 
             <!-- Quick Actions Grid -->
             <div class="px-6 mt-8 pb-4">
