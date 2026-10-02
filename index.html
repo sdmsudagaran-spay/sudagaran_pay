@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sudagaran Pay</title>
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0A2A66">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SudaPay">
     
     <!-- Favicon & Apple Touch Icon -->
     <link rel="icon" href="https://iili.io/nHwYAuV.png" type="image/png">
@@ -2252,5 +2258,19 @@
 
         window.onload = () => showScreen('screen-login');
     </script>
-</body>
+    <!-- PWA Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('ServiceWorker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+          console.error('ServiceWorker registration failed:', error);
+        });
+    });
+  }
+</script>
+    </body>
 </html>
