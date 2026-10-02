@@ -2,19 +2,19 @@
   "name": "Sudagaran Pay",
   "short_name": "SudaPay",
   "description": "Aplikasi Pembayaran SD Muhammadiyah Sudagaran",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0A2A66",
   "theme_color": "#0A2A66",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "image_4bb55c.png",
+      "src": "https://iili.io/nHwYAuV.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "image_4bb55c.png",
+      "src": "https://iili.io/nHwYAuV.png",
       "sizes": "512x512",
       "type": "image/png"
     }
